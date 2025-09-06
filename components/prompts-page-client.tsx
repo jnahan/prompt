@@ -78,8 +78,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const promptLimit = 15;
 
   const handleUpgradeClick = () => {
-    // Handle upgrade logic
-    console.log("Upgrade clicked");
+    router.push("/upgrade");
   };
 
   const handleShareClick = () => {
