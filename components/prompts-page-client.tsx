@@ -9,6 +9,7 @@ import { PromptManagementControls } from "./prompt-management-controls";
 import { PromptSearchBar } from "./prompt-search-bar";
 import { PromptItem } from "./prompt-item";
 import { FolderItem } from "./folder-item";
+import { MyAccountMenu } from "./my-account-menu";
 
 interface Prompt {
   id: string;
@@ -135,9 +136,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
             <span className="text-sm font-medium text-gray-700">
               Discover apps
             </span>
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-xs text-gray-600">👤</span>
-            </div>
+            <MyAccountMenu userName={userName} onLogout={handleLogout} />
           </div>
         </div>
       </div>
