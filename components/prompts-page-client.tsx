@@ -78,7 +78,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const promptCount =
     mockPrompts.length +
     mockFolders.reduce((acc, folder) => acc + folder.prompts.length, 0);
-  const promptLimit = 15;
+  const promptLimit = 3;
 
   const handleUpgradeClick = () => {
     router.push("/upgrade");
