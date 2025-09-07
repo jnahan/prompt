@@ -11,6 +11,7 @@ import { PromptItem } from "./prompts/prompt-item";
 import { FolderItem } from "./prompts/folder-item";
 import { Navigation } from "./navigation";
 import { OnboardingOverlay } from "./auth/onboarding-overlay";
+import { CreateFolderDialog } from "./forms/create-folder-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 
 interface Prompt {
@@ -33,6 +34,8 @@ interface PromptsPageClientProps {
 export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
+    useState(false);
   const { isOpen, onSubmit, onClose } = useOnboarding();
 
   // Mock data - in a real app, this would come from your database
@@ -94,8 +97,16 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   };
 
   const handleNewFolder = () => {
-    // Handle new folder creation
-    console.log("New folder clicked");
+    setIsCreateFolderDialogOpen(true);
+  };
+
+  const handleCreateFolder = (name: string, color: string) => {
+    // For now, just log the folder creation
+    // In a real app, this would make an API call to create the folder
+    console.log("Creating folder:", { name, color });
+
+    // TODO: Add the new folder to the mockFolders state
+    // This would be replaced with actual API call in production
   };
 
   const handleLogout = async () => {
@@ -195,6 +206,13 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
           )}
         </div>
       </div>
+
+      {/* Create Folder Dialog */}
+      <CreateFolderDialog
+        open={isCreateFolderDialogOpen}
+        onOpenChange={setIsCreateFolderDialogOpen}
+        onCreateFolder={handleCreateFolder}
+      />
     </div>
   );
 }
