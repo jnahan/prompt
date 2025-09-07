@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { VariableButton } from "./variable-button";
+import { X } from "lucide-react";
 import { useState } from "react";
 
 interface VariableSettingsRowProps {
@@ -20,12 +23,13 @@ interface VariableSettingsRowProps {
     | "purple"
     | "orange"
     | "pink";
-  type: "text" | "date" | "select" | "textarea";
+  type: "text" | "textarea" | "select";
   defaultValue?: string;
   selectOptions?: string[];
   onTypeChange: (type: string) => void;
   onDefaultValueChange: (value: string) => void;
   onAddSelectOption?: () => void;
+  onRemoveSelectOption?: (index: number) => void;
 }
 
 export function VariableSettingsRow({
@@ -37,29 +41,18 @@ export function VariableSettingsRow({
   onTypeChange,
   onDefaultValueChange,
   onAddSelectOption,
+  onRemoveSelectOption,
 }: VariableSettingsRowProps) {
-  const colorClasses = {
-    gray: "bg-gray-100",
-    red: "bg-red-100",
-    yellow: "bg-yellow-100",
-    green: "bg-green-100",
-    blue: "bg-blue-100",
-    purple: "bg-purple-100",
-    orange: "bg-orange-100",
-    pink: "bg-pink-100",
-  };
-
   return (
     <div className="grid grid-cols-3 gap-4 items-start">
       {/* Variable */}
       <div className="flex items-center">
-        <Button
-          variant="outline"
-          className={`${colorClasses[color]} border-0 text-black font-mono text-sm`}
-          disabled
-        >
-          {`{{${variable}}}`}
-        </Button>
+        <VariableButton
+          variable={variable}
+          color={color}
+          onClick={() => {}} // Disabled in settings, so empty function
+          disabled={true}
+        />
       </div>
 
       {/* Type */}
@@ -69,10 +62,9 @@ export function VariableSettingsRow({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="text">Text</SelectItem>
-            <SelectItem value="date">Date</SelectItem>
-            <SelectItem value="select">Select</SelectItem>
+            <SelectItem value="text">Input</SelectItem>
             <SelectItem value="textarea">Textarea</SelectItem>
+            <SelectItem value="select">Select</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -82,16 +74,27 @@ export function VariableSettingsRow({
         {type === "select" ? (
           <div className="space-y-2">
             {selectOptions.map((option, index) => (
-              <Input
-                key={index}
-                placeholder={`Option ${index + 1}`}
-                value={option}
-                onChange={(e) => {
-                  const newOptions = [...selectOptions];
-                  newOptions[index] = e.target.value;
-                  onDefaultValueChange(JSON.stringify(newOptions));
-                }}
-              />
+              <div key={index} className="flex items-center gap-2">
+                <Input
+                  placeholder={`Option ${index + 1}`}
+                  value={option}
+                  onChange={(e) => {
+                    const newOptions = [...selectOptions];
+                    newOptions[index] = e.target.value;
+                    onDefaultValueChange(JSON.stringify(newOptions));
+                  }}
+                />
+                {onRemoveSelectOption && selectOptions.length > 1 && (
+                  <Button
+                    onClick={() => onRemoveSelectOption(index)}
+                    variant="outline"
+                    size="sm"
+                    className="p-1 h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             ))}
             {onAddSelectOption && (
               <Button
@@ -104,6 +107,14 @@ export function VariableSettingsRow({
               </Button>
             )}
           </div>
+        ) : type === "textarea" ? (
+          <Textarea
+            placeholder="Default value (optional)"
+            value={defaultValue}
+            onChange={(e) => onDefaultValueChange(e.target.value)}
+            rows={4}
+            className="min-h-[100px]"
+          />
         ) : (
           <Input
             placeholder="Default value (optional)"

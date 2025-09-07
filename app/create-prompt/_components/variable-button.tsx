@@ -12,12 +12,14 @@ interface VariableButtonProps {
     | "orange"
     | "pink";
   onClick: () => void;
+  disabled?: boolean;
 }
 
 export function VariableButton({
   variable,
   color,
   onClick,
+  disabled = false,
 }: VariableButtonProps) {
   const colorClasses = {
     gray: "bg-gray-100 hover:bg-gray-200",
@@ -34,7 +36,9 @@ export function VariableButton({
     <Button
       onClick={onClick}
       variant="outline"
-      className={`${colorClasses[color]} border-0 text-black font-mono text-sm`}
+      disabled={disabled}
+      className={`${colorClasses[color]} border-0 text-black font-mono text-sm w-auto px-1 py-1`}
+      style={{ fontSize: "14px", fontWeight: "500" }}
     >
       {`{{${variable}}}`}
     </Button>

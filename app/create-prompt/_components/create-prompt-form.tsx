@@ -6,13 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -33,7 +26,7 @@ interface Variable {
     | "purple"
     | "orange"
     | "pink";
-  type: "text" | "date" | "select" | "textarea";
+  type: "text" | "textarea" | "select";
   defaultValue?: string;
   selectOptions?: string[];
 }
@@ -41,9 +34,8 @@ interface Variable {
 export function CreatePromptForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [generationType, setGenerationType] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [attachments, setAttachments] = useState("");
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [variables, setVariables] = useState<Variable[]>([]);
   const [isVariableSettingsOpen, setIsVariableSettingsOpen] = useState(false);
 
@@ -70,6 +62,21 @@ export function CreatePromptForm() {
       };
       setVariables((prev) => [...prev, newVariable]);
     }
+  };
+
+  const handlePromptChange = (newPrompt: string) => {
+    setPrompt(newPrompt);
+
+    // Remove variables that are no longer in the prompt
+    const variablePattern = /\{\{([^}]+)\}\}/g;
+    const variablesInPrompt = new Set<string>();
+    let match;
+
+    while ((match = variablePattern.exec(newPrompt)) !== null) {
+      variablesInPrompt.add(match[1]);
+    }
+
+    setVariables((prev) => prev.filter((v) => variablesInPrompt.has(v.name)));
   };
 
   const handleVariableTypeChange = (variableId: string, type: string) => {
@@ -102,12 +109,30 @@ export function CreatePromptForm() {
     );
   };
 
+  const handleRemoveSelectOption = (
+    variableId: string,
+    optionIndex: number
+  ) => {
+    setVariables((prev) =>
+      prev.map((v) =>
+        v.id === variableId
+          ? {
+              ...v,
+              selectOptions: (v.selectOptions || []).filter(
+                (_, index) => index !== optionIndex
+              ),
+            }
+          : v
+      )
+    );
+  };
+
   const handleCreatePrompt = () => {
     console.log("Creating prompt:", {
       title,
       description,
-      generationType,
       prompt,
+      attachments,
       variables,
     });
   };
@@ -155,21 +180,6 @@ export function CreatePromptForm() {
           />
         </div>
 
-        {/* Generation Type */}
-        <div className="space-y-2">
-          <Label htmlFor="generation-type">Generation type</Label>
-          <Select value={generationType} onValueChange={setGenerationType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="text">Text Generation</SelectItem>
-              <SelectItem value="image">Image Generation</SelectItem>
-              <SelectItem value="code">Code Generation</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Prompt */}
         <div className="space-y-2">
           <Label htmlFor="prompt">Prompt</Label>
@@ -177,7 +187,7 @@ export function CreatePromptForm() {
             id="prompt"
             placeholder="Ex. Pretend you are a business executive. Write pitch deck about {{placeholder 1}}"
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => handlePromptChange(e.target.value)}
             className="min-h-32"
           />
         </div>
@@ -189,8 +199,8 @@ export function CreatePromptForm() {
             variables to set fields you want to control like Name.
           </div>
 
-          <div className="grid grid-cols-6 gap-2">
-            {colors.slice(0, 6).map((color, index) => (
+          <div className="flex flex-wrap gap-2">
+            {colors.map((color, index) => (
               <VariableButton
                 key={index}
                 variable="Variable"
@@ -200,23 +210,6 @@ export function CreatePromptForm() {
                 }
               />
             ))}
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <VariableButton
-              variable="Variable"
-              color="purple"
-              onClick={() => handleInsertVariable("Variable7", "purple")}
-            />
-            <VariableButton
-              variable="Variable"
-              color="pink"
-              onClick={() => handleInsertVariable("Variable8", "pink")}
-            />
-            <VariableButton
-              variable="Variable"
-              color="red"
-              onClick={() => handleInsertVariable("Variable9", "red")}
-            />
           </div>
         </div>
 
@@ -259,6 +252,9 @@ export function CreatePromptForm() {
                   handleDefaultValueChange(variable.id, value)
                 }
                 onAddSelectOption={() => handleAddSelectOption(variable.id)}
+                onRemoveSelectOption={(index) =>
+                  handleRemoveSelectOption(variable.id, index)
+                }
               />
             ))}
           </CollapsibleContent>
@@ -267,12 +263,23 @@ export function CreatePromptForm() {
         {/* Attachments */}
         <div className="space-y-2">
           <Label htmlFor="attachments">Attachments (optional)</Label>
-          <Input
-            id="attachments"
-            placeholder="Placeholder"
-            value={attachments}
-            onChange={(e) => setAttachments(e.target.value)}
-          />
+          <div className="space-y-2">
+            <Input
+              id="attachments"
+              type="file"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setAttachments(files);
+              }}
+              className="cursor-pointer"
+            />
+            {attachments.length > 0 && (
+              <div className="text-sm text-gray-600">
+                {attachments.length} file(s) selected
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Action Buttons */}

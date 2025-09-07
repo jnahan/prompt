@@ -11,7 +11,7 @@ import { ShareDialog } from "./_components/share-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, FolderPlus, Crown, Search } from "lucide-react";
+import { Plus, FolderPlus, Crown, Search, Sparkles } from "lucide-react";
 
 interface Prompt {
   id: string;
@@ -163,70 +163,74 @@ export default function UsernamePage({ params }: UsernamePageProps) {
         {/* User Profile Section */}
         <UserProfileSection
           userName={username}
-          onUpgradeClick={handleUpgradeClick}
           onShareClick={handleShareClick}
         />
 
-        {/* Prompt Usage Bar */}
-        <div className="mt-8">
-          <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
-            <span className="text-sm text-gray-700">
-              You saved 3/3 prompts. Upgrade to save unlimited prompts.
-            </span>
-            <Button
-              onClick={handleUpgradeClick}
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Crown className="h-4 w-4" />
-              Upgrade
-            </Button>
-          </div>
-        </div>
-
-        {/* Prompt Management Controls */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">
-              {promptCount} saved prompts
-            </span>
-
-            <div className="flex gap-2">
-              <Button
-                onClick={handleNewPrompt}
-                size="sm"
-                className="flex items-center gap-2"
-                variant="outline"
-              >
-                <Plus className="h-4 w-4" />
-                New prompt
-              </Button>
-
-              <Button
-                onClick={handleNewFolder}
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <FolderPlus className="h-4 w-4" />
-                New folder
-              </Button>
+        {/* Show controls only when there are prompts */}
+        {promptCount > 0 && (
+          <>
+            {/* Prompt Usage Bar */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                <span className="text-sm text-gray-700">
+                  You saved 3/3 prompts. Upgrade to save unlimited prompts.
+                </span>
+                <Button
+                  onClick={handleUpgradeClick}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Crown className="h-4 w-4" />
+                  Upgrade
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Search Bar */}
-        <div className="mt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search prompts..."
-              className="pl-10 border-0 focus:ring-0 focus:outline-none"
-            />
-          </div>
-        </div>
+            {/* Prompt Management Controls */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  {promptCount} saved prompts
+                </span>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleNewPrompt}
+                    size="sm"
+                    className="flex items-center gap-2"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4" />
+                    New prompt
+                  </Button>
+
+                  <Button
+                    onClick={handleNewFolder}
+                    size="sm"
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    <FolderPlus className="h-4 w-4" />
+                    New folder
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mt-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search prompts..."
+                  className="pl-10 border-0 focus:ring-0 focus:outline-none"
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Prompts and Folders List */}
         <ul className="mt-8 space-y-2">
@@ -255,10 +259,26 @@ export default function UsernamePage({ params }: UsernamePageProps) {
 
           {/* Empty State */}
           {filteredPrompts.length === 0 && filteredFolders.length === 0 && (
-            <div className="text-center py-12 text-gray-500">
-              {searchQuery
-                ? "No prompts found matching your search."
-                : "No prompts yet. Create your first prompt!"}
+            <div className="mt-8">
+              <div className="bg-gray-50 rounded-lg p-12 text-center">
+                <div className="flex justify-center mb-4">
+                  <Sparkles
+                    width={40}
+                    height={40}
+                    className="text-muted-foreground"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No prompts added
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Your prompts will show up here
+                </p>
+                <Button onClick={handleNewPrompt}>
+                  <Plus className="h-4 w-4" />
+                  Add prompt
+                </Button>
+              </div>
             </div>
           )}
         </ul>
