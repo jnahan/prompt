@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { VariableButton } from "./variable-button";
+import { VariableComponent } from "./variable-button";
 import { X } from "lucide-react";
 import { useState } from "react";
 
@@ -47,7 +47,7 @@ export function VariableSettingsRow({
     <div className="grid grid-cols-3 gap-4 items-start">
       {/* Variable */}
       <div className="flex items-center">
-        <VariableButton
+        <VariableComponent
           variable={variable}
           color={color}
           onClick={() => {}} // Disabled in settings, so empty function
