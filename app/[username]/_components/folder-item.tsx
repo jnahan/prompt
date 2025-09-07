@@ -46,9 +46,9 @@ export function FolderItem({
   };
 
   return (
-    <li className="group">
+    <li>
       <div
-        className="flex items-center justify-between hover:bg-gray-50 rounded-lg px-2 py-2 cursor-pointer"
+        className="group flex items-center justify-between hover:bg-gray-50 rounded-lg px-2 py-2 cursor-pointer"
         onClick={handleToggle}
       >
         <div className="flex items-center gap-2 flex-1">

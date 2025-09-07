@@ -1,6 +1,6 @@
 "use client";
 
-import { PricingCard } from "@/app/_components/pricing-card";
+import { PricingCard } from "./_components/pricing-card";
 import { Star } from "lucide-react";
 
 export default function UpgradePage() {

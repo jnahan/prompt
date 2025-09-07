@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserProfileSection } from "@/components/prompts/user-profile-section";
-import { PromptItem } from "@/components/prompts/prompt-item";
-import { FolderItem } from "@/components/prompts/folder-item";
-import { OnboardingOverlay } from "./onboarding-overlay";
-import { CreateFolderDialog } from "@/components/forms/create-folder-dialog";
-import { ShareDialog } from "@/components/forms/share-dialog";
+import { UserProfileSection } from "./_components/user-profile-section";
+import { PromptItem } from "./_components/prompt-item";
+import { FolderItem } from "./_components/folder-item";
+import { OnboardingOverlay } from "./_components/onboarding-overlay";
+import { CreateFolderDialog } from "./_components/create-folder-dialog";
+import { ShareDialog } from "./_components/share-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, FolderPlus, Crown, Search } from "lucide-react";
+
 interface Prompt {
   id: string;
   title: string;
@@ -25,11 +26,14 @@ interface Folder {
   prompts: Prompt[];
 }
 
-interface PromptsPageClientProps {
-  userName: string;
+interface UsernamePageProps {
+  params: {
+    username: string;
+  };
 }
 
-export function PromptsPageClient({ userName }: PromptsPageClientProps) {
+export default function UsernamePage({ params }: UsernamePageProps) {
+  const { username } = params;
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
@@ -158,7 +162,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* User Profile Section */}
         <UserProfileSection
-          userName={userName}
+          userName={username}
           onUpgradeClick={handleUpgradeClick}
           onShareClick={handleShareClick}
         />
@@ -219,7 +223,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search prompts..."
-              className="pl-10"
+              className="pl-10 border-0 focus:ring-0 focus:outline-none"
             />
           </div>
         </div>
@@ -271,7 +275,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
       <ShareDialog
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
-        userName={userName}
+        userName={username}
       />
     </div>
   );

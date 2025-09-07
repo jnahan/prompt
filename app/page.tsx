@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { PromptsPageClient } from "./_components/prompts-page-client";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -13,5 +12,5 @@ export default async function Home() {
   const userEmail = data.claims.email || "User";
   const userName = userEmail.split("@")[0];
 
-  return <PromptsPageClient userName={userName} />;
+  redirect(`/${userName}`);
 }

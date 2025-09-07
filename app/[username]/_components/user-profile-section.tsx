@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Crown, Share2, User } from "lucide-react";
+import { Crown, User, Share } from "lucide-react";
 
 interface UserProfileSectionProps {
   userName: string;
@@ -33,9 +33,9 @@ export function UserProfileSection({
         <Button
           onClick={onShareClick}
           className="flex items-center gap-2"
-          variant="outline"
+          variant="secondary"
         >
-          <Share2 className="h-4 w-4" />
+          <Share className="h-4 w-4" />
           Share prompts
         </Button>
       </div>
