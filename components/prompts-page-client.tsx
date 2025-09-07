@@ -10,6 +10,8 @@ import { PromptSearchBar } from "./prompt-search-bar";
 import { PromptItem } from "./prompt-item";
 import { FolderItem } from "./folder-item";
 import { MyAccountMenu } from "./my-account-menu";
+import { OnboardingOverlay } from "./onboarding-overlay";
+import { useOnboarding } from "@/hooks/use-onboarding";
 
 interface Prompt {
   id: string;
@@ -31,6 +33,7 @@ interface PromptsPageClientProps {
 export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const { isOpen, isLoading, onSubmit, onClose } = useOnboarding();
 
   // Mock data - in a real app, this would come from your database
   const mockPrompts: Prompt[] = [
@@ -120,6 +123,12 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Onboarding Overlay */}
+      <OnboardingOverlay
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={onSubmit}
+      />
       {/* Navigation */}
       <div className="border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
