@@ -1,4 +1,4 @@
-import { CreatePromptForm } from "@/components/create-prompt-form";
+import { CreatePromptForm } from "@/components/forms/create-prompt-form";
 
 export default function CreatePromptPage() {
   return (

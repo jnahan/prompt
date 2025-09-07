@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,9 +28,12 @@ export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            <User className="h-4 w-4 text-gray-600" />
-          </div>
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="" alt={userName} />
+            <AvatarFallback className="bg-gray-200 text-gray-600">
+              <User className="h-4 w-4" />
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>

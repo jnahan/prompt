@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { UserProfileSection } from "./user-profile-section";
-import { PromptUsageBar } from "./prompt-usage-bar";
-import { PromptManagementControls } from "./prompt-management-controls";
-import { PromptSearchBar } from "./prompt-search-bar";
-import { PromptItem } from "./prompt-item";
-import { FolderItem } from "./folder-item";
-import { MyAccountMenu } from "./my-account-menu";
-import { OnboardingOverlay } from "./onboarding-overlay";
+import { UserProfileSection } from "./prompts/user-profile-section";
+import { PromptUsageBar } from "./prompts/prompt-usage-bar";
+import { PromptManagementControls } from "./prompts/prompt-management-controls";
+import { PromptSearchBar } from "./prompts/prompt-search-bar";
+import { PromptItem } from "./prompts/prompt-item";
+import { FolderItem } from "./prompts/folder-item";
+import { Navigation } from "./navigation";
+import { OnboardingOverlay } from "./auth/onboarding-overlay";
 import { useOnboarding } from "@/hooks/use-onboarding";
 
 interface Prompt {
@@ -33,7 +33,7 @@ interface PromptsPageClientProps {
 export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const { isOpen, isLoading, onSubmit, onClose } = useOnboarding();
+  const { isOpen, onSubmit, onClose } = useOnboarding();
 
   // Mock data - in a real app, this would come from your database
   const mockPrompts: Prompt[] = [
@@ -130,23 +130,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
         onSubmit={onSubmit}
       />
       {/* Navigation */}
-      <div className="border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">QuickPrompt</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <span className="text-sm font-medium text-gray-700">
-              My prompts
-            </span>
-            <span className="text-sm font-medium text-gray-700">My apps</span>
-            <span className="text-sm font-medium text-gray-700">
-              Discover apps
-            </span>
-            <MyAccountMenu userName={userName} onLogout={handleLogout} />
-          </div>
-        </div>
-      </div>
+      <Navigation userName={userName} onLogout={handleLogout} />
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
