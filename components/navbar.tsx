@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { MyAccountMenu } from "@/components/prompts/my-account-menu";
+import { AccountMenu } from "@/components/account-menu";
 
 export function Navbar() {
   const [userName, setUserName] = useState<string>("");
@@ -88,7 +88,7 @@ export function Navbar() {
         </Link>
       </div>
       <div className="flex items-center gap-6">
-        <MyAccountMenu userName={userName} onLogout={handleLogout} />
+        <AccountMenu userName={userName} onLogout={handleLogout} />
       </div>
     </nav>
   );

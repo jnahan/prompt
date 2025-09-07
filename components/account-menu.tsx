@@ -18,12 +18,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-interface MyAccountMenuProps {
+interface AccountMenuProps {
   userName: string;
   onLogout: () => void;
 }
 
-export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
+export function AccountMenu({ userName, onLogout }: AccountMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,7 +51,7 @@ export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
           <div>
             <Link href="/" className="flex items-center">
               <User className="mr-2 h-4 w-4" />
-              <span>My account</span>
+              <span>My prompts</span>
             </Link>
           </div>
         </DropdownMenuItem>
@@ -79,10 +79,12 @@ export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
             <Link
               href="/feedback"
               target="_blank"
-              className="flex items-center"
+              className="w-full flex items-center justify-between"
             >
-              <Mail className="mr-2 h-4 w-4" />
-              <span>Feedback & support</span>
+              <div className="flex items-center flex-1">
+                <Mail className="mr-2 h-4 w-4" />
+                <span>Feedback & support</span>
+              </div>
               <ExternalLink className="ml-auto h-4 w-4" />
             </Link>
           </div>
@@ -90,7 +92,7 @@ export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={onLogout}>
+        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>

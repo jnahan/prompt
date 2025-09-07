@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { UserProfileSection } from "@/components/prompts/user-profile-section";
-import { PromptUsageBar } from "@/components/prompts/prompt-usage-bar";
-import { PromptManagementControls } from "@/components/prompts/prompt-management-controls";
-import { PromptSearchBar } from "@/components/prompts/prompt-search-bar";
 import { PromptItem } from "@/components/prompts/prompt-item";
 import { FolderItem } from "@/components/prompts/folder-item";
 import { OnboardingOverlay } from "./onboarding-overlay";
 import { CreateFolderDialog } from "@/components/forms/create-folder-dialog";
 import { ShareDialog } from "@/components/forms/share-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, FolderPlus, Crown, Search } from "lucide-react";
 interface Prompt {
   id: string;
   title: string;
@@ -44,6 +43,8 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
       id: "1",
       title: "Prompt title",
       description: "Prompt description",
+      content:
+        "Generate icons in the style of modern minimalist design with clean lines and subtle gradients.",
     },
   ];
 
@@ -81,7 +82,6 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const promptCount =
     mockPrompts.length +
     mockFolders.reduce((acc, folder) => acc + folder.prompts.length, 0);
-  const promptLimit = 3;
 
   const handleUpgradeClick = () => {
     router.push("/upgrade");
@@ -108,10 +108,24 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
     // This would be replaced with actual API call in production
   };
 
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/auth/login");
+  const handleEditPrompt = (promptId: string) => {
+    console.log("Editing prompt:", promptId);
+    // TODO: Implement edit functionality
+  };
+
+  const handleDeletePrompt = (promptId: string) => {
+    console.log("Deleting prompt:", promptId);
+    // TODO: Implement delete functionality
+  };
+
+  const handleEditFolder = (folderId: string) => {
+    console.log("Editing folder:", folderId);
+    // TODO: Implement edit functionality
+  };
+
+  const handleDeleteFolder = (folderId: string) => {
+    console.log("Deleting folder:", folderId);
+    // TODO: Implement delete functionality
   };
 
   // Filter prompts and folders based on search query
@@ -151,29 +165,67 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
 
         {/* Prompt Usage Bar */}
         <div className="mt-8">
-          <PromptUsageBar
-            used={promptCount}
-            limit={promptLimit}
-            onUpgradeClick={handleUpgradeClick}
-          />
+          <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+            <span className="text-sm text-gray-700">
+              You saved 3/3 prompts. Upgrade to save unlimited prompts.
+            </span>
+            <Button
+              onClick={handleUpgradeClick}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Crown className="h-4 w-4" />
+              Upgrade
+            </Button>
+          </div>
         </div>
 
         {/* Prompt Management Controls */}
         <div className="mt-6">
-          <PromptManagementControls
-            promptCount={promptCount}
-            onNewPrompt={handleNewPrompt}
-            onNewFolder={handleNewFolder}
-          />
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">
+              {promptCount} saved prompts
+            </span>
+
+            <div className="flex gap-2">
+              <Button
+                onClick={handleNewPrompt}
+                size="sm"
+                className="flex items-center gap-2"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                New prompt
+              </Button>
+
+              <Button
+                onClick={handleNewFolder}
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <FolderPlus className="h-4 w-4" />
+                New folder
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Search Bar */}
         <div className="mt-6">
-          <PromptSearchBar value={searchQuery} onChange={setSearchQuery} />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search prompts..."
+              className="pl-10"
+            />
+          </div>
         </div>
 
         {/* Prompts and Folders List */}
-        <div className="mt-8 space-y-2">
+        <ul className="mt-8 space-y-2">
           {/* Individual Prompts */}
           {filteredPrompts.map((prompt) => (
             <PromptItem
@@ -181,6 +233,8 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
               title={prompt.title}
               description={prompt.description}
               content={prompt.content}
+              onEdit={() => handleEditPrompt(prompt.id)}
+              onDelete={() => handleDeletePrompt(prompt.id)}
             />
           ))}
 
@@ -190,6 +244,8 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
               key={folder.id}
               name={folder.name}
               prompts={folder.prompts}
+              onEdit={() => handleEditFolder(folder.id)}
+              onDelete={() => handleDeleteFolder(folder.id)}
             />
           ))}
 
@@ -201,7 +257,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
                 : "No prompts yet. Create your first prompt!"}
             </div>
           )}
-        </div>
+        </ul>
       </div>
 
       {/* Create Folder Dialog */}
