@@ -87,8 +87,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   };
 
   const handleNewPrompt = () => {
-    // Handle new prompt creation
-    console.log("New prompt clicked");
+    router.push("/create-prompt");
   };
 
   const handleNewFolder = () => {
