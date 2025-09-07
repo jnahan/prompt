@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-
-interface OnboardingData {
-  firstName: string;
-  lastName: string;
-  username: string;
-  password?: string;
-}
+import { OnboardingData } from "@/lib/types";
 
 export function useOnboarding() {
   const [isOpen, setIsOpen] = useState(false);

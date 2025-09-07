@@ -1,16 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { ColorType } from "@/lib/types";
 
 interface VariableComponentProps {
   variable: string;
-  color:
-    | "gray"
-    | "red"
-    | "yellow"
-    | "green"
-    | "blue"
-    | "purple"
-    | "orange"
-    | "pink";
+  color: ColorType;
   onClick: () => void;
   disabled?: boolean;
 }

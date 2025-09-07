@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X, Check } from "lucide-react";
+import { OnboardingData } from "@/lib/types";
 
 interface OnboardingOverlayProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: OnboardingData) => void;
-}
-
-interface OnboardingData {
-  firstName: string;
-  lastName: string;
-  username: string;
 }
 
 export function OnboardingOverlay({

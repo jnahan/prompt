@@ -8,23 +8,13 @@ import { FolderItem } from "./_components/folder-item";
 import { OnboardingOverlay } from "./_components/onboarding-overlay";
 import { CreateFolderDialog } from "./_components/create-folder-dialog";
 import { ShareDialog } from "./_components/share-dialog";
+import { PromptUsageDialog } from "@/components/prompt-usage-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, FolderPlus, Crown, Search, Sparkles } from "lucide-react";
-
-interface Prompt {
-  id: string;
-  title: string;
-  description: string;
-  content?: string;
-}
-
-interface Folder {
-  id: string;
-  name: string;
-  prompts: Prompt[];
-}
+import { Prompt } from "@/lib/types";
+import { mockPrompts, mockFolders } from "@/lib/mock-data";
 
 interface UsernamePageProps {
   params: {
@@ -39,49 +29,9 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isPromptUsageDialogOpen, setIsPromptUsageDialogOpen] = useState(false);
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const { isOpen, onSubmit, onClose } = useOnboarding();
-
-  // Mock data - in a real app, this would come from your database
-  const mockPrompts: Prompt[] = [
-    {
-      id: "1",
-      title: "Prompt title",
-      description: "Prompt description",
-      content:
-        "Generate icons in the style of modern minimalist design with clean lines and subtle gradients.",
-    },
-  ];
-
-  const mockFolders: Folder[] = [
-    {
-      id: "1",
-      name: "Folder",
-      prompts: [
-        {
-          id: "2",
-          title: "Prompt title",
-          description: "Prompt description",
-        },
-        {
-          id: "3",
-          title: "Prompt title",
-          description: "Prompt description",
-          content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        },
-        {
-          id: "4",
-          title: "Prompt title",
-          description: "Prompt description",
-        },
-      ],
-    },
-    {
-      id: "2",
-      name: "Folder",
-      prompts: [],
-    },
-  ];
 
   const promptCount =
     mockPrompts.length +
@@ -130,6 +80,27 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const handleDeleteFolder = (folderId: string) => {
     console.log("Deleting folder:", folderId);
     // TODO: Implement delete functionality
+  };
+
+  const handleUsePrompt = (promptId: string) => {
+    // Find the prompt in mockPrompts or nested in folders
+    let prompt = mockPrompts.find((p) => p.id === promptId);
+
+    if (!prompt) {
+      // Look for the prompt in folders
+      for (const folder of mockFolders) {
+        const foundPrompt = folder.prompts.find((p) => p.id === promptId);
+        if (foundPrompt) {
+          prompt = foundPrompt;
+          break;
+        }
+      }
+    }
+
+    if (prompt) {
+      setSelectedPrompt(prompt);
+      setIsPromptUsageDialogOpen(true);
+    }
   };
 
   // Filter prompts and folders based on search query
@@ -238,11 +209,12 @@ export default function UsernamePage({ params }: UsernamePageProps) {
           {filteredPrompts.map((prompt) => (
             <PromptItem
               key={prompt.id}
+              id={prompt.id}
               title={prompt.title}
               description={prompt.description}
-              content={prompt.content}
               onEdit={() => handleEditPrompt(prompt.id)}
               onDelete={() => handleDeletePrompt(prompt.id)}
+              onUse={() => handleUsePrompt(prompt.id)}
             />
           ))}
 
@@ -254,6 +226,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
               prompts={folder.prompts}
               onEdit={() => handleEditFolder(folder.id)}
               onDelete={() => handleDeleteFolder(folder.id)}
+              onUsePrompt={handleUsePrompt}
             />
           ))}
 
@@ -296,6 +269,16 @@ export default function UsernamePage({ params }: UsernamePageProps) {
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
         userName={username}
+      />
+
+      {/* Prompt Usage Dialog */}
+      <PromptUsageDialog
+        open={isPromptUsageDialogOpen}
+        onOpenChange={setIsPromptUsageDialogOpen}
+        prompt={selectedPrompt?.content || ""}
+        variables={selectedPrompt?.variables || []}
+        title={selectedPrompt?.title}
+        description={selectedPrompt?.description}
       />
     </div>
   );

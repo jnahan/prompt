@@ -13,13 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-interface Prompt {
-  id: string;
-  title: string;
-  description: string;
-  content?: string;
-}
+import { Prompt } from "@/lib/types";
 
 interface FolderItemProps {
   name: string;
@@ -28,6 +22,7 @@ interface FolderItemProps {
   onToggle?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onUsePrompt?: (promptId: string) => void;
 }
 
 export function FolderItem({
@@ -37,6 +32,7 @@ export function FolderItem({
   onToggle,
   onEdit,
   onDelete,
+  onUsePrompt,
 }: FolderItemProps) {
   const [expanded, setExpanded] = useState(isExpanded);
 
@@ -89,12 +85,13 @@ export function FolderItem({
           {prompts.map((prompt) => (
             <PromptItem
               key={prompt.id}
+              id={prompt.id}
               title={prompt.title}
               description={prompt.description}
-              content={prompt.content}
               isNested={true}
               onEdit={() => console.log("Edit nested prompt:", prompt.id)}
               onDelete={() => console.log("Delete nested prompt:", prompt.id)}
+              onUse={() => onUsePrompt?.(prompt.id)}
             />
           ))}
         </ul>
