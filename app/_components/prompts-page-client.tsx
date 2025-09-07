@@ -3,17 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { UserProfileSection } from "./prompts/user-profile-section";
-import { PromptUsageBar } from "./prompts/prompt-usage-bar";
-import { PromptManagementControls } from "./prompts/prompt-management-controls";
-import { PromptSearchBar } from "./prompts/prompt-search-bar";
-import { PromptItem } from "./prompts/prompt-item";
-import { FolderItem } from "./prompts/folder-item";
-import { Navigation } from "./navigation";
-import { OnboardingOverlay } from "./auth/onboarding-overlay";
-import { CreateFolderDialog } from "./forms/create-folder-dialog";
+import { UserProfileSection } from "@/components/prompts/user-profile-section";
+import { PromptUsageBar } from "@/components/prompts/prompt-usage-bar";
+import { PromptManagementControls } from "@/components/prompts/prompt-management-controls";
+import { PromptSearchBar } from "@/components/prompts/prompt-search-bar";
+import { PromptItem } from "@/components/prompts/prompt-item";
+import { FolderItem } from "@/components/prompts/folder-item";
+import { OnboardingOverlay } from "./onboarding-overlay";
+import { CreateFolderDialog } from "@/components/forms/create-folder-dialog";
+import { ShareDialog } from "@/components/forms/share-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
-
 interface Prompt {
   id: string;
   title: string;
@@ -36,6 +35,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const { isOpen, onSubmit, onClose } = useOnboarding();
 
   // Mock data - in a real app, this would come from your database
@@ -88,8 +88,7 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   };
 
   const handleShareClick = () => {
-    // Handle share logic
-    console.log("Share clicked");
+    setIsShareDialogOpen(true);
   };
 
   const handleNewPrompt = () => {
@@ -133,15 +132,13 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       {/* Onboarding Overlay */}
       <OnboardingOverlay
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={onSubmit}
       />
-      {/* Navigation */}
-      <Navigation userName={userName} onLogout={handleLogout} />
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -212,6 +209,13 @@ export function PromptsPageClient({ userName }: PromptsPageClientProps) {
         open={isCreateFolderDialogOpen}
         onOpenChange={setIsCreateFolderDialogOpen}
         onCreateFolder={handleCreateFolder}
+      />
+
+      {/* Share Dialog */}
+      <ShareDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        userName={userName}
       />
     </div>
   );

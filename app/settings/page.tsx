@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Navigation } from "@/components/navigation";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Crown, Trash2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { User, Crown, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default function SettingsPage() {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
 
   // Mock user data - in a real app, this would come from your database
   const userData = {
@@ -24,29 +26,6 @@ export default function SettingsPage() {
     router.push("/upgrade");
   };
 
-  const handleDeleteAccount = async () => {
-    if (
-      !confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      return;
-    }
-
-    setIsDeleting(true);
-    try {
-      const supabase = createClient();
-      // In a real app, you would call your API to delete the user account
-      console.log("Deleting account...");
-      // await supabase.auth.signOut();
-      // router.push("/auth/login");
-    } catch (error) {
-      console.error("Error deleting account:", error);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -54,10 +33,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <Navigation userName={userData.name} onLogout={handleLogout} />
-
+    <div>
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* User Profile Section */}
@@ -96,6 +72,60 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Privacy Settings Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Privacy Settings
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium">
+                    Account Visibility
+                  </Label>
+                  <p className="text-sm text-gray-600">
+                    {isPublic
+                      ? "Your prompts are visible to everyone with your share link"
+                      : "Your prompts are private and only visible to you"}
+                  </p>
+                </div>
+                <Button variant="outline" className="flex items-center gap-2">
+                  {isPublic ? (
+                    <>
+                      <Eye className="h-4 w-4" />
+                      Public
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="h-4 w-4" />
+                      Private
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-md">
+                <p className="font-medium mb-1">How it works:</p>
+                <ul className="space-y-1">
+                  <li>
+                    • <strong>Public:</strong> Anyone with your share link can
+                    view your prompts
+                  </li>
+                  <li>
+                    • <strong>Private:</strong> Only you can see your prompts
+                  </li>
+                  <li>
+                    • Individual prompts can still be marked as public/private
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Manage Account Section */}
         <Card>
           <CardHeader>
@@ -112,7 +142,6 @@ export default function SettingsPage() {
                 </p>
               </div>
               <Button
-                onClick={handleDeleteAccount}
                 disabled={isDeleting}
                 variant="destructive"
                 className="bg-red-600 hover:bg-red-700 text-white"

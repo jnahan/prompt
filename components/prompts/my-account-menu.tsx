@@ -49,9 +49,9 @@ export function MyAccountMenu({ userName, onLogout }: MyAccountMenuProps) {
 
         <DropdownMenuItem asChild>
           <div>
-            <Link href="/settings" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <User className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <span>My account</span>
             </Link>
           </div>
         </DropdownMenuItem>

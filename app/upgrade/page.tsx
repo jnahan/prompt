@@ -1,6 +1,6 @@
 "use client";
 
-import { PricingCard } from "@/components/pricing-card";
+import { PricingCard } from "@/app/_components/pricing-card";
 import { Star } from "lucide-react";
 
 export default function UpgradePage() {
@@ -14,7 +14,7 @@ export default function UpgradePage() {
   const lifetimeFeatures = ["Label", "Label", "Label", "Label", "Label"];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       {/* Header */}
       <div className="text-center py-12">
         <div className="flex items-center justify-center gap-2 mb-4">

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { PromptsPageClient } from "@/components/prompts-page-client";
+import { PromptsPageClient } from "./_components/prompts-page-client";
 
 export default async function Home() {
   const supabase = await createClient();

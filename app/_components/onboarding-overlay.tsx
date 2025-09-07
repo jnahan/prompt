@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Check, Eye, EyeOff } from "lucide-react";
+import { X, Check } from "lucide-react";
 
 interface OnboardingOverlayProps {
   isOpen: boolean;
@@ -16,7 +16,6 @@ interface OnboardingData {
   firstName: string;
   lastName: string;
   username: string;
-  password: string;
 }
 
 export function OnboardingOverlay({
@@ -27,8 +26,6 @@ export function OnboardingOverlay({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Auto-generate username from first and last name
@@ -62,7 +59,6 @@ export function OnboardingOverlay({
         firstName,
         lastName,
         username: username.replace("@", ""), // Remove @ for storage
-        password,
       });
     } catch (error) {
       console.error("Onboarding error:", error);
@@ -71,8 +67,7 @@ export function OnboardingOverlay({
     }
   };
 
-  const isFormValid =
-    firstName && lastName && username && password && password.length >= 6;
+  const isFormValid = firstName && lastName && username;
 
   if (!isOpen) return null;
 
@@ -154,41 +149,6 @@ export function OnboardingOverlay({
             <p className="text-xs text-gray-500">
               This will be associated with your prompts and shared content
             </p>
-          </div>
-
-          {/* Password */}
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Create a secure password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pr-10"
-                required
-                minLength={6}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 p-0"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
-                )}
-              </Button>
-            </div>
-            {password && password.length < 6 && (
-              <p className="text-xs text-red-500">
-                Password must be at least 6 characters
-              </p>
-            )}
           </div>
 
           {/* Submit Button */}
