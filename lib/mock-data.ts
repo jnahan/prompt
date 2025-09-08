@@ -90,3 +90,4 @@ export const mockFolders: Folder[] = [
     prompts: [],
   },
 ];
+

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import {
@@ -6,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface PromptItemProps {
   id: string;
@@ -26,8 +28,20 @@ export function PromptItem({
   onDelete,
   onUse,
 }: PromptItemProps) {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const handleClick = () => {
     onUse?.();
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete?.();
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -58,12 +72,26 @@ export function PromptItem({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuItem
+              onClick={handleDeleteClick}
+              className="text-red-600"
+            >
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <ConfirmationDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Prompt"
+        description={`Are you sure you want to delete "${title}"? This action cannot be undone.`}
+        confirmText="Delete Prompt"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </li>
   );
 }

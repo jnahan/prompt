@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { Prompt } from "@/lib/types";
 
 interface FolderItemProps {
@@ -35,10 +36,21 @@ export function FolderItem({
   onUsePrompt,
 }: FolderItemProps) {
   const [expanded, setExpanded] = useState(isExpanded);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleToggle = () => {
     setExpanded(!expanded);
     onToggle?.();
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete?.();
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -73,7 +85,10 @@ export function FolderItem({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuItem
+              onClick={handleDeleteClick}
+              className="text-red-600"
+            >
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -96,6 +111,21 @@ export function FolderItem({
           ))}
         </ul>
       )}
+
+      <ConfirmationDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Folder"
+        description={`Are you sure you want to delete "${name}"? This will permanently delete the folder and all ${
+          prompts.length
+        } prompt${
+          prompts.length === 1 ? "" : "s"
+        } inside it. This action cannot be undone.`}
+        confirmText="Delete Folder"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </li>
   );
 }

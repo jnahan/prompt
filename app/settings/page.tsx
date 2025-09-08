@@ -8,12 +8,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { User, Crown, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default function SettingsPage() {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Mock user data - in a real app, this would come from your database
   const userData = {
@@ -30,6 +32,22 @@ export default function SettingsPage() {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/auth/login");
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
+    // TODO: Implement actual account deletion logic
+    // For now, just simulate the process
+    setTimeout(() => {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+      // In a real app, this would redirect after successful deletion
+      console.log("Account would be deleted");
+    }, 2000);
   };
 
   return (
@@ -142,6 +160,7 @@ export default function SettingsPage() {
                 </p>
               </div>
               <Button
+                onClick={handleDeleteClick}
                 disabled={isDeleting}
                 variant="destructive"
                 className="bg-red-600 hover:bg-red-700 text-white"
@@ -152,6 +171,18 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        <ConfirmationDialog
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Account"
+          description="Are you sure you want to delete your account? This will permanently delete all your prompts, folders, and account data. This action cannot be undone."
+          confirmText="Delete Account"
+          cancelText="Cancel"
+          variant="destructive"
+          isLoading={isDeleting}
+        />
       </div>
     </div>
   );
