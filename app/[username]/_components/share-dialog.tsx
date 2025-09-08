@@ -85,11 +85,7 @@ export function ShareDialog({ isOpen, onClose, userName }: ShareDialogProps) {
           </div>
 
           <div className="text-sm text-gray-600">
-            <p>Anyone with this link can view your public prompts.</p>
-            <p className="mt-1">
-              To control which prompts are visible, go to Settings and toggle
-              your account privacy.
-            </p>
+            <p>Anyone with this link can view your prompts.</p>
           </div>
         </div>
 

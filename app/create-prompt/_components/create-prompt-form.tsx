@@ -14,14 +14,28 @@ import { VariableComponent } from "./variable-button";
 import { VariableSettingsRow } from "./variable-settings-row";
 import { PromptUsageDialog } from "@/components/prompt-usage-dialog";
 import { ChevronDown, Plus } from "lucide-react";
-import { Variable, AVAILABLE_COLORS } from "@/lib/types";
+import { Variable, AVAILABLE_COLORS, Prompt } from "@/lib/types";
 
-export function CreatePromptForm() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [prompt, setPrompt] = useState("");
+interface CreatePromptFormProps {
+  initialData?: Partial<Prompt & { variables: Variable[] }>;
+  mode?: "create" | "edit";
+  onSave?: (data: any) => void;
+}
+
+export function CreatePromptForm({
+  initialData,
+  mode = "create",
+  onSave,
+}: CreatePromptFormProps = {}) {
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [description, setDescription] = useState(
+    initialData?.description || ""
+  );
+  const [prompt, setPrompt] = useState(initialData?.content || "");
   const [attachments, setAttachments] = useState<File[]>([]);
-  const [variables, setVariables] = useState<Variable[]>([]);
+  const [variables, setVariables] = useState<Variable[]>(
+    initialData?.variables || []
+  );
   const [isVariableSettingsOpen, setIsVariableSettingsOpen] = useState(false);
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
 
@@ -139,13 +153,19 @@ export function CreatePromptForm() {
   };
 
   const handleCreatePrompt = () => {
-    console.log("Creating prompt:", {
+    const formData = {
       title,
       description,
-      prompt,
+      content: prompt,
       attachments,
       variables,
-    });
+    };
+
+    if (onSave) {
+      onSave(formData);
+    } else {
+      console.log(mode === "edit" ? "Save changes" : "Create prompt", formData);
+    }
   };
 
   const handleCancel = () => {
@@ -156,7 +176,9 @@ export function CreatePromptForm() {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Create prompt</h1>
+        <h1 className="text-2xl font-bold">
+          {mode === "edit" ? "Edit prompt" : "Create prompt"}
+        </h1>
         <div className="flex gap-2">
           <Button
             onClick={() => setIsPreviewDialogOpen(true)}
@@ -301,7 +323,7 @@ export function CreatePromptForm() {
             className="flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            Create prompt
+            {mode === "edit" ? "Save Changes" : "Create prompt"}
           </Button>
           <Button variant="outline" onClick={handleCancel}>
             Cancel

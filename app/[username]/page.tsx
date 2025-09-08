@@ -63,8 +63,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   };
 
   const handleEditPrompt = (promptId: string) => {
-    console.log("Editing prompt:", promptId);
-    // TODO: Implement edit functionality
+    router.push(`/edit-prompt/${promptId}`);
   };
 
   const handleDeletePrompt = (promptId: string) => {
@@ -227,6 +226,8 @@ export default function UsernamePage({ params }: UsernamePageProps) {
               onEdit={() => handleEditFolder(folder.id)}
               onDelete={() => handleDeleteFolder(folder.id)}
               onUsePrompt={handleUsePrompt}
+              onEditPrompt={handleEditPrompt}
+              onDeletePrompt={handleDeletePrompt}
             />
           ))}
 

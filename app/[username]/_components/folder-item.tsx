@@ -24,6 +24,8 @@ interface FolderItemProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onUsePrompt?: (promptId: string) => void;
+  onEditPrompt?: (promptId: string) => void;
+  onDeletePrompt?: (promptId: string) => void;
 }
 
 export function FolderItem({
@@ -34,6 +36,8 @@ export function FolderItem({
   onEdit,
   onDelete,
   onUsePrompt,
+  onEditPrompt,
+  onDeletePrompt,
 }: FolderItemProps) {
   const [expanded, setExpanded] = useState(isExpanded);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -104,8 +108,8 @@ export function FolderItem({
               title={prompt.title}
               description={prompt.description}
               isNested={true}
-              onEdit={() => console.log("Edit nested prompt:", prompt.id)}
-              onDelete={() => console.log("Delete nested prompt:", prompt.id)}
+              onEdit={() => onEditPrompt?.(prompt.id)}
+              onDelete={() => onDeletePrompt?.(prompt.id)}
               onUse={() => onUsePrompt?.(prompt.id)}
             />
           ))}
