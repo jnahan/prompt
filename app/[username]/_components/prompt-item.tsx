@@ -39,6 +39,11 @@ export function PromptItem({
     setShowDeleteConfirm(true);
   };
 
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit?.();
+  };
+
   const handleDeleteConfirm = () => {
     onDelete?.();
     setShowDeleteConfirm(false);
@@ -71,7 +76,7 @@ export function PromptItem({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleDeleteClick}
               className="text-red-600"

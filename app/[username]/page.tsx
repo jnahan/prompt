@@ -28,6 +28,12 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
+  const [isEditFolderDialogOpen, setIsEditFolderDialogOpen] = useState(false);
+  const [editingFolder, setEditingFolder] = useState<{
+    id: string;
+    name: string;
+    color: string;
+  } | null>(null);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isPromptUsageDialogOpen, setIsPromptUsageDialogOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
@@ -72,8 +78,30 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   };
 
   const handleEditFolder = (folderId: string) => {
-    console.log("Editing folder:", folderId);
-    // TODO: Implement edit functionality
+    // Find the folder to edit
+    const folderToEdit = mockFolders.find((f) => f.id === folderId);
+    if (folderToEdit) {
+      setEditingFolder({
+        id: folderToEdit.id,
+        name: folderToEdit.name,
+        color: folderToEdit.color || "gray",
+      });
+      setIsEditFolderDialogOpen(true);
+    }
+  };
+
+  const handleSaveFolder = (name: string, color: string) => {
+    if (editingFolder) {
+      console.log("Saving folder changes:", {
+        id: editingFolder.id,
+        name,
+        color,
+      });
+      // TODO: Implement actual save logic here
+      // For now, just log the changes
+    }
+    setEditingFolder(null);
+    setIsEditFolderDialogOpen(false);
   };
 
   const handleDeleteFolder = (folderId: string) => {
@@ -263,6 +291,19 @@ export default function UsernamePage({ params }: UsernamePageProps) {
         open={isCreateFolderDialogOpen}
         onOpenChange={setIsCreateFolderDialogOpen}
         onCreateFolder={handleCreateFolder}
+      />
+
+      {/* Edit Folder Dialog */}
+      <CreateFolderDialog
+        open={isEditFolderDialogOpen}
+        onOpenChange={setIsEditFolderDialogOpen}
+        onCreateFolder={handleSaveFolder}
+        mode="edit"
+        initialData={
+          editingFolder
+            ? { name: editingFolder.name, color: editingFolder.color }
+            : undefined
+        }
       />
 
       {/* Share Dialog */}

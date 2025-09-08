@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,11 @@ interface CreateFolderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreateFolder: (name: string, color: string) => void;
+  mode?: "create" | "edit";
+  initialData?: {
+    name: string;
+    color: string;
+  };
 }
 
 const folderColors = [
@@ -34,9 +39,24 @@ export function CreateFolderDialog({
   open,
   onOpenChange,
   onCreateFolder,
+  mode = "create",
+  initialData,
 }: CreateFolderDialogProps) {
-  const [folderName, setFolderName] = useState("");
-  const [selectedColor, setSelectedColor] = useState("gray");
+  const [folderName, setFolderName] = useState(initialData?.name || "");
+  const [selectedColor, setSelectedColor] = useState(
+    initialData?.color || "gray"
+  );
+
+  // Update form when initialData changes (when dialog opens with different data)
+  useEffect(() => {
+    if (initialData) {
+      setFolderName(initialData.name || "");
+      setSelectedColor(initialData.color || "gray");
+    } else {
+      setFolderName("");
+      setSelectedColor("gray");
+    }
+  }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,10 +78,13 @@ export function CreateFolderDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Folder</DialogTitle>
+          <DialogTitle>
+            {mode === "edit" ? "Edit Folder" : "Create New Folder"}
+          </DialogTitle>
           <DialogDescription>
-            Create a new folder to organize your prompts. Choose a name and
-            color for your folder.
+            {mode === "edit"
+              ? "Update the folder name and color."
+              : "Create a new folder to organize your prompts. Choose a name and color for your folder."}
           </DialogDescription>
         </DialogHeader>
 
@@ -114,7 +137,7 @@ export function CreateFolderDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={!folderName.trim()}>
-              Create Folder
+              {mode === "edit" ? "Save Changes" : "Create Folder"}
             </Button>
           </DialogFooter>
         </form>
