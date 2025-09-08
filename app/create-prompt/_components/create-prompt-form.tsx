@@ -32,7 +32,6 @@ export function CreatePromptForm({
     initialData?.description || ""
   );
   const [prompt, setPrompt] = useState(initialData?.content || "");
-  const [attachments, setAttachments] = useState<File[]>([]);
   const [variables, setVariables] = useState<Variable[]>(
     initialData?.variables || []
   );
@@ -157,7 +156,6 @@ export function CreatePromptForm({
       title,
       description,
       content: prompt,
-      attachments,
       variables,
     };
 
@@ -293,28 +291,6 @@ export function CreatePromptForm({
             ))}
           </CollapsibleContent>
         </Collapsible>
-
-        {/* Attachments */}
-        <div className="space-y-2">
-          <Label htmlFor="attachments">Attachments (optional)</Label>
-          <div className="space-y-2">
-            <Input
-              id="attachments"
-              type="file"
-              multiple
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setAttachments(files);
-              }}
-              className="cursor-pointer"
-            />
-            {attachments.length > 0 && (
-              <div className="text-sm text-gray-600">
-                {attachments.length} file(s) selected
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* Action Buttons */}
         <div className="flex gap-4 pt-4">

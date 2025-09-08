@@ -38,7 +38,6 @@ CREATE TABLE prompts (
   description TEXT,
   content TEXT NOT NULL,
   generation_type VARCHAR(20) DEFAULT 'text' CHECK (generation_type IN ('text', 'image', 'code')),
-  attachments TEXT[],
   is_public BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
