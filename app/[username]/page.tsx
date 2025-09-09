@@ -59,7 +59,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   };
 
   const handleNewPrompt = () => {
-    router.push("/create-prompt");
+    router.push("/prompt/new");
   };
 
   const handleNewFolder = () => {
@@ -76,7 +76,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   };
 
   const handleEditPrompt = (promptId: string) => {
-    router.push(`/edit-prompt/${promptId}`);
+    router.push(`/prompt/edit/${promptId}`);
   };
 
   const handleDeletePrompt = (promptId: string) => {

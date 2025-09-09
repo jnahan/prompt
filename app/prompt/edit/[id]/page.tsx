@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CreatePromptForm } from "@/app/create-prompt/_components/create-prompt-form";
+import { CreatePromptForm } from "@/app/prompt/_components/create-prompt-form";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
 import { Prompt, Variable } from "@/types";
 
