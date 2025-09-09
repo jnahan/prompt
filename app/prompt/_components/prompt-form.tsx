@@ -17,17 +17,17 @@ import { ChevronDown, Plus } from "lucide-react";
 import { Variable, Prompt } from "@/types";
 import { AVAILABLE_COLORS } from "@/constants";
 
-interface CreatePromptFormProps {
+interface PromptFormProps {
   initialData?: Partial<Prompt & { variables: Variable[] }>;
   mode?: "create" | "edit";
   onSave?: (data: any) => void;
 }
 
-export function CreatePromptForm({
+export function PromptForm({
   initialData,
   mode = "create",
   onSave,
-}: CreatePromptFormProps = {}) {
+}: PromptFormProps = {}) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(
     initialData?.description || ""

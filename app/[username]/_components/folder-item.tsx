@@ -14,10 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Prompt } from "@/types";
+import { Prompt, ColorType } from "@/types";
+import { COLOR_CLASSES } from "@/constants";
 
 interface FolderItemProps {
   name: string;
+  color: ColorType;
   prompts: Prompt[];
   isExpanded?: boolean;
   onToggle?: () => void;
@@ -30,6 +32,7 @@ interface FolderItemProps {
 
 export function FolderItem({
   name,
+  color,
   prompts,
   isExpanded = false,
   onToggle,
@@ -65,7 +68,7 @@ export function FolderItem({
   return (
     <li>
       <div
-        className="group flex items-center justify-between hover:bg-gray-50 rounded-lg px-2 py-2 cursor-pointer"
+        className={`group flex items-center justify-between rounded-lg px-2 py-2 cursor-pointer ${COLOR_CLASSES[color]} hover:opacity-80 transition-opacity`}
         onClick={handleToggle}
       >
         <div className="flex items-center gap-2 flex-1">

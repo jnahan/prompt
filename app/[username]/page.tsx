@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UserProfileSection } from "./_components/user-profile-section";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { PromptItem } from "./_components/prompt-item";
 import { FolderItem } from "./_components/folder-item";
 import { OnboardingOverlay } from "./_components/onboarding-overlay";
@@ -12,7 +12,7 @@ import { PromptUsageDialog } from "@/components/prompt-usage-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, FolderPlus, Crown, Search, Sparkles } from "lucide-react";
+import { Plus, FolderPlus, Crown, Search, Sparkles, Share } from "lucide-react";
 import { Prompt } from "@/types";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
 
@@ -52,10 +52,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
 
   const handleUpgradeClick = () => {
     router.push("/upgrade");
-  };
-
-  const handleShareClick = () => {
-    setIsShareDialogOpen(true);
   };
 
   const handleNewPrompt = () => {
@@ -123,7 +119,9 @@ export default function UsernamePage({ params }: UsernamePageProps) {
     if (!prompt) {
       // Look for the prompt in folders
       for (const folder of mockFolders) {
-        const foundPrompt = folder.prompts.find((p) => p.id === promptId);
+        const foundPrompt = folder.prompts.find(
+          (p: Prompt) => p.id === promptId
+        );
         if (foundPrompt) {
           prompt = foundPrompt;
           break;
@@ -148,7 +146,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
     (folder) =>
       folder.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       folder.prompts.some(
-        (prompt) =>
+        (prompt: Prompt) =>
           prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           prompt.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -166,29 +164,38 @@ export default function UsernamePage({ params }: UsernamePageProps) {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* User Profile Section */}
-        <UserProfileSection
-          userName={username}
-          onShareClick={handleShareClick}
-        />
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={undefined} alt={`${username} avatar`} />
+              <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-2xl">
+                {username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <h1 className="text-2xl font-bold">{username}&apos;s prompts</h1>
+
+            <Button
+              onClick={() => setIsShareDialogOpen(true)}
+              variant="secondary"
+            >
+              <Share className="h-4 w-4" />
+              Share prompts
+            </Button>
+          </div>
+        </div>
 
         {/* Show controls only when there are prompts */}
         {promptCount > 0 && (
           <>
             {/* Prompt Usage Bar */}
-            <div className="mt-8">
-              <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
-                <span className="text-sm text-gray-700">
-                  You saved 3/3 prompts. Upgrade to save unlimited prompts.
-                </span>
-                <Button
-                  onClick={handleUpgradeClick}
-                  size="sm"
-                  className="flex items-center gap-2"
-                >
-                  <Crown className="h-4 w-4" />
-                  Upgrade
-                </Button>
-              </div>
+            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+              <span className="text-sm text-gray-700">
+                You saved 3/3 prompts. Upgrade to save unlimited prompts.
+              </span>
+              <Button onClick={handleUpgradeClick} size="sm">
+                <Crown className="h-4 w-4" />
+                Upgrade
+              </Button>
             </div>
 
             {/* Prompt Management Controls */}
@@ -257,6 +264,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
             <FolderItem
               key={folder.id}
               name={folder.name}
+              color={folder.color}
               prompts={folder.prompts}
               onEdit={() => handleEditFolder(folder.id)}
               onDelete={() => handleDeleteFolder(folder.id)}

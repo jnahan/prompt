@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CreatePromptForm } from "@/app/prompt/_components/create-prompt-form";
+import { PromptForm } from "@/app/prompt/_components/prompt-form";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
 import { Prompt, Variable } from "@/types";
 
@@ -20,7 +20,7 @@ export default function EditPromptPage({ params }: EditPromptPageProps) {
   // If not found, check prompts in folders
   if (!promptToEdit) {
     for (const folder of mockFolders) {
-      promptToEdit = folder.prompts.find((p) => p.id === id);
+      promptToEdit = folder.prompts.find((p: Prompt) => p.id === id);
       if (promptToEdit) break;
     }
   }
@@ -66,7 +66,7 @@ export default function EditPromptPage({ params }: EditPromptPageProps) {
 
   return (
     <div>
-      <CreatePromptForm
+      <PromptForm
         initialData={{
           ...promptToEdit,
           variables: initialVariables,
