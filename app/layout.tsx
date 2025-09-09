@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
 
@@ -8,12 +7,14 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
+// TODO: Update this to use actual title and description
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "My App",
   description: "A clean Next.js app with Supabase authentication",
 };
 
+// TODO: Update this to use actual font
 const geistSans = Geist({
   variable: "--font-geist-sans",
   display: "swap",
@@ -28,17 +29,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="min-h-screen bg-white max-w-3xl mx-auto">
-            <Navbar />
-            {children}
-          </div>
-        </ThemeProvider>
+        <div className="min-h-screen bg-white max-w-3xl mx-auto">
+          <Navbar />
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -4,7 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -20,33 +19,30 @@ import Link from "next/link";
 
 interface AccountMenuProps {
   userName: string;
+  avatarUrl?: string;
   onLogout: () => void;
 }
 
-export function AccountMenu({ userName, onLogout }: AccountMenuProps) {
+export function AccountMenu({
+  userName,
+  avatarUrl,
+  onLogout,
+}: AccountMenuProps) {
+  // Get first letter for fallback
+  const firstLetter = userName.charAt(0).toUpperCase();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="" alt={userName} />
-            <AvatarFallback className="bg-gray-200 text-gray-600">
-              <User className="h-4 w-4" />
+            <AvatarImage src={avatarUrl} alt={`${userName} avatar`} />
+            <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-sm">
+              {firstLetter}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userName}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              My Account
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem asChild>
           <div>
             <Link href="/" className="flex items-center">
