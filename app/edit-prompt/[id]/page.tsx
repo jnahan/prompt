@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { CreatePromptForm } from "@/app/create-prompt/_components/create-prompt-form";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
-import { Prompt, Variable } from "@/lib/types";
+import { Prompt, Variable } from "@/types";
 
 interface EditPromptPageProps {
   params: { id: string };

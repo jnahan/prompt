@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserProfileSection } from "./_components/user-profile-section";
 import { PromptItem } from "./_components/prompt-item";
@@ -13,17 +13,17 @@ import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, FolderPlus, Crown, Search, Sparkles } from "lucide-react";
-import { Prompt } from "@/lib/types";
+import { Prompt } from "@/types";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
 
 interface UsernamePageProps {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 }
 
 export default function UsernamePage({ params }: UsernamePageProps) {
-  const { username } = params;
+  const [username, setUsername] = useState<string>("");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
@@ -38,6 +38,13 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const [isPromptUsageDialogOpen, setIsPromptUsageDialogOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const { isOpen, onSubmit, onClose } = useOnboarding();
+
+  // Resolve params promise
+  useEffect(() => {
+    params.then(({ username }) => {
+      setUsername(username);
+    });
+  }, [params]);
 
   const promptCount =
     mockPrompts.length +

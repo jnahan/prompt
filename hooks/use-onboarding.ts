@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { OnboardingData } from "@/lib/types";
+import { OnboardingData, Profile } from "@/types";
 
 export function useOnboarding() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +24,7 @@ export function useOnboarding() {
       if (user) {
         // Check if user has completed onboarding by looking for their profile
         const { data: profile } = await supabase
-          .from("users")
+          .from("profiles")
           .select("first_name, last_name, username")
           .eq("id", user.id)
           .single();
@@ -41,6 +41,13 @@ export function useOnboarding() {
       }
     } catch (error) {
       console.error("Error checking onboarding status:", error);
+      // If there's an error (like profile doesn't exist), show onboarding
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setIsOpen(true);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -56,31 +63,32 @@ export function useOnboarding() {
         throw new Error("No authenticated user");
       }
 
-      // Update user profile in users table
-      const { error } = await supabase.from("users").upsert({
+      // Check if username is already taken
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("username", data.username)
+        .neq("id", user.id)
+        .single();
+
+      if (existingProfile) {
+        throw new Error(
+          "Username is already taken. Please choose a different one."
+        );
+      }
+
+      // Update user profile in profiles table
+      const { error } = await supabase.from("profiles").upsert({
         id: user.id,
-        email: user.email,
         username: data.username,
         first_name: data.firstName,
         last_name: data.lastName,
-        name: `${data.firstName} ${data.lastName}`,
-        plan: "free",
+        subscription_level: "free",
         updated_at: new Date().toISOString(),
       });
 
       if (error) {
         throw error;
-      }
-
-      // Update password if provided
-      if (data.password) {
-        const { error: passwordError } = await supabase.auth.updateUser({
-          password: data.password,
-        });
-
-        if (passwordError) {
-          throw passwordError;
-        }
       }
 
       setIsOpen(false);

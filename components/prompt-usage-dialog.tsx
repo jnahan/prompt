@@ -19,7 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Copy, X } from "lucide-react";
-import { Variable, COLOR_CLASSES } from "@/lib/types";
+import { Variable } from "@/types";
+import { COLOR_CLASSES } from "@/constants";
 
 interface PromptUsageDialogProps {
   open: boolean;

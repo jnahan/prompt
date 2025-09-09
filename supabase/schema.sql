@@ -4,6 +4,20 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Create a table for public profiles
+CREATE TABLE profiles (
+  id uuid references auth.users on delete cascade not null primary key,
+  updated_at timestamp with time zone default now(),
+  username text unique,
+  first_name text,
+  last_name text,
+  full_name text generated always as (first_name || ' ' || last_name) stored,
+  avatar_url text,
+  subscription_level text default 'free' check (subscription_level in ('free', 'pro', 'lifetime')),
+
+  constraint username_length check (char_length(username) >= 3)
+);
+
 -- Create users table
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -63,12 +77,24 @@ CREATE INDEX idx_prompt_variables_prompt_id ON prompt_variables(prompt_id);
 CREATE INDEX idx_folders_user_id ON folders(user_id);
 
 -- Enable RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE folders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE prompts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE prompt_variables ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
+-- Profiles policies
+CREATE POLICY "Public profiles are viewable by everyone." on profiles
+  for select using (true);
+
+CREATE POLICY "Users can insert their own profile." on profiles
+  for insert with check ((select auth.uid()) = id);
+
+CREATE POLICY "Users can update own profile." on profiles
+  for update using ((select auth.uid()) = id);
+
+-- Users policies  
 CREATE POLICY "Users can view own profile" ON users FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
 
@@ -78,3 +104,25 @@ CREATE POLICY "Users can manage own prompts" ON prompts FOR ALL USING (auth.uid(
 CREATE POLICY "Users can manage own prompt variables" ON prompt_variables FOR ALL USING (
   EXISTS (SELECT 1 FROM prompts WHERE prompts.id = prompt_variables.prompt_id AND prompts.user_id = auth.uid())
 );
+
+-- Profile creation trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+SET search_path = ''
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, first_name, last_name, avatar_url, subscription_level)
+  VALUES (
+    new.id, 
+    new.raw_user_meta_data->>'first_name', 
+    new.raw_user_meta_data->>'last_name',
+    new.raw_user_meta_data->>'avatar_url',
+    'free'
+  );
+  RETURN new;
+END;
+$$ language plpgsql security definer;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

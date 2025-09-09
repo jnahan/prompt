@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Prompt } from "@/lib/types";
+import { Prompt } from "@/types";
 
 interface FolderItemProps {
   name: string;

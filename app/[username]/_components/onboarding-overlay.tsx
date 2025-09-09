@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X, Check } from "lucide-react";
-import { OnboardingData } from "@/lib/types";
+import { OnboardingData } from "@/types";
 
 interface OnboardingOverlayProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export function OnboardingOverlay({
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Auto-generate username from first and last name
   const generateUsername = (first: string, last: string) => {
@@ -48,6 +49,7 @@ export function OnboardingOverlay({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     try {
       await onSubmit({
@@ -55,8 +57,9 @@ export function OnboardingOverlay({
         lastName,
         username: username.replace("@", ""), // Remove @ for storage
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Onboarding error:", error);
+      setError(error.message || "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -145,6 +148,13 @@ export function OnboardingOverlay({
               This will be associated with your prompts and shared content
             </p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
 
           {/* Submit Button */}
           <Button

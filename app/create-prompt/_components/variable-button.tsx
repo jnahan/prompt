@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ColorType } from "@/lib/types";
+import { ColorType } from "@/types";
 
 interface VariableComponentProps {
   variable: string;

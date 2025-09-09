@@ -14,7 +14,8 @@ import { VariableComponent } from "./variable-button";
 import { VariableSettingsRow } from "./variable-settings-row";
 import { PromptUsageDialog } from "@/components/prompt-usage-dialog";
 import { ChevronDown, Plus } from "lucide-react";
-import { Variable, AVAILABLE_COLORS, Prompt } from "@/lib/types";
+import { Variable, Prompt } from "@/types";
+import { AVAILABLE_COLORS } from "@/constants";
 
 interface CreatePromptFormProps {
   initialData?: Partial<Prompt & { variables: Variable[] }>;

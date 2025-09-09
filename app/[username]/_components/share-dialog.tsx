@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,9 +21,14 @@ interface ShareDialogProps {
 
 export function ShareDialog({ isOpen, onClose, userName }: ShareDialogProps) {
   const [copied, setCopied] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
-  // Generate the shareable URL
-  const shareUrl = `${window.location.origin}/${userName}`;
+  // Generate the shareable URL on client side only
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setShareUrl(`${window.location.origin}/${userName}`);
+    }
+  }, [userName]);
 
   const handleCopyUrl = async () => {
     try {

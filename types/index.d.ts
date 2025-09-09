@@ -35,31 +35,17 @@ export interface OnboardingData {
   firstName: string;
   lastName: string;
   username: string;
-  email?: string;
-  password?: string;
+}
+
+export interface Profile {
+  id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  avatar_url?: string;
+  subscription_level: "free" | "pro" | "lifetime";
+  updated_at?: string;
 }
 
 export type ColorType = Variable["color"];
-
-// Color utility constants
-export const AVAILABLE_COLORS: ColorType[] = [
-  "gray",
-  "red",
-  "yellow",
-  "green",
-  "blue",
-  "purple",
-  "orange",
-  "pink",
-];
-
-export const COLOR_CLASSES = {
-  gray: "bg-gray-100 text-gray-800",
-  red: "bg-red-100 text-red-800",
-  yellow: "bg-yellow-100 text-yellow-800",
-  green: "bg-green-100 text-green-800",
-  blue: "bg-blue-100 text-blue-800",
-  purple: "bg-purple-100 text-purple-800",
-  orange: "bg-orange-100 text-orange-800",
-  pink: "bg-pink-100 text-pink-800",
-} as const;
