@@ -16,30 +16,27 @@ export type GenerationType = "text" | "image" | "code";
 
 export type SubscriptionLevel = "free" | "pro" | "lifetime";
 
-export interface Variable {
+export interface PromptVariable {
   id: string;
+  created_at?: string;
   prompt_id: string;
   name: string;
   color: ColorType;
   type: VariableType;
   default_value?: string;
   select_options?: string[];
-  order_index: number;
-  created_at?: string;
 }
 
+// TODO: should variables be in prompts or should each variable reference prompt
 export interface Prompt {
   id: string;
+  created_at?: string;
   user_id: string;
   folder_id?: string;
   title: string;
-  description?: string;
   content: string;
   generation_type: GenerationType;
-  is_public: boolean;
   variables?: Variable[];
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface Folder {
@@ -48,10 +45,7 @@ export interface Folder {
   name: string;
   description?: string;
   color: ColorType;
-  order_index: number;
-  prompts: Prompt[];
   created_at?: string;
-  updated_at?: string;
 }
 
 export interface OnboardingData {
@@ -65,8 +59,6 @@ export interface Profile {
   username?: string;
   first_name?: string;
   last_name?: string;
-  full_name?: string;
   avatar_url?: string;
   subscription_level: SubscriptionLevel;
-  updated_at?: string;
 }
