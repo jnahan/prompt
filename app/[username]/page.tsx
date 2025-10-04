@@ -2,19 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { PromptItem } from "./_components/prompt-item";
-import { FolderItem } from "./_components/folder-item";
+import { PromptItem } from "./_components/PromptItem";
+import { FolderItem } from "./_components/FolderItem";
 import { OnboardingOverlay } from "./_components/onboarding-overlay";
-import { CreateFolderDialog } from "./_components/create-folder-dialog";
+import { CreateFolderDialog } from "./_components/CreateFolderDialog";
 import { ShareDialog } from "./_components/share-dialog";
-import { PromptUsageDialog } from "@/components/prompt-usage-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, FolderPlus, Crown, Search, Sparkles, Share } from "lucide-react";
+import { Plus, FolderPlus, Search, Share } from "lucide-react";
 import { Prompt } from "@/types";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
+import UpgradeBanner from "./_components/UpgradeBanner";
+import ProfileInfo from "./_components/ProfileInfo";
+import EmptyState from "./_components/EmptyState";
 
 interface UsernamePageProps {
   params: Promise<{
@@ -35,7 +36,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
     color: string;
   } | null>(null);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [isPromptUsageDialogOpen, setIsPromptUsageDialogOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const { isOpen, onSubmit, onClose } = useOnboarding();
 
@@ -49,10 +49,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const promptCount =
     mockPrompts.length +
     mockFolders.reduce((acc, folder) => acc + folder.prompts.length, 0);
-
-  const handleUpgradeClick = () => {
-    router.push("/upgrade");
-  };
 
   const handleNewPrompt = () => {
     router.push("/prompt/new");
@@ -131,7 +127,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
 
     if (prompt) {
       setSelectedPrompt(prompt);
-      setIsPromptUsageDialogOpen(true);
     }
   };
 
@@ -153,152 +148,97 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   );
 
   return (
-    <div>
+    <div className="mt-12">
       {/* Onboarding Overlay */}
       <OnboardingOverlay
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={onSubmit}
       />
+      <UpgradeBanner />
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* User Profile Section */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex flex-col items-center gap-3">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={undefined} alt={`${username} avatar`} />
-              <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-2xl">
-                {username.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <h1 className="text-2xl font-bold">{username}&apos;s prompts</h1>
+      <div className="mt-12">
+        <ProfileInfo username={username} />
 
-            <Button
-              onClick={() => setIsShareDialogOpen(true)}
-              variant="secondary"
-            >
-              <Share className="h-4 w-4" />
-              Share prompts
-            </Button>
-          </div>
-        </div>
-
-        {/* Show controls only when there are prompts */}
-        {promptCount > 0 && (
-          <>
-            {/* Prompt Usage Bar */}
-            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
-              <span className="text-sm text-gray-700">
-                You saved 3/3 prompts. Upgrade to save unlimited prompts.
-              </span>
-              <Button onClick={handleUpgradeClick} size="sm">
-                <Crown className="h-4 w-4" />
-                Upgrade
+        <section className="mt-8">
+          {/* Saved prompts, buttons */}
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-semibold">Saved prompts</h1>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleNewPrompt}
+                size="default"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                New prompt
+              </Button>
+              <Button
+                onClick={handleNewFolder}
+                size="default"
+                variant="outline"
+              >
+                <FolderPlus className="h-4 w-4" />
+                New folder
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsShareDialogOpen(true)}
+              >
+                <Share className="h-4 w-4" />
               </Button>
             </div>
+          </div>
 
-            {/* Prompt Management Controls */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">
-                  {promptCount} saved prompts
-                </span>
-
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleNewPrompt}
-                    size="sm"
-                    className="flex items-center gap-2"
-                    variant="outline"
-                  >
-                    <Plus className="h-4 w-4" />
-                    New prompt
-                  </Button>
-
-                  <Button
-                    onClick={handleNewFolder}
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
-                    <FolderPlus className="h-4 w-4" />
-                    New folder
-                  </Button>
-                </div>
-              </div>
-            </div>
-
+          <div className="border border-gray-200 rounded-lg">
             {/* Search Bar */}
-            <div className="mt-6">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search prompts..."
-                  className="pl-10 border-0 focus:ring-0 focus:outline-none"
+            <div className="h-14 flex items-center pl-5">
+              <Search className="h-5 w-5 text-gray-500" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search prompts..."
+                className="border-0 outline-none focus:outline-none focus:ring-0 focus:shadow-none focus:border-transparent appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none"
+              />
+            </div>
+
+            {filteredPrompts.length === 0 && filteredFolders.length === 0 && (
+              <EmptyState />
+            )}
+
+            {/* Prompts and Folders List */}
+            <ul className="list-none">
+              {/* Folders */}
+              {filteredFolders.map((folder) => (
+                <FolderItem
+                  key={folder.id}
+                  name={folder.name}
+                  color={folder.color}
+                  prompts={folder.prompts}
+                  onEdit={() => handleEditFolder(folder.id)}
+                  onDelete={() => handleDeleteFolder(folder.id)}
+                  onUsePrompt={handleUsePrompt}
+                  onEditPrompt={handleEditPrompt}
+                  onDeletePrompt={handleDeletePrompt}
                 />
-              </div>
-            </div>
-          </>
-        )}
+              ))}
 
-        {/* Prompts and Folders List */}
-        <ul className="mt-8 space-y-2">
-          {/* Individual Prompts */}
-          {filteredPrompts.map((prompt) => (
-            <PromptItem
-              key={prompt.id}
-              id={prompt.id}
-              title={prompt.title}
-              description={prompt.description}
-              onEdit={() => handleEditPrompt(prompt.id)}
-              onDelete={() => handleDeletePrompt(prompt.id)}
-              onUse={() => handleUsePrompt(prompt.id)}
-            />
-          ))}
-
-          {/* Folders */}
-          {filteredFolders.map((folder) => (
-            <FolderItem
-              key={folder.id}
-              name={folder.name}
-              color={folder.color}
-              prompts={folder.prompts}
-              onEdit={() => handleEditFolder(folder.id)}
-              onDelete={() => handleDeleteFolder(folder.id)}
-              onUsePrompt={handleUsePrompt}
-              onEditPrompt={handleEditPrompt}
-              onDeletePrompt={handleDeletePrompt}
-            />
-          ))}
-
-          {/* Empty State */}
-          {filteredPrompts.length === 0 && filteredFolders.length === 0 && (
-            <div className="mt-8">
-              <div className="bg-gray-50 rounded-lg p-12 text-center">
-                <div className="flex justify-center mb-4">
-                  <Sparkles
-                    width={40}
-                    height={40}
-                    className="text-muted-foreground"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No prompts added
-                </h3>
-                <p className="text-muted-foreground mb-6">
-                  Your prompts will show up here
-                </p>
-                <Button onClick={handleNewPrompt}>
-                  <Plus className="h-4 w-4" />
-                  Add prompt
-                </Button>
-              </div>
-            </div>
-          )}
-        </ul>
+              {/* Individual Prompts */}
+              {filteredPrompts.map((prompt) => (
+                <PromptItem
+                  key={prompt.id}
+                  id={prompt.id}
+                  title={prompt.title}
+                  description={prompt.description}
+                  onEdit={() => handleEditPrompt(prompt.id)}
+                  onDelete={() => handleDeletePrompt(prompt.id)}
+                  onUse={() => handleUsePrompt(prompt.id)}
+                />
+              ))}
+            </ul>
+          </div>
+        </section>
       </div>
 
       {/* Create Folder Dialog */}
@@ -326,16 +266,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
         userName={username}
-      />
-
-      {/* Prompt Usage Dialog */}
-      <PromptUsageDialog
-        open={isPromptUsageDialogOpen}
-        onOpenChange={setIsPromptUsageDialogOpen}
-        prompt={selectedPrompt?.content || ""}
-        variables={selectedPrompt?.variables || []}
-        title={selectedPrompt?.title}
-        description={selectedPrompt?.description}
       />
     </div>
   );

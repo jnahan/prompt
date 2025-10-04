@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronRight,
-  ChevronDown,
-  Folder,
-  MoreHorizontal,
-} from "lucide-react";
-import { PromptItem } from "./prompt-item";
+import { ChevronRight, ChevronDown, MoreHorizontal } from "lucide-react";
+import { PromptItem } from "./PromptItem";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { Prompt, ColorType } from "@/types";
-import { COLOR_CLASSES } from "@/constants";
+import Image from "next/image";
 
 interface FolderItemProps {
   name: string;
@@ -32,7 +27,6 @@ interface FolderItemProps {
 
 export function FolderItem({
   name,
-  color,
   prompts,
   isExpanded = false,
   onToggle,
@@ -68,21 +62,22 @@ export function FolderItem({
   return (
     <li>
       <div
-        className={`group flex items-center justify-between rounded-lg px-2 py-2 cursor-pointer ${COLOR_CLASSES[color]} hover:opacity-80 transition-opacity`}
+        className={`group flex items-center justify-between rounded-lg px-5 py-3 cursor-pointer hover:opacity-80 transition-opacity`}
         onClick={handleToggle}
       >
         <div className="flex items-center gap-2 flex-1">
-          {expanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-          <Folder className="h-4 w-4" />
+          <Image src={`folder.svg`} alt={"folder"} width={24} height={24} />
           <span className="font-medium">{name}</span>
           <span className="text-sm text-muted-foreground">
             ({prompts.length})
           </span>
         </div>
+
+        {expanded ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -50,9 +50,9 @@ export function PromptItem({
   };
 
   return (
-    <li className={`${isNested ? "pl-4" : ""} group`}>
+    <li className={`${isNested ? "pl-8 bg-gray-50" : ""} group`} key={id}>
       <div
-        className="flex items-start justify-between hover:bg-gray-50 rounded-lg px-2 py-2 cursor-pointer"
+        className="flex items-start justify-between px-5 py-3 cursor-pointer"
         onClick={handleClick}
       >
         <div className="flex items-start gap-2 flex-1">

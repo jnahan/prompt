@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
-        <div className="min-h-screen bg-white max-w-3xl mx-auto">
+        <div className="min-h-screen bg-white max-w-2xl mx-auto">
           <Navbar />
           {children}
         </div>

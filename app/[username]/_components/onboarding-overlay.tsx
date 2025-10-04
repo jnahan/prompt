@@ -165,13 +165,6 @@ export function OnboardingOverlay({
             {isLoading ? "Setting up..." : "Continue"}
           </Button>
         </form>
-
-        {/* Footer */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            By continuing, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </div>
       </div>
     </div>
   );

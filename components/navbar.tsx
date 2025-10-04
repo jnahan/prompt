@@ -4,6 +4,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { AccountMenu } from "@/components/account-menu";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const router = useRouter();
@@ -25,15 +27,16 @@ export function Navbar() {
   }
 
   return (
-    <nav className="mx-auto px-4 py-3 flex items-center justify-between">
-      <Link
-        href="/"
-        key={"Home"}
-        className="text-xl font-bold hover:text-gray-600"
-      >
-        QuickPrompt
+    <nav className="py-2 flex items-center justify-between">
+      <Link href="/" key={"Home"}>
+        <Image src={`logo.svg`} alt={"logo"} width="125" height="32" />
       </Link>
-      <AccountMenu userName="User" onLogout={handleLogout} />
+      <div className="flex items-center gap-1">
+        <Button variant="link">
+          <Link href="/upgrade">Get unlimited prompts</Link>
+        </Button>
+        <AccountMenu userName="User" onLogout={handleLogout} />
+      </div>
     </nav>
   );
 }

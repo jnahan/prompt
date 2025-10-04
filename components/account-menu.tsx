@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  User,
+  Sparkles,
   Crown,
   Settings,
   Mail,
@@ -32,7 +32,7 @@ export function AccountMenu({
   const firstLetter = userName.charAt(0).toUpperCase();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={avatarUrl} alt={`${userName} avatar`} />
@@ -43,47 +43,39 @@ export function AccountMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuItem asChild>
-          <div>
-            <Link href="/" className="flex items-center">
-              <User className="mr-2 h-4 w-4" />
-              <span>My prompts</span>
-            </Link>
-          </div>
+        <DropdownMenuItem>
+          <Link href="/" className="flex items-center">
+            <Sparkles className="mr-2 h-4 w-4" />
+            <span>Saved prompts</span>
+          </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <div>
-            <Link href="/upgrade" className="flex items-center">
-              <Crown className="mr-2 h-4 w-4" />
-              <span>Upgrade plan</span>
-            </Link>
-          </div>
+        <DropdownMenuItem>
+          <Link href="/upgrade" className="flex items-center">
+            <Crown className="mr-2 h-4 w-4" />
+            <span>Upgrade plan</span>
+          </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <div>
-            <Link href="/settings" className="flex items-center">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </Link>
-          </div>
+        <DropdownMenuItem>
+          <Link href="/settings" className="flex items-center">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <div>
-            <Link
-              href="/feedback"
-              target="_blank"
-              className="w-full flex items-center justify-between"
-            >
-              <div className="flex items-center flex-1">
-                <Mail className="mr-2 h-4 w-4" />
-                <span>Feedback & support</span>
-              </div>
-              <ExternalLink className="ml-auto h-4 w-4" />
-            </Link>
-          </div>
+        <DropdownMenuItem>
+          <Link
+            href="/feedback"
+            target="_blank"
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center flex-1">
+              <Mail className="mr-2 h-4 w-4" />
+              <span>Feedback & support</span>
+            </div>
+            <ExternalLink className="ml-auto h-4 w-4" />
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
