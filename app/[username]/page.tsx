@@ -69,7 +69,7 @@ export default function UsernamePage() {
         <UpgradeBanner />
 
         {/* Main Content */}
-        <div className="mt-12">
+        <div className="my-12">
           <ProfileInfo username={profile.username} />
 
           <section className="mt-8">

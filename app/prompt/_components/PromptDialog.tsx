@@ -14,16 +14,19 @@ interface PromptDialogProps {
   title: string;
   content: string;
   variables?: string;
+  children?: React.ReactNode;
 }
 
-function PromptDialog({ title, content }: PromptDialogProps) {
+function PromptDialog({ title, content, children }: PromptDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button variant="secondary">
-          <EyeIcon className="h-4 w-4" />
-          Preview
-        </Button>
+      <DialogTrigger className="w-full">
+        {children ?? (
+          <Button variant="secondary">
+            <EyeIcon className="h-4 w-4" />
+            Preview
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="flex flex-row min-w-[60vw] max-h-[80vh]">
         <section className="p-8 overflow-y-auto w-2/3">
