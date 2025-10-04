@@ -13,24 +13,29 @@ import { Plus, FolderPlus, Search, Share } from "lucide-react";
 import { Prompt } from "@/types";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
 
+import { readProfile } from "@/lib/actions/profile.actions";
+import { Profile } from "@/types";
+
 import OnboardingOverlay from "./_components/OnboardingOverlay";
 import UpgradeBanner from "./_components/UpgradeBanner";
 import ProfileInfo from "./_components/ProfileInfo";
 import EmptyState from "./_components/EmptyState";
 
-interface UsernamePageProps {
-  params: Promise<{
-    username: string;
-  }>;
-}
-
-export default function UsernamePage({ params }: UsernamePageProps) {
+export default function UsernamePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const showOnboarding = searchParams.get("onboarding") === "true";
+  const [profile, setProfile] = useState<Profile | null>(null);
 
-  const [username, setUsername] = useState<string>("");
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await readProfile();
+      setProfile(profile);
+    };
+    fetchProfile();
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
@@ -43,13 +48,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const { isOpen, onSubmit, onClose } = useOnboarding();
-
-  // Resolve params promise
-  useEffect(() => {
-    params.then(({ username }) => {
-      setUsername(username);
-    });
-  }, [params]);
 
   const handleNewPrompt = () => {
     router.push("/prompt/new");
@@ -149,121 +147,123 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   );
 
   return (
-    <div className="mt-12">
-      {/* Onboarding Overlay */}
-      {showOnboarding && <OnboardingOverlay />}
-      <UpgradeBanner />
-
-      {/* Main Content */}
+    profile && (
       <div className="mt-12">
-        <ProfileInfo username={username} />
+        {/* Onboarding Overlay */}
+        {showOnboarding && <OnboardingOverlay />}
+        <UpgradeBanner />
 
-        <section className="mt-8">
-          {/* Saved prompts, buttons */}
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold">Saved prompts</h1>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleNewPrompt}
-                size="default"
-                variant="outline"
-              >
-                <Plus className="h-4 w-4" />
-                New prompt
-              </Button>
-              <Button
-                onClick={handleNewFolder}
-                size="default"
-                variant="outline"
-              >
-                <FolderPlus className="h-4 w-4" />
-                New folder
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setIsShareDialogOpen(true)}
-              >
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+        {/* Main Content */}
+        <div className="mt-12">
+          <ProfileInfo username={profile.username} />
 
-          <div className="border border-gray-200 rounded-lg">
-            {/* Search Bar */}
-            <div className="h-14 flex items-center pl-5">
-              <Search className="h-5 w-5 text-gray-500" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search prompts..."
-                className="border-0 outline-none focus:outline-none focus:ring-0 focus:shadow-none focus:border-transparent appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none"
-              />
+          <section className="mt-8">
+            {/* Saved prompts, buttons */}
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-xl font-semibold">Saved prompts</h1>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleNewPrompt}
+                  size="default"
+                  variant="outline"
+                >
+                  <Plus className="h-4 w-4" />
+                  New prompt
+                </Button>
+                <Button
+                  onClick={handleNewFolder}
+                  size="default"
+                  variant="outline"
+                >
+                  <FolderPlus className="h-4 w-4" />
+                  New folder
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsShareDialogOpen(true)}
+                >
+                  <Share className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
-            {filteredPrompts.length === 0 && filteredFolders.length === 0 && (
-              <EmptyState />
-            )}
-
-            {/* Prompts and Folders List */}
-            <ul className="list-none pb-2">
-              {/* Folders */}
-              {filteredFolders.map((folder) => (
-                <FolderItem
-                  key={folder.id}
-                  name={folder.name}
-                  color={folder.color}
-                  prompts={folder.prompts}
-                  onEdit={() => handleEditFolder(folder.id)}
-                  onDelete={() => handleDeleteFolder(folder.id)}
-                  onUsePrompt={handleUsePrompt}
-                  onEditPrompt={handleEditPrompt}
-                  onDeletePrompt={handleDeletePrompt}
+            <div className="border border-gray-200 rounded-lg">
+              {/* Search Bar */}
+              <div className="h-14 flex items-center pl-5">
+                <Search className="h-5 w-5 text-gray-500" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search prompts..."
+                  className="border-0 outline-none focus:outline-none focus:ring-0 focus:shadow-none focus:border-transparent appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none"
                 />
-              ))}
+              </div>
 
-              {/* Individual Prompts */}
-              {filteredPrompts.map((prompt) => (
-                <PromptItem
-                  key={prompt.id}
-                  id={prompt.id}
-                  title={prompt.title}
-                  description={prompt.description}
-                  onEdit={() => handleEditPrompt(prompt.id)}
-                  onDelete={() => handleDeletePrompt(prompt.id)}
-                  onUse={() => handleUsePrompt(prompt.id)}
-                />
-              ))}
-            </ul>
-          </div>
-        </section>
+              {filteredPrompts.length === 0 && filteredFolders.length === 0 && (
+                <EmptyState />
+              )}
+
+              {/* Prompts and Folders List */}
+              <ul className="list-none pb-2">
+                {/* Folders */}
+                {filteredFolders.map((folder) => (
+                  <FolderItem
+                    key={folder.id}
+                    name={folder.name}
+                    color={folder.color}
+                    prompts={folder.prompts}
+                    onEdit={() => handleEditFolder(folder.id)}
+                    onDelete={() => handleDeleteFolder(folder.id)}
+                    onUsePrompt={handleUsePrompt}
+                    onEditPrompt={handleEditPrompt}
+                    onDeletePrompt={handleDeletePrompt}
+                  />
+                ))}
+
+                {/* Individual Prompts */}
+                {filteredPrompts.map((prompt) => (
+                  <PromptItem
+                    key={prompt.id}
+                    id={prompt.id}
+                    title={prompt.title}
+                    description={prompt.description}
+                    onEdit={() => handleEditPrompt(prompt.id)}
+                    onDelete={() => handleDeletePrompt(prompt.id)}
+                    onUse={() => handleUsePrompt(prompt.id)}
+                  />
+                ))}
+              </ul>
+            </div>
+          </section>
+        </div>
+
+        {/* Create Folder Dialog */}
+        <CreateFolderDialog
+          open={isCreateFolderDialogOpen}
+          onOpenChange={setIsCreateFolderDialogOpen}
+          onCreateFolder={handleCreateFolder}
+        />
+
+        {/* Edit Folder Dialog */}
+        <CreateFolderDialog
+          open={isEditFolderDialogOpen}
+          onOpenChange={setIsEditFolderDialogOpen}
+          onCreateFolder={handleSaveFolder}
+          mode="edit"
+          initialData={
+            editingFolder
+              ? { name: editingFolder.name, color: editingFolder.color }
+              : undefined
+          }
+        />
+
+        {/* Share Dialog */}
+        <ShareDialog
+          isOpen={isShareDialogOpen}
+          onClose={() => setIsShareDialogOpen(false)}
+          userName={profile.username}
+        />
       </div>
-
-      {/* Create Folder Dialog */}
-      <CreateFolderDialog
-        open={isCreateFolderDialogOpen}
-        onOpenChange={setIsCreateFolderDialogOpen}
-        onCreateFolder={handleCreateFolder}
-      />
-
-      {/* Edit Folder Dialog */}
-      <CreateFolderDialog
-        open={isEditFolderDialogOpen}
-        onOpenChange={setIsEditFolderDialogOpen}
-        onCreateFolder={handleSaveFolder}
-        mode="edit"
-        initialData={
-          editingFolder
-            ? { name: editingFolder.name, color: editingFolder.color }
-            : undefined
-        }
-      />
-
-      {/* Share Dialog */}
-      <ShareDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        userName={username}
-      />
-    </div>
+    )
   );
 }

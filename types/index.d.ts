@@ -6,9 +6,9 @@ export type SubscriptionLevel = "free" | "lifetime";
 
 export interface Profile {
   id: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
+  username: string;
+  first_name: string;
+  last_name: string;
   subscriptionLevel: SubscriptionLevel;
 }
 

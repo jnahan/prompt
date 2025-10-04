@@ -2,8 +2,9 @@
 
 import { CreateProfile } from "@/types";
 import { createClient } from "../supabase/server";
+import { Profile } from "@/types";
 
-// https://github.com/adrianhajdin/saas-app/blob/main/lib/actions/companion.actions.ts
+// TODO: handle duplicate username
 export const createProfile = async (formData: CreateProfile) => {
   const supabase = await createClient();
 
@@ -29,8 +30,25 @@ export const createProfile = async (formData: CreateProfile) => {
   return data;
 };
 
-// export const readProfile = async (id: string): Promise<Profile> => {};
+export const readProfile = async (): Promise<Profile> => {
+  const supabase = await createClient();
 
-// export const updateProfile = async (formData: CreateProfile): Promise<Profile> => {};
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-// export const deleteProfile = async (id: string): Promise<void> => {};
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data;
+};
