@@ -25,12 +25,16 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+import { createPrompt } from "@/lib/actions/prompt.actions";
+import { readFolders } from "@/lib/actions/folder.actions";
+
+import { redirect, RedirectType } from "next/navigation";
+
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Companion is required." }),
-  description: z.string().min(1, { message: "Subject is required." }),
-  folder_id: z.string().min(1, { message: "Topic is required." }),
-  prompt: z.string().min(1, { message: "Voice is required." }),
-  variable: z.string().min(1, { message: "Style is required." }),
+  title: z.string().min(1, { message: "Title is required." }),
+  folder_id: z.string().optional(),
+  content: z.string().min(1, { message: "Content is required." }),
+  variable: z.string().optional(),
 });
 
 function PromptForm() {
@@ -38,17 +42,15 @@ function PromptForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
       folder_id: "",
-      prompt: "",
+      content: "",
       variable: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await createPrompt(values);
+    redirect("/", RedirectType.replace);
   }
 
   const folders = ["Folder 1", "Folder 2", "Folder 3"];
@@ -76,19 +78,6 @@ function PromptForm() {
           />
           <FormField
             control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input placeholder="description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="folder_id"
             render={({ field }) => (
               <FormItem>
@@ -100,7 +89,7 @@ function PromptForm() {
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="input capitalize">
-                      <SelectValue placeholder="Select the subject" />
+                      <SelectValue placeholder="Select folder" />
                     </SelectTrigger>
                     <SelectContent>
                       {folders.map((folder) => (
@@ -121,7 +110,7 @@ function PromptForm() {
           />
           <FormField
             control={form.control}
-            name="prompt"
+            name="content"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Prompt</FormLabel>

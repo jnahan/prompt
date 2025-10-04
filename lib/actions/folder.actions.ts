@@ -26,13 +26,24 @@ export const createFolder = async (formData: CreateFolder) => {
   return data;
 };
 
-// export const readFolder = async (id: string): Promise<Folder> => {};
+export const readFolders = async (): Promise<Folder[]> => {
+  const supabase = await createClient();
 
-// export const updateFolder = async (
-//   id: string,
-//   name: string,
-//   description: string,
-//   color: string
-// ): Promise<Folder> => {};
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-// export const deleteFolder = async (id: string): Promise<void> => {};
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data, error } = await supabase
+    .from("folders")
+    .select("*")
+    .eq("user_id", user.id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};

@@ -1,7 +1,5 @@
 // Shared type definitions for the application
 
-export type VariableType = "text" | "textarea" | "select" | "date";
-
 export type SubscriptionLevel = "free" | "lifetime";
 
 export interface Profile {
@@ -27,4 +25,31 @@ export interface Folder {
 
 export interface CreateFolder {
   name: string;
+}
+
+export interface PromptVariable {
+  id: string;
+  prompt_id: string;
+  name: string;
+  created_at?: string;
+}
+
+export interface CreatePromptVariable {
+  name: string;
+  prompt_id: string;
+}
+
+export interface Prompt {
+  id: string;
+  created_at: string;
+  user_id: string;
+  folder_id?: string;
+  title: string;
+  content: string;
+}
+
+export interface CreatePrompt {
+  title: string;
+  folder_id?: string;
+  content: string;
 }

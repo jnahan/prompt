@@ -1,12 +1,51 @@
-import { Prompt } from "@/types";
+"use server";
 
-export const createPrompt = async (prompt: Prompt): Promise<Prompt> => {};
+import { createClient } from "../supabase/server";
+import { Prompt, CreatePrompt } from "@/types";
 
-export const readPrompt = async (id: string): Promise<Prompt> => {};
+export const createPrompt = async (formData: CreatePrompt) => {
+  const supabase = await createClient();
 
-export const updatePrompt = async (
-  id: string,
-  prompt: Prompt
-): Promise<Prompt> => {};
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-export const deletePrompt = async (id: string): Promise<void> => {};
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data, error } = await supabase.from("prompts").insert({
+    user_id: user.id,
+    title: formData.title,
+    content: formData.content,
+    ...(formData.folder_id && { folder_id: formData.folder_id }),
+  });
+
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export const readPrompts = async (): Promise<Prompt[]> => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data, error } = await supabase
+    .from("prompts")
+    .select("*")
+    .eq("user_id", user.id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};
