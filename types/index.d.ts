@@ -9,38 +9,22 @@ export interface Profile {
   username: string;
   first_name: string;
   last_name: string;
-  subscriptionLevel: SubscriptionLevel;
+  subscription_level: SubscriptionLevel;
 }
 
 export interface CreateProfile {
   username: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface PromptVariable {
-  id: string;
-  createdAt?: string;
-  promptId: string;
-  name: string;
-  type: VariableType;
-  defaultValue?: string;
-  selectOptions?: string[];
-}
-
-export interface Prompt {
-  id: string;
-  createdAt?: string;
-  userId: string;
-  folderId?: string;
-  title: string;
-  content: string;
+  first_name: string;
+  last_name: string;
 }
 
 export interface Folder {
   id: string;
-  userId: string;
+  user_id: string;
   name: string;
-  description?: string;
-  createdAt?: string;
+  created_at?: string;
+}
+
+export interface CreateFolder {
+  name: string;
 }

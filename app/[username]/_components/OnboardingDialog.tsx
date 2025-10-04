@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -27,19 +27,19 @@ import { Input } from "@/components/ui/input";
 import { createProfile } from "@/lib/actions/profile.actions";
 
 const formSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
+  first_name: z.string().min(1, { message: "First name is required" }),
+  last_name: z.string().min(1, { message: "Last name is required" }),
   username: z.string().min(3, { message: "Username is required" }),
 });
 
-function OnboardingOverlay() {
+function OnboardingDialog() {
   const [isOpen, setIsOpen] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       username: "",
     },
   });
@@ -67,7 +67,7 @@ function OnboardingOverlay() {
             <div className="flex flex-row gap-3">
               <FormField
                 control={form.control}
-                name="firstName"
+                name="first_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>First name</FormLabel>
@@ -80,7 +80,7 @@ function OnboardingOverlay() {
               />
               <FormField
                 control={form.control}
-                name="lastName"
+                name="last_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Last name</FormLabel>
@@ -116,4 +116,4 @@ function OnboardingOverlay() {
   );
 }
 
-export default OnboardingOverlay;
+export default OnboardingDialog;

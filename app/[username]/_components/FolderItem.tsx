@@ -9,12 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { Prompt, ColorType } from "@/types";
+import { Prompt } from "@/types";
 import Image from "next/image";
 
 interface FolderItemProps {
   name: string;
-  color: ColorType;
   prompts: Prompt[];
   isExpanded?: boolean;
   onToggle?: () => void;

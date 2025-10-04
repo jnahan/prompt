@@ -19,8 +19,8 @@ export const createProfile = async (formData: CreateProfile) => {
 
   const { data, error } = await supabase.from("profiles").insert({
     username: formData.username,
-    first_name: formData.firstName,
-    last_name: formData.lastName,
+    first_name: formData.first_name,
+    last_name: formData.last_name,
     id: user.id,
   });
 

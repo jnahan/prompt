@@ -16,7 +16,7 @@ import { mockPrompts, mockFolders } from "@/lib/mock-data";
 import { readProfile } from "@/lib/actions/profile.actions";
 import { Profile } from "@/types";
 
-import OnboardingOverlay from "./_components/OnboardingOverlay";
+import OnboardingDialog from "./_components/OnboardingDialog";
 import UpgradeBanner from "./_components/UpgradeBanner";
 import ProfileInfo from "./_components/ProfileInfo";
 import EmptyState from "./_components/EmptyState";
@@ -37,9 +37,6 @@ export default function UsernamePage() {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
-    useState(false);
-  const [isEditFolderDialogOpen, setIsEditFolderDialogOpen] = useState(false);
   const [editingFolder, setEditingFolder] = useState<{
     id: string;
     name: string;
@@ -53,57 +50,12 @@ export default function UsernamePage() {
     router.push("/prompt/new");
   };
 
-  const handleNewFolder = () => {
-    setIsCreateFolderDialogOpen(true);
-  };
-
-  const handleCreateFolder = (name: string, color: string) => {
-    // For now, just log the folder creation
-    // In a real app, this would make an API call to create the folder
-    console.log("Creating folder:", { name, color });
-
-    // TODO: Add the new folder to the mockFolders state
-    // This would be replaced with actual API call in production
-  };
-
   const handleEditPrompt = (promptId: string) => {
     router.push(`/prompt/edit/${promptId}`);
   };
 
   const handleDeletePrompt = (promptId: string) => {
     console.log("Deleting prompt:", promptId);
-    // TODO: Implement delete functionality
-  };
-
-  const handleEditFolder = (folderId: string) => {
-    // Find the folder to edit
-    const folderToEdit = mockFolders.find((f) => f.id === folderId);
-    if (folderToEdit) {
-      setEditingFolder({
-        id: folderToEdit.id,
-        name: folderToEdit.name,
-        color: folderToEdit.color || "gray",
-      });
-      setIsEditFolderDialogOpen(true);
-    }
-  };
-
-  const handleSaveFolder = (name: string, color: string) => {
-    if (editingFolder) {
-      console.log("Saving folder changes:", {
-        id: editingFolder.id,
-        name,
-        color,
-      });
-      // TODO: Implement actual save logic here
-      // For now, just log the changes
-    }
-    setEditingFolder(null);
-    setIsEditFolderDialogOpen(false);
-  };
-
-  const handleDeleteFolder = (folderId: string) => {
-    console.log("Deleting folder:", folderId);
     // TODO: Implement delete functionality
   };
 
@@ -150,7 +102,7 @@ export default function UsernamePage() {
     profile && (
       <div className="mt-12">
         {/* Onboarding Overlay */}
-        {showOnboarding && <OnboardingOverlay />}
+        {showOnboarding && <OnboardingDialog />}
         <UpgradeBanner />
 
         {/* Main Content */}
@@ -170,14 +122,8 @@ export default function UsernamePage() {
                   <Plus className="h-4 w-4" />
                   New prompt
                 </Button>
-                <Button
-                  onClick={handleNewFolder}
-                  size="default"
-                  variant="outline"
-                >
-                  <FolderPlus className="h-4 w-4" />
-                  New folder
-                </Button>
+                <CreateFolderDialog />
+
                 <Button
                   variant="outline"
                   onClick={() => setIsShareDialogOpen(true)}
@@ -236,26 +182,6 @@ export default function UsernamePage() {
             </div>
           </section>
         </div>
-
-        {/* Create Folder Dialog */}
-        <CreateFolderDialog
-          open={isCreateFolderDialogOpen}
-          onOpenChange={setIsCreateFolderDialogOpen}
-          onCreateFolder={handleCreateFolder}
-        />
-
-        {/* Edit Folder Dialog */}
-        <CreateFolderDialog
-          open={isEditFolderDialogOpen}
-          onOpenChange={setIsEditFolderDialogOpen}
-          onCreateFolder={handleSaveFolder}
-          mode="edit"
-          initialData={
-            editingFolder
-              ? { name: editingFolder.name, color: editingFolder.color }
-              : undefined
-          }
-        />
 
         {/* Share Dialog */}
         <ShareDialog
