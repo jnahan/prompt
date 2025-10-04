@@ -98,7 +98,10 @@ function PromptForm() {
     <div className="mt-12">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Create prompt</h1>
-        <PromptDialog />
+        <PromptDialog
+          title={form.watch("title")}
+          content={form.watch("content")}
+        />
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
