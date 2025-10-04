@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Share } from "lucide-react";
 import { Prompt } from "@/types";
-import { mockPrompts, mockFolders } from "@/lib/mock-data";
 
 import { readProfile } from "@/lib/actions/profile.actions";
 import { Profile, Folder } from "@/types";

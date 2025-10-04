@@ -26,7 +26,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { createPrompt } from "@/lib/actions/prompt.actions";
-import { readFolders } from "@/lib/actions/folder.actions";
 
 import { redirect, RedirectType } from "next/navigation";
 
@@ -53,7 +52,47 @@ function PromptForm() {
     redirect("/", RedirectType.replace);
   }
 
+  const insertVariable = (variable: string) => {
+    const textarea = document.getElementById(
+      "prompt-content"
+    ) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+
+    const newValue =
+      value.slice(0, start) + `{{${variable}}}` + value.slice(end);
+
+    // Update form value
+    form.setValue("content", newValue);
+
+    // Move cursor between braces
+    setTimeout(() => {
+      textarea.focus();
+      if (variable === "") {
+        textarea.selectionStart = textarea.selectionEnd = start + 2;
+      }
+    }, 0);
+  };
+
   const folders = ["Folder 1", "Folder 2", "Folder 3"];
+  const variables = [
+    "",
+    "name",
+    "email",
+    "date",
+    "time",
+    "city",
+    "company",
+    "product",
+    "amount",
+    "goal",
+    "topic",
+    "username",
+    "language",
+  ];
 
   return (
     <div className="mt-12">
@@ -70,7 +109,7 @@ function PromptForm() {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="title" {...field} />
+                  <Input placeholder="Title" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,22 +156,31 @@ function PromptForm() {
                 <FormControl>
                   <div className="border border-gray-200 rounded-lg">
                     <Textarea
+                      id="prompt-content"
                       placeholder="Ex. Derivates & Integrals"
                       {...field}
                       className="input h-32"
                     />
                     <div className="border border-gray-200 p-2">
                       <p className="text-sm font-medium mb-1">
-                        Insert variable with &#123;&#123;&#125;&#125;
+                        Add variable with &#123;&#123;&#125;&#125;
                       </p>
                       <p className="text-sm text-muted-foreground mb-3">
                         Variables are like placeholders that can be assigned
                         values. Use variables to set fields you want to control
                         like Name
                       </p>
-                      <button className="text-sm font-medium p-1 bg-gray-100 text-gray-500">
-                        &#123;&#123;Insert variable&#125;&#125;
-                      </button>
+                      <ul className="flex flex-wrap gap-2">
+                        {variables.map((variable) => (
+                          <li
+                            key={variable}
+                            className="text-sm font-medium p-1 bg-gray-100 text-gray-500 cursor-pointer"
+                            onClick={() => insertVariable(variable)}
+                          >
+                            {`{{${variable}}}`}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </FormControl>
