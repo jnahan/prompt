@@ -20,7 +20,7 @@ interface PromptDialogProps {
 function PromptDialog({ title, content, children }: PromptDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger className="w-full">
+      <DialogTrigger className={children ? "w-full" : ""}>
         {children ?? (
           <Button variant="secondary">
             <EyeIcon className="h-4 w-4" />
