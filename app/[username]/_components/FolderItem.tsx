@@ -73,21 +73,15 @@ export function FolderItem({
           </span>
         </div>
 
-        {expanded ? (
-          <ChevronDown className="h-4 w-4" />
-        ) : (
-          <ChevronRight className="h-4 w-4" />
-        )}
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
-              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 mr-3"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4 text-gray-400" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -100,6 +94,12 @@ export function FolderItem({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {expanded ? (
+          <ChevronDown className="h-5 w-5 text-gray-400" />
+        ) : (
+          <ChevronRight className="h-5 w-5 text-gray-400" />
+        )}
       </div>
 
       {expanded && (

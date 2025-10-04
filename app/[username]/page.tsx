@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { PromptItem } from "./_components/PromptItem";
 import { FolderItem } from "./_components/FolderItem";
-import { OnboardingOverlay } from "./_components/onboarding-overlay";
 import { CreateFolderDialog } from "./_components/CreateFolderDialog";
 import { ShareDialog } from "./_components/share-dialog";
 import { useOnboarding } from "@/hooks/use-onboarding";
@@ -13,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Plus, FolderPlus, Search, Share } from "lucide-react";
 import { Prompt } from "@/types";
 import { mockPrompts, mockFolders } from "@/lib/mock-data";
+
+import OnboardingOverlay from "./_components/OnboardingOverlay";
 import UpgradeBanner from "./_components/UpgradeBanner";
 import ProfileInfo from "./_components/ProfileInfo";
 import EmptyState from "./_components/EmptyState";
@@ -24,8 +25,12 @@ interface UsernamePageProps {
 }
 
 export default function UsernamePage({ params }: UsernamePageProps) {
-  const [username, setUsername] = useState<string>("");
+  const searchParams = useSearchParams();
   const router = useRouter();
+
+  const showOnboarding = searchParams.get("onboarding") === "true";
+
+  const [username, setUsername] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateFolderDialogOpen, setIsCreateFolderDialogOpen] =
     useState(false);
@@ -45,10 +50,6 @@ export default function UsernamePage({ params }: UsernamePageProps) {
       setUsername(username);
     });
   }, [params]);
-
-  const promptCount =
-    mockPrompts.length +
-    mockFolders.reduce((acc, folder) => acc + folder.prompts.length, 0);
 
   const handleNewPrompt = () => {
     router.push("/prompt/new");
@@ -150,11 +151,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
   return (
     <div className="mt-12">
       {/* Onboarding Overlay */}
-      <OnboardingOverlay
-        isOpen={isOpen}
-        onClose={onClose}
-        onSubmit={onSubmit}
-      />
+      {showOnboarding && <OnboardingOverlay />}
       <UpgradeBanner />
 
       {/* Main Content */}
@@ -208,7 +205,7 @@ export default function UsernamePage({ params }: UsernamePageProps) {
             )}
 
             {/* Prompts and Folders List */}
-            <ul className="list-none">
+            <ul className="list-none pb-2">
               {/* Folders */}
               {filteredFolders.map((folder) => (
                 <FolderItem

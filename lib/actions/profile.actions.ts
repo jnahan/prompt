@@ -1,37 +1,36 @@
-import { createClient } from "@/lib/supabase/client";
-import { Profile } from "@/types";
+"use server";
+
+import { CreateProfile } from "@/types";
+import { createClient } from "../supabase/server";
 
 // https://github.com/adrianhajdin/saas-app/blob/main/lib/actions/companion.actions.ts
-export const createProfile = async (
-  id: string,
-  firstName: string,
-  lastName: string,
-  username: string,
-  avatarUrl: string
-): Promise<Profile> => {
-  const supabase = createClient();
+export const createProfile = async (formData: CreateProfile) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
 
   const { data, error } = await supabase.from("profiles").insert({
-    id: id,
-    first_name: firstName,
-    last_name: lastName,
-    username: username,
-    avatar_url: avatarUrl,
+    username: formData.username,
+    first_name: formData.firstName,
+    last_name: formData.lastName,
+    id: user.id,
   });
-  if (error || !data) {
+
+  if (error) {
     throw error;
   }
   return data;
 };
 
-export const readProfile = async (id: string): Promise<Profile> => {};
+// export const readProfile = async (id: string): Promise<Profile> => {};
 
-export const updateProfile = async (
-  id: string,
-  firstName: string,
-  lastName: string,
-  username: string,
-  avatarUrl: string
-): Promise<Profile> => {};
+// export const updateProfile = async (formData: CreateProfile): Promise<Profile> => {};
 
-export const deleteProfile = async (id: string): Promise<void> => {};
+// export const deleteProfile = async (id: string): Promise<void> => {};
