@@ -47,7 +47,7 @@ export function CreateFolderDialog() {
   };
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           onClick={() => setIsOpen(true)}

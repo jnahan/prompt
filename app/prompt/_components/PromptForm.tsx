@@ -25,25 +25,37 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useState, useEffect } from "react";
+
 import { createPrompt } from "@/lib/actions/prompt.actions";
+import { readFolders } from "@/lib/actions/folder.actions";
 
 import { redirect, RedirectType } from "next/navigation";
+import { Folder } from "@/types";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
   folder_id: z.string().optional(),
   content: z.string().min(1, { message: "Content is required." }),
-  variable: z.string().optional(),
 });
 
 function PromptForm() {
+  const [folders, setFolders] = useState<Folder[]>([]);
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      const folders = await readFolders();
+      setFolders(folders);
+    };
+    fetchFolders();
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       folder_id: "",
       content: "",
-      variable: "",
     },
   });
 
@@ -77,7 +89,6 @@ function PromptForm() {
     }, 0);
   };
 
-  const folders = ["Folder 1", "Folder 2", "Folder 3"];
   const variables = [
     "",
     "name",
@@ -135,12 +146,8 @@ function PromptForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {folders.map((folder) => (
-                        <SelectItem
-                          value={folder}
-                          key={folder}
-                          className="capitalize"
-                        >
-                          {folder}
+                        <SelectItem value={folder.id} key={folder.id}>
+                          {folder.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

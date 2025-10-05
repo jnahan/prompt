@@ -53,13 +53,19 @@ export default function UsernamePage() {
     const fetchFolders = async () => {
       const folders = await readFolders();
       setFolders(folders);
-      console.log(folders);
     };
     fetchFolders();
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+
+  const groupedPrompts = folders.map((folder) => ({
+    ...folder,
+    prompts: prompts.filter((p) => p.folder_id === folder.id),
+  }));
+
+  const rootPrompts = prompts.filter((p) => !p.folder_id);
 
   return (
     profile && (
@@ -112,11 +118,25 @@ export default function UsernamePage() {
 
               {/* Prompts and Folders List */}
               <ul className="list-none pb-2">
-                {/* Folders */}
-                {folders.map((folder) => (
-                  <FolderItem key={folder.id} name={folder.name} />
+                {/* Folders with prompts */}
+                {groupedPrompts.map((folder) => (
+                  <FolderItem
+                    key={folder.id}
+                    name={folder.name}
+                    count={folder.prompts.length}
+                  >
+                    {folder.prompts.map((prompt) => (
+                      <PromptItem
+                        key={prompt.id}
+                        title={prompt.title}
+                        content={prompt.content}
+                      />
+                    ))}
+                  </FolderItem>
                 ))}
-                {prompts.map((prompt) => (
+
+                {/* Root-level prompts */}
+                {rootPrompts.map((prompt) => (
                   <PromptItem
                     key={prompt.id}
                     title={prompt.title}
