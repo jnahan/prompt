@@ -5,6 +5,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import PromptField from "./PromptField";
 
@@ -17,7 +18,37 @@ interface PromptDialogProps {
   children?: React.ReactNode;
 }
 
+import { useState, useMemo } from "react";
+
+function extractVariables(content: string): string[] {
+  const matches = content.match(/{{(.*?)}}/g);
+  if (!matches) return [];
+  return matches.map((m) => m.replace(/{{|}}/g, "").trim());
+}
+
 function PromptDialog({ title, content, children }: PromptDialogProps) {
+  const variableList = extractVariables(content);
+
+  // store variable values
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  // replace variables dynamically
+  const previewText = useMemo(() => {
+    let result = content;
+    for (const variable of variableList) {
+      const value = values[variable] ?? "";
+      result = result.replace(
+        new RegExp(`{{\\s*${variable}\\s*}}`, "g"),
+        value || `{{${variable}}}`
+      );
+    }
+    return result;
+  }, [content, variableList, values]);
+
+  const handleChange = (variable: string, value: string) => {
+    setValues((prev) => ({ ...prev, [variable]: value }));
+  };
+
   return (
     <Dialog>
       <DialogTrigger className={children ? "w-full" : ""}>
@@ -33,17 +64,29 @@ function PromptDialog({ title, content, children }: PromptDialogProps) {
           <DialogHeader className="mb-4">
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm">{content}</p>
+          <p className="text-sm">{previewText}</p>
         </section>
-        <section className="px-6 py-8 w-1/3 flex flex-col gap-4 border-l border-gray-200 overflow-y-auto">
-          <PromptField />
-          <PromptField />
-          <PromptField />
-          <PromptField />
-          <Button>
-            <Copy className="h-4 w-4" /> Copy prompt
-          </Button>
-        </section>
+        {variableList.length > 0 && (
+          <div className="px-6 py-8 overflow-y-auto w-1/3">
+            <ul>
+              {variableList.map((variable, index) => (
+                <PromptField
+                  key={index}
+                  label={variable}
+                  value={values[variable] || ""}
+                  onChange={(e) => handleChange(variable, e.target.value)}
+                />
+              ))}
+            </ul>
+            <Button
+              onClick={async () => {
+                await navigator.clipboard.writeText(previewText);
+              }}
+            >
+              <Copy className="h-4 w-4" /> Copy prompt
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
