@@ -59,6 +59,7 @@ export default function UsernamePage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [openFolderId, setOpenFolderId] = useState<string | null>(null);
 
   const groupedPrompts = folders.map((folder) => ({
     ...folder,
@@ -124,6 +125,12 @@ export default function UsernamePage() {
                     key={folder.id}
                     name={folder.name}
                     count={folder.prompts.length}
+                    isOpen={openFolderId === folder.id}
+                    onToggle={() =>
+                      setOpenFolderId(
+                        openFolderId === folder.id ? null : folder.id
+                      )
+                    }
                   >
                     {folder.prompts.map((prompt) => (
                       <PromptItem
