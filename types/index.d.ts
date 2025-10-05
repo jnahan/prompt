@@ -27,18 +27,6 @@ export interface CreateFolder {
   name: string;
 }
 
-export interface PromptVariable {
-  id: string;
-  prompt_id: string;
-  name: string;
-  created_at?: string;
-}
-
-export interface CreatePromptVariable {
-  name: string;
-  prompt_id: string;
-}
-
 export interface Prompt {
   id: string;
   created_at: string;
