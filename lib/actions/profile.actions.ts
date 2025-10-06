@@ -17,7 +17,7 @@ export const createProfile = async (formData: CreateProfile) => {
     throw new Error("User not authenticated");
   }
 
-  const { data, error } = await supabase.from("profiles").insert({
+  const { data, error } = await supabase.from("profiles").upsert({
     username: formData.username,
     first_name: formData.first_name,
     last_name: formData.last_name,
@@ -51,4 +51,24 @@ export const readProfile = async (): Promise<Profile> => {
     throw error;
   }
   return data;
+};
+
+export const deleteProfile = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  // const { error } = await supabase.from("profiles").delete().eq("id", user.id);
+  // if (error) {
+  //   throw error;
+  // }
+
+  await supabase.auth.admin.deleteUser(user.id);
 };

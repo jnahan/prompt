@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Navbar } from "@/components/navbar";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL

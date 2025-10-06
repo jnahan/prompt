@@ -7,7 +7,7 @@ import PromptItem from "./_components/PromptItem";
 import FolderItem from "./_components/FolderItem";
 
 import { CreateFolderDialog } from "./_components/CreateFolderDialog";
-import { ShareDialog } from "./_components/share-dialog";
+import ShareDialog from "./_components/ShareDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Share } from "lucide-react";
@@ -73,11 +73,11 @@ export default function UsernamePage() {
       <div className="mt-12">
         {/* Onboarding Overlay */}
         {showOnboarding && <OnboardingDialog />}
-        <UpgradeBanner />
+        {prompts.length >= 5 && <UpgradeBanner />}
 
         {/* Main Content */}
         <div className="my-12">
-          <ProfileInfo username={profile.username} />
+          <ProfileInfo username={profile?.username || ""} />
 
           <section className="mt-8">
             {/* Saved prompts, buttons */}

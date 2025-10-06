@@ -3,14 +3,14 @@
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { AccountMenu } from "@/components/account-menu";
+import { AccountMenu } from "@/components/AccountMenu";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { readProfile } from "@/lib/actions/profile.actions";
 import { Profile } from "@/types";
 import { useEffect, useState } from "react";
 
-export function Navbar() {
+export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();

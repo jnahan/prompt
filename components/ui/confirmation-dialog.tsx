@@ -32,7 +32,6 @@ export function ConfirmationDialog({
   confirmText = "Confirm",
   cancelText = "Cancel",
   variant = "default",
-  isLoading = false,
 }: ConfirmationDialogProps) {
   const handleConfirm = () => {
     onConfirm();
@@ -66,26 +65,20 @@ export function ConfirmationDialog({
         </DialogDescription>
 
         <DialogFooter className="gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" onClick={handleCancel}>
             {cancelText}
           </Button>
           <Button
             type="button"
             variant={variant === "destructive" ? "destructive" : "default"}
             onClick={handleConfirm}
-            disabled={isLoading}
             className={
               variant === "destructive"
                 ? "bg-red-600 hover:bg-red-700 text-white"
                 : ""
             }
           >
-            {isLoading ? "Processing..." : confirmText}
+            {confirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

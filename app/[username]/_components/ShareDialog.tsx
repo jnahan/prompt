@@ -19,7 +19,11 @@ interface ShareDialogProps {
   userName: string;
 }
 
-export function ShareDialog({ isOpen, onClose, userName }: ShareDialogProps) {
+export default function ShareDialog({
+  isOpen,
+  onClose,
+  userName,
+}: ShareDialogProps) {
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
