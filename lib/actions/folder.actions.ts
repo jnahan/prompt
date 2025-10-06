@@ -47,3 +47,24 @@ export const readFolders = async (): Promise<Folder[]> => {
   }
   return data;
 };
+
+export const deleteFolder = async (id: string) => {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("folders").delete().eq("id", id);
+  if (error) {
+    throw error;
+  }
+};
+
+export const updateFolder = async (id: string, formData: CreateFolder) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("folders")
+    .update({ name: formData.name })
+    .eq("id", id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};

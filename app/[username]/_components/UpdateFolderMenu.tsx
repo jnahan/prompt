@@ -9,14 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { deletePrompt } from "@/lib/actions/prompt.actions";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { deleteFolder } from "@/lib/actions/folder.actions";
+import { useRouter } from "next/navigation";
+import { CreateFolderDialog } from "./CreateFolderDialog";
 
-function UpdatePromptMenu({ id }: { id: string }) {
+function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
   const router = useRouter();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -26,7 +28,7 @@ function UpdatePromptMenu({ id }: { id: string }) {
   const handleConfirmDelete = async () => {
     try {
       setIsDeleting(true);
-      await deletePrompt(id);
+      await deleteFolder(id);
       router.refresh();
     } finally {
       setIsDeleting(false);
@@ -42,16 +44,11 @@ function UpdatePromptMenu({ id }: { id: string }) {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-
-        <DropdownMenuContent
-          className="w-56"
-          align="start"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <DropdownMenuContent className="w-56" align="start">
           <DropdownMenuItem
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/prompt/edit/${id}`);
+              setIsEditOpen(true);
             }}
           >
             Edit
@@ -62,12 +59,20 @@ function UpdatePromptMenu({ id }: { id: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <CreateFolderDialog
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        initialName={name}
+        folderId={id}
+        onAfterSubmit={() => router.refresh()}
+      />
+
       <ConfirmationDialog
         open={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
         onConfirm={handleConfirmDelete}
-        title="Delete prompt?"
-        description="This action cannot be undone. This will permanently delete this prompt."
+        title="Delete folder?"
+        description="This will permanently delete the folder and its contents."
         confirmText={isDeleting ? "Deleting..." : "Delete"}
         cancelText="Cancel"
         variant="destructive"
@@ -76,4 +81,4 @@ function UpdatePromptMenu({ id }: { id: string }) {
   );
 }
 
-export default UpdatePromptMenu;
+export default UpdateFolderMenu;

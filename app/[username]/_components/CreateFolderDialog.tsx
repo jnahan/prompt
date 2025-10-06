@@ -25,42 +25,79 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { FolderPlus } from "lucide-react";
-import { createFolder } from "@/lib/actions/folder.actions";
+import { createFolder, updateFolder } from "@/lib/actions/folder.actions";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
 });
 
-export function CreateFolderDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+interface CreateFolderDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  initialName?: string;
+  folderId?: string; // if provided -> edit mode
+  onAfterSubmit?: () => void;
+}
+
+export function CreateFolderDialog({
+  open,
+  onOpenChange,
+  initialName,
+  folderId,
+  onAfterSubmit,
+}: CreateFolderDialogProps) {
+  const [isOpen, setIsOpen] = useState(open ?? false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: initialName ?? "",
     },
   });
 
+  // Keep form in sync when initialName changes (edit flow)
+  if (initialName !== undefined && form.getValues("name") !== initialName) {
+    form.setValue("name", initialName);
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createFolder(values);
-    setIsOpen(false);
+    if (folderId) {
+      await updateFolder(folderId, values);
+    } else {
+      await createFolder(values);
+    }
+    if (onOpenChange) {
+      onOpenChange(false);
+    } else {
+      setIsOpen(false);
+    }
+    if (onAfterSubmit) {
+      onAfterSubmit();
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button
-          onClick={() => setIsOpen(true)}
-          size="default"
-          variant="outline"
-        >
-          <FolderPlus className="h-4 w-4" />
-          New folder
-        </Button>
-      </DialogTrigger>
+    <Dialog
+      open={onOpenChange ? open : isOpen}
+      onOpenChange={onOpenChange ?? setIsOpen}
+    >
+      {!folderId && (
+        <DialogTrigger>
+          <Button
+            onClick={() =>
+              onOpenChange ? onOpenChange(true) : setIsOpen(true)
+            }
+            size="default"
+            variant="outline"
+          >
+            <FolderPlus className="h-4 w-4" />
+            New folder
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>New folder</DialogTitle>
+          <DialogTitle>{folderId ? "Edit folder" : "New folder"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -80,7 +117,7 @@ export function CreateFolderDialog() {
             />
 
             <DialogFooter>
-              <DialogClose asChild>
+              <DialogClose>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
               <Button type="submit">Save</Button>

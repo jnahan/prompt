@@ -123,6 +123,7 @@ export default function UsernamePage() {
                 {groupedPrompts.map((folder) => (
                   <FolderItem
                     key={folder.id}
+                    id={folder.id}
                     name={folder.name}
                     count={folder.prompts.length}
                     isOpen={openFolderId === folder.id}
