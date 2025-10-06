@@ -49,3 +49,25 @@ export const readPrompts = async (): Promise<Prompt[]> => {
   }
   return data;
 };
+
+export const updatePrompt = async (id: string, formData: CreatePrompt) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("prompts")
+    .update(formData)
+    .eq("id", id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export const deletePrompt = async (id: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("prompts").delete().eq("id", id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};

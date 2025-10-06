@@ -135,6 +135,7 @@ export default function UsernamePage() {
                     {folder.prompts.map((prompt) => (
                       <PromptItem
                         key={prompt.id}
+                        id={prompt.id}
                         title={prompt.title}
                         content={prompt.content}
                       />
@@ -146,6 +147,7 @@ export default function UsernamePage() {
                 {rootPrompts.map((prompt) => (
                   <PromptItem
                     key={prompt.id}
+                    id={prompt.id}
                     title={prompt.title}
                     content={prompt.content}
                   />
