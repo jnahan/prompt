@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { updatePrompt, deletePrompt } from "@/lib/actions/prompt.actions";
+import { deletePrompt } from "@/lib/actions/prompt.actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -51,10 +51,7 @@ function UpdatePromptMenu({ id }: { id: string }) {
           <DropdownMenuItem
             onClick={(e) => {
               e.stopPropagation();
-              updatePrompt(id, {
-                title: "New Title",
-                content: "New Content",
-              });
+              router.push(`/prompt/edit/${id}`);
             }}
           >
             Edit

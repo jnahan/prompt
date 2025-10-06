@@ -39,7 +39,14 @@ const formSchema = z.object({
   content: z.string().min(1, { message: "Content is required." }),
 });
 
-function PromptForm() {
+type PromptFormValues = z.infer<typeof formSchema>;
+
+interface PromptFormProps {
+  initialValues?: Partial<PromptFormValues>;
+  onSubmit?: (values: PromptFormValues) => Promise<void>;
+}
+
+function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
   const [folders, setFolders] = useState<Folder[]>([]);
 
   useEffect(() => {
@@ -53,13 +60,27 @@ function PromptForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      folder_id: "",
-      content: "",
+      title: initialValues?.title ?? "",
+      folder_id: initialValues?.folder_id ?? "",
+      content: initialValues?.content ?? "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    if (!initialValues) return;
+    form.reset({
+      title: initialValues.title ?? "",
+      folder_id: initialValues.folder_id ?? "",
+      content: initialValues.content ?? "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues?.title, initialValues?.folder_id, initialValues?.content]);
+
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
+    if (onSubmit) {
+      await onSubmit(values);
+      return;
+    }
     await createPrompt(values);
     redirect("/", RedirectType.replace);
   }
@@ -108,14 +129,16 @@ function PromptForm() {
   return (
     <div className="mt-12">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Create prompt</h1>
+        <h1 className="text-2xl font-bold">
+          {initialValues ? "Edit prompt" : "Create prompt"}
+        </h1>
         <PromptDialog
           title={form.watch("title")}
           content={form.watch("content")}
         />
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="title"
@@ -199,7 +222,7 @@ function PromptForm() {
             )}
           />
           <div className="flex flex-row items-center gap-2">
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Save</Button>
             <Button variant="ghost">Cancel</Button>
           </div>
         </form>

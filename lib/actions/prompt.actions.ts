@@ -50,11 +50,37 @@ export const readPrompts = async (): Promise<Prompt[]> => {
   return data;
 };
 
-export const updatePrompt = async (id: string, formData: CreatePrompt) => {
+export const readPrompt = async (id: string): Promise<Prompt | null> => {
   const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("prompts")
-    .update(formData)
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data ?? null;
+};
+
+export const updatePrompt = async (id: string, formData: CreatePrompt) => {
+  const supabase = await createClient();
+
+  const updateData: Partial<CreatePrompt> & { title: string; content: string } =
+    {
+      title: formData.title,
+      content: formData.content,
+    };
+
+  if (typeof formData.folder_id !== "undefined") {
+    // Map empty string to null for uuid column compatibility
+    (updateData as any).folder_id = formData.folder_id || null;
+  }
+
+  const { data, error } = await supabase
+    .from("prompts")
+    .update(updateData)
     .eq("id", id);
   if (error) {
     throw error;
