@@ -1,40 +1,31 @@
-"use client";
-
 import PromptForm from "../../_components/PromptForm";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { readPrompt } from "@/lib/actions/prompt.actions";
+import { readFolders } from "@/lib/actions/folder.actions";
 
-export default function EditPromptPage() {
-  const params = useParams<{ id: string }>();
-  const [loading, setLoading] = useState(true);
-  const [initialValues, setInitialValues] = useState<{
-    title: string;
-    content: string;
-    folder_id?: string;
-  }>({
-    title: "",
-    content: "",
-    folder_id: "",
-  });
+export default async function EditPromptPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const prompt = await readPrompt(params.id);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!params?.id) return;
-      const prompt = await readPrompt(params.id);
-      if (prompt) {
-        setInitialValues({
-          title: prompt.title,
-          content: prompt.content,
-          folder_id: prompt.folder_id,
-        });
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [params?.id]);
+  if (!prompt) {
+    throw new Error("Prompt not found");
+  }
 
-  if (loading) return null;
+  const initialValues = {
+    title: prompt.title,
+    content: prompt.content,
+    folder_id: prompt.folder_id || "",
+  };
 
-  return <PromptForm promptId={params.id} initialValues={initialValues} />;
+  const folders = await readFolders();
+
+  return (
+    <PromptForm
+      promptId={params.id}
+      initialValues={initialValues}
+      folders={folders}
+    />
+  );
 }

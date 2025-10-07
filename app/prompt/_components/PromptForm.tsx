@@ -3,7 +3,7 @@
 import PromptDialog from "./PromptDialog";
 import { promptVariables } from "@/constants";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,7 +28,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { Folder } from "@/types";
-import { readFolders } from "@/lib/actions/folder.actions";
 import { createPrompt, updatePrompt } from "@/lib/actions/prompt.actions";
 
 import { redirect, RedirectType, useRouter } from "next/navigation";
@@ -44,18 +43,11 @@ type PromptFormValues = z.infer<typeof formSchema>;
 interface PromptFormProps {
   promptId?: string;
   initialValues?: Partial<PromptFormValues>;
+  folders: Folder[];
 }
 
-function PromptForm({ promptId, initialValues }: PromptFormProps) {
-  const [folders, setFolders] = useState<Folder[]>([]);
+function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
   const router = useRouter();
-  useEffect(() => {
-    const fetchFolders = async () => {
-      const folders = await readFolders();
-      setFolders(folders);
-    };
-    fetchFolders();
-  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

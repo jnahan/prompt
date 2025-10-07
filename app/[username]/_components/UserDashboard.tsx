@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import OnboardingDialog from "./OnboardingDialog";
 import UpgradeBanner from "./UpgradeBanner";
-import ProfileInfo from "./ProfileInfo";
+import ProfileInfo from "../../../components/ProfileInfo";
 import EmptyState from "./EmptyState";
 import PromptItem from "./PromptItem";
 import FolderItem from "./FolderItem";

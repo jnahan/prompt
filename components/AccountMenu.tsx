@@ -1,3 +1,9 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -15,21 +21,27 @@ import {
   LogOut,
   ExternalLink,
 } from "lucide-react";
-import Link from "next/link";
 
 interface AccountMenuProps {
   userName: string;
   avatarUrl?: string;
-  onLogout: () => void;
 }
 
-export function AccountMenu({
-  userName,
-  avatarUrl,
-  onLogout,
-}: AccountMenuProps) {
-  // Get first letter for fallback
+export default function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   const firstLetter = userName.charAt(0).toUpperCase();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -42,6 +54,7 @@ export function AccountMenu({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuItem>
           <Link href="/" className="flex items-center">
@@ -80,8 +93,8 @@ export function AccountMenu({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
-          <LogOut className="mr-2 h-4 w-4" />
+        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+          <LogOut className="h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

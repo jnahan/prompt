@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { readProfile } from "@/lib/actions/profile.actions";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -9,6 +10,6 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  // todo: change to username
-  redirect(`/username`);
+  const profile = await readProfile();
+  redirect(`/${profile.username}`);
 }
