@@ -3,7 +3,7 @@
 import { CreateProfile } from "@/types";
 import { createClient } from "../supabase/server";
 import { Profile } from "@/types";
-
+import { adminAuthClient } from "../supabase/admin";
 // TODO: handle duplicate username
 export const createProfile = async (formData: CreateProfile) => {
   const supabase = await createClient();
@@ -65,10 +65,10 @@ export const deleteProfile = async () => {
     throw new Error("User not authenticated");
   }
 
-  // const { error } = await supabase.from("profiles").delete().eq("id", user.id);
-  // if (error) {
-  //   throw error;
-  // }
+  const { data, error } = await adminAuthClient.deleteUser(user.id);
 
-  await supabase.auth.admin.deleteUser(user.id);
+  if (error) {
+    throw error;
+  }
+  return data;
 };
