@@ -1,0 +1,15 @@
+export const promptVariables = [
+  "",
+  "name",
+  "email",
+  "date",
+  "time",
+  "city",
+  "company",
+  "product",
+  "amount",
+  "goal",
+  "topic",
+  "username",
+  "language",
+];

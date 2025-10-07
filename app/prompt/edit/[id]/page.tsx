@@ -2,12 +2,11 @@
 
 import PromptForm from "../../_components/PromptForm";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { readPrompt, updatePrompt } from "@/lib/actions/prompt.actions";
+import { useParams } from "next/navigation";
+import { readPrompt } from "@/lib/actions/prompt.actions";
 
 export default function EditPromptPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [initialValues, setInitialValues] = useState<{
     title: string;
@@ -37,13 +36,5 @@ export default function EditPromptPage() {
 
   if (loading) return null;
 
-  return (
-    <PromptForm
-      initialValues={initialValues}
-      onSubmit={async (values) => {
-        await updatePrompt(params.id as string, values);
-        router.replace("/");
-      }}
-    />
-  );
+  return <PromptForm promptId={params.id} initialValues={initialValues} />;
 }

@@ -39,7 +39,7 @@ interface CreateFolderDialogProps {
   onAfterSubmit?: () => void;
 }
 
-export function CreateFolderDialog({
+export default function CreateFolderDialog({
   open,
   onOpenChange,
   initialName,

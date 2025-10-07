@@ -1,0 +1,151 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import OnboardingDialog from "./OnboardingDialog";
+import UpgradeBanner from "./UpgradeBanner";
+import ProfileInfo from "./ProfileInfo";
+import EmptyState from "./EmptyState";
+import PromptItem from "./PromptItem";
+import FolderItem from "./FolderItem";
+import CreateFolderDialog from "./CreateFolderDialog";
+import ShareDialog from "./ShareDialog";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, Search, Share } from "lucide-react";
+
+import type { Profile, Folder, Prompt } from "@/types";
+
+interface UserDashboardProps {
+  profile: Profile;
+  folders: Folder[];
+  prompts: Prompt[];
+  showOnboarding: boolean;
+}
+
+export default function UserDashboard({
+  profile,
+  folders,
+  prompts,
+  showOnboarding,
+}: UserDashboardProps) {
+  const router = useRouter();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [openFolderId, setOpenFolderId] = useState<string | null>(null);
+
+  // Called after folder creation or update
+  const handleRefresh = async () => {
+    router.refresh(); // re-runs the server component to get latest data
+  };
+
+  const groupedPrompts = folders.map((folder) => ({
+    ...folder,
+    prompts: prompts.filter((p) => p.folder_id === folder.id),
+  }));
+
+  const rootPrompts = prompts.filter((p) => !p.folder_id);
+
+  return (
+    <div className="mt-12">
+      {/* Onboarding Overlay */}
+      {showOnboarding && <OnboardingDialog />}
+      {prompts.length >= 5 && <UpgradeBanner />}
+
+      {/* Main Content */}
+      <div className="my-12">
+        <ProfileInfo username={profile?.username || ""} />
+
+        <section className="mt-8">
+          {/* Saved prompts, buttons */}
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-semibold">Saved prompts</h1>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => router.push("/prompt/new")}
+                size="default"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                New prompt
+              </Button>
+
+              {/* Folder creation dialog now triggers refresh */}
+              <CreateFolderDialog onAfterSubmit={handleRefresh} />
+
+              <Button
+                variant="outline"
+                onClick={() => setIsShareDialogOpen(true)}
+              >
+                <Share className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="border border-gray-200 rounded-lg">
+            {/* Search Bar */}
+            <div className="h-14 flex items-center pl-5">
+              <Search className="h-5 w-5 text-gray-500" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search prompts..."
+                className="border-0 outline-none focus:outline-none focus:ring-0 focus:shadow-none focus:border-transparent appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none"
+              />
+            </div>
+
+            {prompts.length === 0 && <EmptyState />}
+
+            {/* Prompts and Folders List */}
+            <ul className="list-none pb-2">
+              {/* Folders with prompts */}
+              {groupedPrompts.map((folder) => (
+                <FolderItem
+                  key={folder.id}
+                  id={folder.id}
+                  name={folder.name}
+                  count={folder.prompts.length}
+                  isOpen={openFolderId === folder.id}
+                  onToggle={() =>
+                    setOpenFolderId(
+                      openFolderId === folder.id ? null : folder.id
+                    )
+                  }
+                >
+                  {folder.prompts.map((prompt) => (
+                    <PromptItem
+                      key={prompt.id}
+                      id={prompt.id}
+                      title={prompt.title}
+                      content={prompt.content}
+                    />
+                  ))}
+                </FolderItem>
+              ))}
+
+              {/* Root-level prompts */}
+              {rootPrompts.map((prompt) => (
+                <PromptItem
+                  key={prompt.id}
+                  id={prompt.id}
+                  title={prompt.title}
+                  content={prompt.content}
+                />
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      {/* Share Dialog */}
+      <ShareDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        userName={profile.username}
+      />
+    </div>
+  );
+}

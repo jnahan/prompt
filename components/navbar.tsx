@@ -39,18 +39,19 @@ export default function Navbar() {
   }
 
   return (
-    profile && (
-      <nav className="py-2 flex items-center justify-between">
-        <Link href="/" key={"Home"}>
-          <Image src={`logo.svg`} alt={"logo"} width="125" height="32" />
-        </Link>
-        <div className="flex items-center gap-1">
-          <Button variant="link">
-            <Link href="/upgrade">Get unlimited prompts</Link>
-          </Button>
-          <AccountMenu userName={profile.username} onLogout={handleLogout} />
-        </div>
-      </nav>
-    )
+    <nav className="py-2 flex items-center justify-between">
+      <Link href="/" key={"Home"}>
+        <Image src={`logo.svg`} alt={"logo"} width="125" height="32" />
+      </Link>
+      <div className="flex items-center gap-1">
+        <Button variant="link">
+          <Link href="/upgrade">Get unlimited prompts</Link>
+        </Button>
+        <AccountMenu
+          userName={profile?.username || ""}
+          onLogout={handleLogout}
+        />
+      </div>
+    </nav>
   );
 }

@@ -9,8 +9,6 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  const userEmail = data.claims.email || "User";
-  const userName = userEmail.split("@")[0];
-
-  redirect(`/${userName}`);
+  // todo: change to username
+  redirect(`/username`);
 }

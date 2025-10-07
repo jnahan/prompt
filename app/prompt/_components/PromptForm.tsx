@@ -1,7 +1,9 @@
 "use client";
 
 import PromptDialog from "./PromptDialog";
+import { promptVariables } from "@/constants";
 
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,13 +27,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-import { useState, useEffect } from "react";
-
-import { createPrompt } from "@/lib/actions/prompt.actions";
-import { readFolders } from "@/lib/actions/folder.actions";
-
-import { redirect, RedirectType } from "next/navigation";
 import { Folder } from "@/types";
+import { readFolders } from "@/lib/actions/folder.actions";
+import { createPrompt, updatePrompt } from "@/lib/actions/prompt.actions";
+
+import { redirect, RedirectType, useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -42,13 +42,13 @@ const formSchema = z.object({
 type PromptFormValues = z.infer<typeof formSchema>;
 
 interface PromptFormProps {
+  promptId?: string;
   initialValues?: Partial<PromptFormValues>;
-  onSubmit?: (values: PromptFormValues) => Promise<void>;
 }
 
-function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
+function PromptForm({ promptId, initialValues }: PromptFormProps) {
   const [folders, setFolders] = useState<Folder[]>([]);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchFolders = async () => {
       const folders = await readFolders();
@@ -76,15 +76,6 @@ function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues?.title, initialValues?.folder_id, initialValues?.content]);
 
-  async function handleSubmit(values: z.infer<typeof formSchema>) {
-    if (onSubmit) {
-      await onSubmit(values);
-      return;
-    }
-    await createPrompt(values);
-    redirect("/", RedirectType.replace);
-  }
-
   const insertVariable = (variable: string) => {
     const textarea = document.getElementById(
       "prompt-content"
@@ -110,27 +101,20 @@ function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
     }, 0);
   };
 
-  const variables = [
-    "",
-    "name",
-    "email",
-    "date",
-    "time",
-    "city",
-    "company",
-    "product",
-    "amount",
-    "goal",
-    "topic",
-    "username",
-    "language",
-  ];
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
+    if (promptId && initialValues) {
+      await updatePrompt(promptId, values);
+      redirect("/", RedirectType.replace);
+    }
+    await createPrompt(values);
+    redirect("/", RedirectType.replace);
+  }
 
   return (
     <div className="mt-12">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
-          {initialValues ? "Edit prompt" : "Create prompt"}
+          {promptId && initialValues ? "Edit prompt" : "Create prompt"}
         </h1>
         <PromptDialog
           title={form.watch("title")}
@@ -204,7 +188,7 @@ function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
                         like Name
                       </p>
                       <ul className="flex flex-wrap gap-2">
-                        {variables.map((variable) => (
+                        {promptVariables.map((variable) => (
                           <li
                             key={variable}
                             className="text-sm font-medium p-1 bg-gray-100 text-gray-500 cursor-pointer"
@@ -223,7 +207,15 @@ function PromptForm({ initialValues, onSubmit }: PromptFormProps) {
           />
           <div className="flex flex-row items-center gap-2">
             <Button type="submit">Save</Button>
-            <Button variant="ghost">Cancel</Button>
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault();
+                router.back();
+              }}
+            >
+              Cancel
+            </Button>
           </div>
         </form>
       </Form>

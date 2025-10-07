@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "../supabase/server";
 import { Folder, CreateFolder } from "@/types";
 
@@ -23,6 +24,7 @@ export const createFolder = async (formData: CreateFolder) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/");
   return data;
 };
 

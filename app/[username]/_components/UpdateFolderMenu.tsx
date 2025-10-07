@@ -12,7 +12,7 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useState } from "react";
 import { deleteFolder } from "@/lib/actions/folder.actions";
 import { useRouter } from "next/navigation";
-import { CreateFolderDialog } from "./CreateFolderDialog";
+import CreateFolderDialog from "./CreateFolderDialog";
 
 function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
   const router = useRouter();
