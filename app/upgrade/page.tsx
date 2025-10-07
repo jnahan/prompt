@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 export default function UpgradePage() {
   return (
@@ -39,7 +40,9 @@ export default function UpgradePage() {
             </div>
           </div>
           <h3 className="text-2xl font-bold mb-6">$39.99</h3>
-          <Button className="mb-6">Upgrade</Button>
+          <Button className="mb-6">
+            <Link href="/checkout">Upgrade</Link>
+          </Button>
           <ul className="list-none flex flex-col gap-4">
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-blue-500" />

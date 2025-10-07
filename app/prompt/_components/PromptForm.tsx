@@ -109,8 +109,8 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
           {promptId && initialValues ? "Edit prompt" : "Create prompt"}
         </h1>
         <PromptDialog
-          title={form.watch("title")}
-          content={form.watch("content")}
+          title={form.watch("title") || "Untitled"}
+          content={form.watch("content") || "No content"}
         />
       </div>
       <Form {...form}>
@@ -140,7 +140,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
                     value={field.value}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input capitalize">
+                    <SelectTrigger className="input w-full">
                       <SelectValue placeholder="Select folder" />
                     </SelectTrigger>
                     <SelectContent>
