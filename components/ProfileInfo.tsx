@@ -9,7 +9,7 @@ function ProfileInfo({ username }: { username: string }) {
           {username.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
-      <h1 className="text-2xl font-bold">{username}</h1>
+      <h1 className="text-2xl font-semibold">{username}</h1>
     </div>
   );
 }

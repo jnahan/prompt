@@ -105,7 +105,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
   return (
     <div className="mt-12">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-semibold">
           {promptId && initialValues ? "Edit prompt" : "Create prompt"}
         </h1>
         <PromptDialog

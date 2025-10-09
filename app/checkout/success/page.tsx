@@ -9,7 +9,7 @@ async function page() {
   return (
     <div className="flex flex-col items-center justify-center text-center">
       <CheckCircle className="w-8 h-8 text-green-600 mb-2" />
-      <h1 className="text-lg font-bold mb-1">Payment successful</h1>
+      <h1 className="text-lg font-semibold mb-1">Payment successful</h1>
       <p className="mb-4 text-secondary-foreground">
         Your account has been upgraded!
       </p>

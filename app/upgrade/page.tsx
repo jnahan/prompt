@@ -8,11 +8,11 @@ export default async function UpgradePage() {
 
   return (
     <div className="mt-12">
-      <h1 className="text-3xl font-bold mb-8 text-center">Upgrade plan</h1>
+      <h1 className="text-3xl font-semibold mb-8 text-center">Upgrade plan</h1>
       <ul className="flex flex-row border border-gray-200 rounded-lg">
         <li className="flex flex-1 flex-col justify-between border-r border-gray-200 px-6 py-8">
           <h2 className="font-semibold mb-3">Starter</h2>
-          <h3 className="text-2xl font-bold mb-6">$0</h3>
+          <h3 className="text-2xl font-semibold mb-6">$0</h3>
 
           <Button className="mb-6" variant="secondary" disabled>
             {profile.subscription_level === "free"
@@ -44,7 +44,7 @@ export default async function UpgradePage() {
               </p>
             </div>
           </div>
-          <h3 className="text-2xl font-bold mb-6">$39.99</h3>
+          <h3 className="text-2xl font-semibold mb-6">$39.99</h3>
           {profile.subscription_level === "free" ? (
             <Button className="mb-6" asChild>
               <Link href="/checkout">Upgrade</Link>
