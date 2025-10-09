@@ -1,17 +1,21 @@
+import { Button } from "@/components/ui/button";
 import { updateSubscriptionLevel } from "@/lib/actions/profile.actions";
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
 
-async function page({
-  searchParams: { amount },
-}: {
-  searchParams: { amount: string };
-}) {
+async function page() {
   const data = await updateSubscriptionLevel("lifetime");
-  console.log(data);
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <h1>Payment successful</h1>
-      <p>You have been charged {amount}</p>
+    <div className="flex flex-col items-center justify-center text-center">
+      <CheckCircle className="w-8 h-8 text-green-600 mb-2" />
+      <h1 className="text-lg font-bold mb-1">Payment successful</h1>
+      <p className="mb-4 text-secondary-foreground">
+        Your account has been upgraded!
+      </p>
+      <Button asChild>
+        <Link href="/">Return home</Link>
+      </Button>
     </div>
   );
 }
