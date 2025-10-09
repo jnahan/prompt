@@ -5,8 +5,9 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteProfile } from "@/lib/actions/profile.actions";
+import { Profile } from "@/types";
 
-function ManageSettings() {
+function ManageSettings({ profile }: { profile: Profile }) {
   const router = useRouter();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -23,9 +24,15 @@ function ManageSettings() {
         <div className="border border-gray-200 p-4 rounded-lg flex justify-between items-center">
           <div>
             <p className="font-semibold mb-1">Plan</p>
-            <p className="text-sm text-muted-foreground">Basic plan</p>
+            <p className="text-sm text-muted-foreground">
+              {profile.subscription_level === "free"
+                ? "Basic plan"
+                : "Lifetime plan"}
+            </p>
           </div>
-          <Button onClick={() => router.push("/upgrade")}>Upgrade</Button>
+          <Button onClick={() => router.push("/upgrade")}>
+            {profile.subscription_level === "free" ? "Upgrade" : "Current plan"}
+          </Button>
         </div>
       </section>
 

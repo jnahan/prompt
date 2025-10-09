@@ -56,28 +56,28 @@ export default function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/" className="flex items-center">
-            <Sparkles className="mr-2 h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
             <span>Saved prompts</span>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/upgrade" className="flex items-center">
-            <Crown className="mr-2 h-4 w-4" />
+            <Crown className="w-4 h-4" />
             <span>Upgrade plan</span>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/settings" className="flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
+            <Settings className="w-4 h-4" />
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
           <Link
             href="/feedback"
             target="_blank"

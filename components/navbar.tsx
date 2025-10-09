@@ -14,9 +14,11 @@ export default async function Navbar() {
         <Image src={`logo.svg`} alt={"logo"} width="125" height="32" />
       </Link>
       <div className="flex items-center gap-1">
-        <Button variant="link">
-          <Link href="/upgrade">Get unlimited prompts</Link>
-        </Button>
+        {profile.subscription_level === "free" && (
+          <Button variant="link">
+            <Link href="/upgrade">Get unlimited prompts</Link>
+          </Button>
+        )}
         <AccountMenu userName={profile?.username || ""} />
       </div>
     </nav>

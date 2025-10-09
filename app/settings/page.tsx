@@ -8,7 +8,7 @@ export default async function SettingsPage() {
   return (
     <section className="mt-12">
       <ProfileInfo username={profile.username} />
-      <ManageSettings />
+      <ManageSettings profile={profile} />
     </section>
   );
 }
