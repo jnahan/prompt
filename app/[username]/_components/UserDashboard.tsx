@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import OnboardingDialog from "./OnboardingDialog";
@@ -49,6 +49,45 @@ export default function UserDashboard({
 
   const rootPrompts = prompts.filter((p) => !p.folder_id);
 
+  const filteredGroupedPrompts = groupedPrompts
+    .map((folder) => {
+      const folderMatches = folder.name.toLowerCase().includes(searchQuery);
+      const filteredPrompts = folder.prompts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(searchQuery) ||
+          p.content.toLowerCase().includes(searchQuery)
+      );
+
+      // If the folder name matches, show all its prompts
+      if (folderMatches) return { ...folder, prompts: folder.prompts };
+
+      return { ...folder, prompts: filteredPrompts };
+    })
+    .filter((folder) => folder.prompts.length > 0);
+
+  const filteredRootPrompts = rootPrompts.filter(
+    (p) =>
+      p.title.toLowerCase().includes(searchQuery) ||
+      p.content.toLowerCase().includes(searchQuery)
+  );
+
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      const matchedFolderIds = groupedPrompts
+        .filter(
+          (f) =>
+            f.name.toLowerCase().includes(searchQuery) ||
+            f.prompts.some(
+              (p) =>
+                p.title.toLowerCase().includes(searchQuery) ||
+                p.content.toLowerCase().includes(searchQuery)
+            )
+        )
+        .map((f) => f.id);
+      setOpenFolderIds(matchedFolderIds);
+    }
+  }, [searchQuery]);
+
   return (
     <div className="mt-12">
       {/* Onboarding Overlay */}
@@ -91,7 +130,9 @@ export default function UserDashboard({
               <Search className="h-5 w-5 text-gray-500" />
               <Input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) =>
+                  setSearchQuery(e.target.value.toLowerCase().trim())
+                }
                 placeholder="Search prompts..."
                 className="border-0 outline-none focus:outline-none focus:ring-0 focus:shadow-none focus:border-transparent appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none"
               />
@@ -102,7 +143,7 @@ export default function UserDashboard({
             {/* Prompts and Folders List */}
             <ul className="list-none pb-2">
               {/* Folders with prompts */}
-              {groupedPrompts.map((folder) => (
+              {filteredGroupedPrompts.map((folder) => (
                 <FolderItem
                   key={folder.id}
                   id={folder.id}
@@ -130,7 +171,7 @@ export default function UserDashboard({
               ))}
 
               {/* Root-level prompts */}
-              {rootPrompts.map((prompt) => (
+              {filteredRootPrompts.map((prompt) => (
                 <PromptItem
                   key={prompt.id}
                   id={prompt.id}
