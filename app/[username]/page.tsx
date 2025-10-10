@@ -14,7 +14,7 @@ export default async function UsernamePage({
     readPrompts(),
   ]);
 
-  const showOnboarding = searchParams.onboarding === "true";
+  const showOnboarding = (await searchParams)?.onboarding === "true";
 
   return (
     <UserDashboard

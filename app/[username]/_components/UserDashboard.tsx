@@ -35,7 +35,7 @@ export default function UserDashboard({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [openFolderId, setOpenFolderId] = useState<string | null>(null);
+  const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
 
   // Called after folder creation or update
   const handleRefresh = async () => {
@@ -108,10 +108,13 @@ export default function UserDashboard({
                   id={folder.id}
                   name={folder.name}
                   count={folder.prompts.length}
-                  isOpen={openFolderId === folder.id}
+                  isOpen={openFolderIds.includes(folder.id)}
                   onToggle={() =>
-                    setOpenFolderId(
-                      openFolderId === folder.id ? null : folder.id
+                    setOpenFolderIds(
+                      (prev) =>
+                        prev.includes(folder.id)
+                          ? prev.filter((id) => id !== folder.id) // close
+                          : [...prev, folder.id] // open
                     )
                   }
                 >
