@@ -1,12 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-
-import AccountMenu from "@/components/AccountMenu";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { readProfile } from "@/lib/actions/profile.actions";
+import AccountMenu from "@/components/AccountMenu";
+import type { Profile } from "@/types";
 
-export default async function Navbar() {
-  const profile = await readProfile();
+export default function Navbar() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    readProfile()
+      .then((p) => setProfile(p))
+      .catch(() => setProfile(null));
+  }, []);
+
+  if (!profile) return null;
 
   return (
     <nav className="py-2 flex items-center justify-between mb-12">
@@ -19,7 +30,7 @@ export default async function Navbar() {
             <Link href="/upgrade">Get unlimited prompts</Link>
           </Button>
         )}
-        <AccountMenu userName={profile?.username || ""} />
+        <AccountMenu userName={profile.username} />
       </div>
     </nav>
   );
