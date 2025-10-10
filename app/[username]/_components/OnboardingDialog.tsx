@@ -45,8 +45,23 @@ function OnboardingDialog() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createProfile(values);
-    setIsOpen(false);
+    try {
+      await createProfile(values);
+      setIsOpen(false);
+    } catch (error: any) {
+      // Handle duplicate username or other backend errors
+      if (error.message?.includes("duplicate username")) {
+        form.setError("username", {
+          type: "manual",
+          message: "Username is already taken. Please choose another",
+        });
+      } else {
+        form.setError("username", {
+          type: "manual",
+          message: "Something went wrong. Please try again",
+        });
+      }
+    }
   };
 
   return (

@@ -25,6 +25,10 @@ export const createProfile = async (formData: CreateProfile) => {
   });
 
   if (error) {
+    if (error.code === "23505") {
+      // 23505 = unique violation in Postgres
+      throw new Error("duplicate username");
+    }
     throw error;
   }
   return data;

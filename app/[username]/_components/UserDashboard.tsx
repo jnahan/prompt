@@ -159,14 +159,16 @@ export default function UserDashboard({
                     )
                   }
                 >
-                  {folder.prompts.map((prompt) => (
-                    <PromptItem
-                      key={prompt.id}
-                      id={prompt.id}
-                      title={prompt.title}
-                      content={prompt.content}
-                    />
-                  ))}
+                  <ul className="list-none pl-4s">
+                    {folder.prompts.map((prompt) => (
+                      <PromptItem
+                        key={prompt.id}
+                        id={prompt.id}
+                        title={prompt.title}
+                        content={prompt.content}
+                      />
+                    ))}
+                  </ul>
                 </FolderItem>
               ))}
 
