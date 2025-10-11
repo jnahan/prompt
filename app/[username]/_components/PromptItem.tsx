@@ -5,9 +5,10 @@ interface PromptItemProps {
   id: string;
   title: string;
   content: string;
+  isOwnProfile?: boolean;
 }
 
-function PromptItem({ id, title, content }: PromptItemProps) {
+function PromptItem({ id, title, content, isOwnProfile }: PromptItemProps) {
   return (
     <PromptDialog title={title} content={content}>
       <li className="flex flex-row justify-between items-center px-4 py-3 w-ful hover:bg-gray-50">
@@ -15,7 +16,7 @@ function PromptItem({ id, title, content }: PromptItemProps) {
           <h3 className="text-sm font-semibold">{title}</h3>
           <p className="text-xs text-gray-500">{content}</p>
         </div>
-        <UpdatePromptMenu id={id} />
+        {isOwnProfile && <UpdatePromptMenu id={id} />}
       </li>
     </PromptDialog>
   );

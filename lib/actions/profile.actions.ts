@@ -101,3 +101,20 @@ export const updateSubscriptionLevel = async (level: "free" | "lifetime") => {
   }
   return data;
 };
+
+export const getUserIdByUsername = async (
+  username: string
+): Promise<string> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("username", username)
+    .single();
+
+  if (error || !data) {
+    throw new Error("User not found");
+  }
+
+  return data.id;
+};

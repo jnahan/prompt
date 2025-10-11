@@ -28,26 +28,32 @@ export const createPrompt = async (formData: CreatePrompt) => {
   return data;
 };
 
-export const readPrompts = async (): Promise<Prompt[]> => {
+export const readPrompts = async (username: string): Promise<Prompt[]> => {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  // Get user ID by username
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("username", username)
+    .single();
 
-  if (userError || !user) {
-    throw new Error("User not authenticated");
+  if (profileError || !profile) {
+    throw new Error("User not found");
   }
 
-  const { data, error } = await supabase
+  // Fetch prompts by user ID
+  const { data: prompts, error: promptsError } = await supabase
     .from("prompts")
     .select("*")
-    .eq("user_id", user.id);
-  if (error) {
-    throw error;
+    .eq("user_id", profile.id)
+    .order("created_at", { ascending: false }); // optional: latest first
+
+  if (promptsError) {
+    throw promptsError;
   }
-  return data;
+
+  return prompts ?? [];
 };
 
 export const readPrompt = async (id: string): Promise<Prompt | null> => {

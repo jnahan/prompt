@@ -28,26 +28,49 @@ export const createFolder = async (formData: CreateFolder) => {
   return data;
 };
 
-export const readFolders = async (): Promise<Folder[]> => {
+export const readFolders = async (username?: string): Promise<Folder[]> => {
   const supabase = await createClient();
+  let userId: string;
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  if (username) {
+    // Get user ID by username
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .single();
 
-  if (userError || !user) {
-    throw new Error("User not authenticated");
+    if (profileError || !profile) {
+      throw new Error("User not found");
+    }
+
+    userId = profile.id;
+  } else {
+    // Fallback: get currently authenticated user
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("User not authenticated");
+    }
+
+    userId = user.id;
   }
 
-  const { data, error } = await supabase
+  // Fetch folders for the user
+  const { data: folders, error } = await supabase
     .from("folders")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false }); // optional: latest first
+
   if (error) {
     throw error;
   }
-  return data;
+
+  return folders ?? [];
 };
 
 export const updateFolder = async (id: string, formData: CreateFolder) => {

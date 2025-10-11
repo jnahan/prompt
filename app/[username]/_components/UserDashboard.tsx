@@ -21,14 +21,17 @@ interface UserDashboardProps {
   profile: Profile;
   folders: Folder[];
   prompts: Prompt[];
+  username: string;
 }
 
 export default function UserDashboard({
   profile,
   folders,
   prompts,
+  username,
 }: UserDashboardProps) {
   const router = useRouter();
+  const isOwnProfile = profile.username === username;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
@@ -89,42 +92,44 @@ export default function UserDashboard({
 
   return (
     <div className="mt-12">
-      {profile.subscription_level === "free" && prompts.length >= 5 && (
-        <UpgradeBanner />
-      )}
+      {isOwnProfile &&
+        profile.subscription_level === "free" &&
+        prompts.length >= 5 && <UpgradeBanner />}
 
       {/* Main Content */}
       <div className="my-12">
-        <ProfileInfo username={profile?.username || ""} />
+        <ProfileInfo username={username} />
 
         <section className="mt-8">
           {/* Saved prompts, buttons */}
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-semibold">Saved prompts</h1>
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  profile.subscription_level === "free" && prompts.length >= 5
-                    ? router.push("/upgrade")
-                    : router.push("/prompt/new")
-                }
-                size="default"
-                variant="outline"
-              >
-                <Plus className="h-4 w-4" />
-                New prompt
-              </Button>
+            {isOwnProfile && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    profile.subscription_level === "free" && prompts.length >= 5
+                      ? router.push("/upgrade")
+                      : router.push("/prompt/new")
+                  }
+                  size="default"
+                  variant="outline"
+                >
+                  <Plus className="h-4 w-4" />
+                  New prompt
+                </Button>
 
-              {/* Folder creation dialog now triggers refresh */}
-              <CreateFolderDialog onAfterSubmit={handleRefresh} />
+                {/* Folder creation dialog now triggers refresh */}
+                <CreateFolderDialog onAfterSubmit={handleRefresh} />
 
-              <Button
-                variant="outline"
-                onClick={() => setIsShareDialogOpen(true)}
-              >
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsShareDialogOpen(true)}
+                >
+                  <Share className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="border border-gray-200 rounded-lg">
@@ -153,6 +158,7 @@ export default function UserDashboard({
                   name={folder.name}
                   count={folder.prompts.length}
                   isOpen={openFolderIds.includes(folder.id)}
+                  isOwnProfile={isOwnProfile}
                   onToggle={() =>
                     setOpenFolderIds(
                       (prev) =>
@@ -169,6 +175,7 @@ export default function UserDashboard({
                         id={prompt.id}
                         title={prompt.title}
                         content={prompt.content}
+                        isOwnProfile={isOwnProfile}
                       />
                     ))}
                   </ul>
@@ -182,6 +189,7 @@ export default function UserDashboard({
                   id={prompt.id}
                   title={prompt.title}
                   content={prompt.content}
+                  isOwnProfile={isOwnProfile}
                 />
               ))}
             </ul>
