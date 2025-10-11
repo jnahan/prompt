@@ -82,12 +82,16 @@ export default function UserDashboard({
         )
         .map((f) => f.id);
       setOpenFolderIds(matchedFolderIds);
+    } else {
+      setOpenFolderIds([]);
     }
   }, [searchQuery]);
 
   return (
     <div className="mt-12">
-      {prompts.length >= 5 && <UpgradeBanner />}
+      {profile.subscription_level === "free" && prompts.length >= 5 && (
+        <UpgradeBanner />
+      )}
 
       {/* Main Content */}
       <div className="my-12">
@@ -99,7 +103,11 @@ export default function UserDashboard({
             <h1 className="text-xl font-semibold">Saved prompts</h1>
             <div className="flex gap-2">
               <Button
-                onClick={() => router.push("/prompt/new")}
+                onClick={() =>
+                  profile.subscription_level === "free" && prompts.length >= 5
+                    ? router.push("/upgrade")
+                    : router.push("/prompt/new")
+                }
                 size="default"
                 variant="outline"
               >
