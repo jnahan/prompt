@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import OnboardingDialog from "./OnboardingDialog";
 import UpgradeBanner from "./UpgradeBanner";
 import ProfileInfo from "../../../components/ProfileInfo";
 import EmptyState from "./EmptyState";
@@ -22,14 +21,12 @@ interface UserDashboardProps {
   profile: Profile;
   folders: Folder[];
   prompts: Prompt[];
-  showOnboarding: boolean;
 }
 
 export default function UserDashboard({
   profile,
   folders,
   prompts,
-  showOnboarding,
 }: UserDashboardProps) {
   const router = useRouter();
 
@@ -90,8 +87,6 @@ export default function UserDashboard({
 
   return (
     <div className="mt-12">
-      {/* Onboarding Overlay */}
-      {showOnboarding && <OnboardingDialog />}
       {prompts.length >= 5 && <UpgradeBanner />}
 
       {/* Main Content */}
