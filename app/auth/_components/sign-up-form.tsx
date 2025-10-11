@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 export function SignUpForm({
   className,
@@ -56,6 +57,23 @@ export function SignUpForm({
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/auth/onboarding` },
+      });
+      if (error) throw error;
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -66,6 +84,18 @@ export function SignUpForm({
         <CardContent>
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleGoogleSignIn();
+                }}
+                className="w-full"
+                disabled={isLoading}
+                variant="outline"
+              >
+                <Image src="/google.svg" alt="Google" width={24} height={24} />
+                Sign up with Google
+              </Button>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
