@@ -75,20 +75,20 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              handleGoogleSignIn();
+            }}
+            className="w-full mb-6"
+            disabled={isLoading}
+            variant="outline"
+          >
+            <Image src="/google.svg" alt="Google" width={24} height={24} />
+            Login with Google
+          </Button>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleGoogleSignIn();
-                }}
-                className="w-full"
-                disabled={isLoading}
-                variant="outline"
-              >
-                <Image src="/google.svg" alt="Google" width={24} height={24} />
-                Login with Google
-              </Button>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

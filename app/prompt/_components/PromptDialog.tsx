@@ -4,6 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,7 @@ function PromptDialog({ title, content, children }: PromptDialogProps) {
           <DialogHeader className="mb-4">
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
+          <DialogDescription>Prompt preview</DialogDescription>
           <p className="text-sm">{previewText}</p>
         </section>
         {variableList.length > 0 && (
