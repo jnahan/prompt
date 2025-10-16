@@ -14,6 +14,7 @@ import ShareDialog from "./ShareDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Share } from "lucide-react";
+import Image from "next/image";
 
 import type { Profile, Folder, Prompt } from "@/types";
 
@@ -99,6 +100,49 @@ export default function UserDashboard({
       {/* Main Content */}
       <div className="my-12">
         <ProfileInfo username={username} />
+
+        <div className="flex flex-row gap-4 items-center justify-center my-4">
+          <a href="https://claude.ai/" target="_blank">
+            <Image
+              src={`ai-logos/claude.svg`}
+              alt={"claude"}
+              width={24}
+              height={24}
+            />
+          </a>
+          <a href="https://copilot.microsoft.com/" target="_blank">
+            <Image
+              src={`ai-logos/copilot.svg`}
+              alt={"copilot"}
+              width={24}
+              height={24}
+            />
+          </a>
+          <a href="https://gemini.google.com/" target="_blank">
+            <Image
+              src={`ai-logos/gemini.svg`}
+              alt={"gemini"}
+              width={24}
+              height={24}
+            />
+          </a>
+          <a href="https://grok.com/" target="_blank">
+            <Image
+              src={`ai-logos/grok.svg`}
+              alt={"grok"}
+              width={24}
+              height={24}
+            />
+          </a>
+          <a href="https://chat.openai.com/" target="_blank">
+            <Image
+              src={`ai-logos/openai.svg`}
+              alt={"openai"}
+              width={24}
+              height={24}
+            />
+          </a>
+        </div>
 
         <section className="mt-8">
           {/* Saved prompts, buttons */}
