@@ -2,12 +2,11 @@ import PromptForm from "../../_components/PromptForm";
 import { readPrompt } from "@/lib/actions/prompt.actions";
 import { readFolders } from "@/lib/actions/folder.actions";
 
-export default async function EditPromptPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const prompt = await readPrompt(params.id);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function EditPromptPage({ params }: any) {
+  const { id } = params as { id: string };
+
+  const prompt = await readPrompt(id);
 
   if (!prompt) {
     throw new Error("Prompt not found");
@@ -22,10 +21,6 @@ export default async function EditPromptPage({
   const folders = await readFolders();
 
   return (
-    <PromptForm
-      promptId={params.id}
-      initialValues={initialValues}
-      folders={folders}
-    />
+    <PromptForm promptId={id} initialValues={initialValues} folders={folders} />
   );
 }

@@ -10,9 +10,7 @@ import type { Profile } from "@/types";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const pathname = usePathname();
-  if (pathname.includes("/auth")) return null;
-
+  const pathname = usePathname(); // ✅ hook should be first
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
@@ -20,6 +18,8 @@ export default function Navbar() {
       .then((p) => setProfile(p))
       .catch(() => setProfile(null));
   }, []);
+
+  if (pathname.includes("/auth")) return null;
 
   return (
     <nav className="py-2 flex items-center justify-between mb-12">

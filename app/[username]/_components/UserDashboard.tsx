@@ -89,7 +89,7 @@ export default function UserDashboard({
     } else {
       setOpenFolderIds([]);
     }
-  }, [searchQuery]);
+  }, [searchQuery, groupedPrompts]);
 
   return (
     <div className="mt-12">

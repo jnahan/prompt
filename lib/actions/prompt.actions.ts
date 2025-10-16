@@ -81,6 +81,7 @@ export const updatePrompt = async (id: string, formData: CreatePrompt) => {
 
   if (typeof formData.folder_id !== "undefined") {
     // Map empty string to null for uuid column compatibility
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (updateData as any).folder_id = formData.folder_id || null;
   }
 

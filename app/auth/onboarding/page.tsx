@@ -26,10 +26,7 @@ const formSchema = z.object({
   username: z.string().min(3, { message: "Please enter a valid username" }),
 });
 
-export default function OnboardingPage({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -47,6 +44,7 @@ export default function OnboardingPage({
       setIsLoading(true);
       await createProfile(values);
       router.push(`/${values.username}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.message?.includes("duplicate username")) {
         form.setError("username", {
@@ -67,10 +65,8 @@ export default function OnboardingPage({
   return (
     <div
       className={cn(
-        "min-h-screen flex items-center justify-center bg-background px-4",
-        className
+        "min-h-screen flex items-center justify-center bg-background px-4"
       )}
-      {...props}
     >
       <Card className="w-full max-w-md">
         <CardHeader>

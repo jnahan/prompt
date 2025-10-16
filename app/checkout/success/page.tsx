@@ -4,7 +4,7 @@ import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 async function page() {
-  const data = await updateSubscriptionLevel("lifetime");
+  await updateSubscriptionLevel("lifetime");
 
   return (
     <div className="flex flex-col items-center justify-center text-center">
