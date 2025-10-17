@@ -60,7 +60,11 @@ function PromptDialog({ title, content, children }: PromptDialogProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="flex flex-row min-w-[60vw] max-h-[80vh]">
+      <DialogContent
+        className={`flex flex-row ${
+          variableList.length > 0 ? "min-w-[40vw]" : "max-w-lg"
+        }`}
+      >
         <section className="p-8 overflow-y-auto w-2/3">
           <DialogHeader className="mb-4">
             <DialogTitle>{title}</DialogTitle>
