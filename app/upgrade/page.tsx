@@ -8,7 +8,9 @@ export default async function UpgradePage() {
 
   return (
     <div className="mt-12">
-      <h1 className="text-3xl font-semibold mb-8 text-center">Upgrade plan</h1>
+      <h1 className="text-3xl font-semibold mb-8 text-center font-mono">
+        Upgrade plan
+      </h1>
       <ul className="flex flex-row border border-gray-200 rounded-lg">
         <li className="flex flex-1 flex-col justify-between border-r border-gray-200 px-6 py-8">
           <h2 className="font-semibold mb-3">Starter</h2>

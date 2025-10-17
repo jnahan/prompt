@@ -1,5 +1,4 @@
 import { readProfile } from "@/lib/actions/profile.actions";
-import ProfileInfo from "@/components/ProfileInfo";
 import ManageSettings from "./_components/ManageSettings";
 
 export default async function SettingsPage() {
@@ -7,7 +6,6 @@ export default async function SettingsPage() {
 
   return (
     <section className="mt-12">
-      <ProfileInfo username={profile.username} />
       <ManageSettings profile={profile} />
     </section>
   );

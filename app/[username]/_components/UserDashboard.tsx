@@ -4,16 +4,14 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import UpgradeBanner from "./UpgradeBanner";
-import ProfileInfo from "../../../components/ProfileInfo";
 import EmptyState from "./EmptyState";
 import PromptItem from "./PromptItem";
 import FolderItem from "./FolderItem";
 import CreateFolderDialog from "./CreateFolderDialog";
-import ShareDialog from "./ShareDialog";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Share } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import Image from "next/image";
 
 import type { Profile, Folder, Prompt } from "@/types";
@@ -35,7 +33,6 @@ export default function UserDashboard({
   const isOwnProfile = profile.username === username;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
 
   const rootPrompts = prompts.filter((p) => !p.folder_id);
@@ -87,8 +84,6 @@ export default function UserDashboard({
 
       {/* Main Content */}
       <div className="my-12">
-        <ProfileInfo username={username} />
-
         <div className="flex flex-row gap-4 items-center justify-center my-4">
           <a href="https://claude.ai/" target="_blank">
             <Image
@@ -130,6 +125,14 @@ export default function UserDashboard({
               height={24}
             />
           </a>
+          <a href="https://www.perplexity.ai/" target="_blank">
+            <Image
+              src={`ai-logos/perplexity.svg`}
+              alt={"perplexity"}
+              width={24}
+              height={24}
+            />
+          </a>
         </div>
 
         <section className="mt-8">
@@ -153,13 +156,6 @@ export default function UserDashboard({
 
                 {/* Folder creation - server action handles revalidation */}
                 <CreateFolderDialog />
-
-                <Button
-                  variant="outline"
-                  onClick={() => setIsShareDialogOpen(true)}
-                >
-                  <Share className="h-4 w-4" />
-                </Button>
               </div>
             )}
           </div>
@@ -231,13 +227,6 @@ export default function UserDashboard({
           </div>
         </section>
       </div>
-
-      {/* Share Dialog */}
-      <ShareDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        userName={profile.username}
-      />
     </div>
   );
 }
