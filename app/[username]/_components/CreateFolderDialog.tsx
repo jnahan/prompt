@@ -82,7 +82,7 @@ export default function CreateFolderDialog({
       onOpenChange={onOpenChange ?? setIsOpen}
     >
       {!folderId && (
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button
             onClick={() =>
               onOpenChange ? onOpenChange(true) : setIsOpen(true)
@@ -117,7 +117,7 @@ export default function CreateFolderDialog({
             />
 
             <DialogFooter>
-              <DialogClose>
+              <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
               <Button type="submit">Save</Button>

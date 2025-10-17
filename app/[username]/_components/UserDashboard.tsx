@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import UpgradeBanner from "./UpgradeBanner";
@@ -43,12 +43,14 @@ export default function UserDashboard({
     router.refresh(); // re-runs the server component to get latest data
   };
 
-  const groupedPrompts = folders.map((folder) => ({
-    ...folder,
-    prompts: prompts.filter((p) => p.folder_id === folder.id),
-  }));
-
   const rootPrompts = prompts.filter((p) => !p.folder_id);
+
+  const groupedPrompts = useMemo(() => {
+    return folders.map((folder) => ({
+      ...folder,
+      prompts: prompts.filter((p) => p.folder_id === folder.id),
+    }));
+  }, [folders, prompts]);
 
   const filteredGroupedPrompts = groupedPrompts
     .map((folder) => {
@@ -73,23 +75,31 @@ export default function UserDashboard({
   );
 
   useEffect(() => {
-    if (searchQuery.trim() !== "") {
-      const matchedFolderIds = groupedPrompts
-        .filter(
-          (f) =>
-            f.name.toLowerCase().includes(searchQuery) ||
-            f.prompts.some(
-              (p) =>
-                p.title.toLowerCase().includes(searchQuery) ||
-                p.content.toLowerCase().includes(searchQuery)
-            )
-        )
-        .map((f) => f.id);
-      setOpenFolderIds(matchedFolderIds);
-    } else {
-      setOpenFolderIds([]);
+    if (searchQuery.trim() === "") {
+      if (openFolderIds.length !== 0) setOpenFolderIds([]);
+      return;
     }
-  }, [searchQuery, groupedPrompts]);
+
+    const matchedFolderIds = groupedPrompts
+      .filter(
+        (f) =>
+          f.name.toLowerCase().includes(searchQuery) ||
+          f.prompts.some(
+            (p) =>
+              p.title.toLowerCase().includes(searchQuery) ||
+              p.content.toLowerCase().includes(searchQuery)
+          )
+      )
+      .map((f) => f.id);
+
+    // Only update state if it’s different
+    if (
+      matchedFolderIds.length !== openFolderIds.length ||
+      !matchedFolderIds.every((id, idx) => id === openFolderIds[idx])
+    ) {
+      setOpenFolderIds(matchedFolderIds);
+    }
+  }, [searchQuery, groupedPrompts, openFolderIds]);
 
   return (
     <div className="mt-12">

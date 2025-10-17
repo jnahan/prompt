@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,10 +36,8 @@ function UpdatePromptMenu({ id }: { id: string }) {
   return (
     <div onClick={(e) => e.stopPropagation()} className="ml-auto">
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+        <DropdownMenuTrigger asChild>
+          <MoreHorizontal className="h-4 w-4" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent

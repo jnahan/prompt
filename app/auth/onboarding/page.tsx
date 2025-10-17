@@ -44,19 +44,11 @@ export default function OnboardingPage() {
       setIsLoading(true);
       await createProfile(values);
       router.push(`/${values.username}`);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      if (error.message?.includes("duplicate username")) {
-        form.setError("username", {
-          type: "manual",
-          message: "Username is already taken. Please choose another",
-        });
-      } else {
-        form.setError("username", {
-          type: "manual",
-          message: "Something went wrong. Please try again",
-        });
-      }
+    } catch {
+      form.setError("username", {
+        type: "manual",
+        message: "Something went wrong. Please try again",
+      });
     } finally {
       setIsLoading(false);
     }

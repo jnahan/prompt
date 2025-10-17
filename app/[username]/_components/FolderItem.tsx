@@ -24,7 +24,7 @@ function FolderItem({
 }: FolderItemProps) {
   return (
     <li className="flex flex-col">
-      <button
+      <div
         onClick={onToggle}
         className="flex flex-row px-4 py-3 items-center justify-between cursor-pointer hover:bg-gray-50 rounded-md transition"
       >
@@ -47,7 +47,7 @@ function FolderItem({
           </div>
         </div>
         {isOwnProfile && <UpdateFolderMenu id={id} name={name} />}
-      </button>
+      </div>
 
       {isOpen && <ul className="pl-4">{children}</ul>}
     </li>
