@@ -27,8 +27,8 @@ function FolderItem({
       <div
         onClick={onToggle}
         className={cn(
-          "flex flex-row px-4 py-3 items-center justify-between cursor-pointer hover:bg-gray-50",
-          isOpen && "bg-gray-100 hover:bg-gray-100"
+          "flex flex-row px-4 py-3 items-center justify-between cursor-pointer",
+          isOpen && "bg-gray-100"
         )}
       >
         <div className="flex flex-row items-center gap-2">

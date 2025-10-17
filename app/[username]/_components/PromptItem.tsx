@@ -20,8 +20,8 @@ function PromptItem({
     <PromptDialog title={title} content={content}>
       <li
         className={cn(
-          "flex flex-row justify-between items-center px-4 py-3 w-ful hover:bg-gray-50",
-          isNested && "pl-10 bg-gray-50 hover:bg-gray-100 box-border"
+          "flex flex-row justify-between items-center px-4 py-3 w-full cursor-pointer",
+          isNested && "pl-10 bg-gray-50 box-border"
         )}
       >
         <div className="flex flex-col gap-1 cursor-pointer text-left">
