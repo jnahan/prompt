@@ -8,11 +8,11 @@ import EmptyState from "./EmptyState";
 import PromptItem from "./PromptItem";
 import FolderItem from "./FolderItem";
 import CreateFolderDialog from "./CreateFolderDialog";
+import QuickLinks from "./QuickLinks";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
-import Image from "next/image";
 
 import type { Profile, Folder, Prompt } from "@/types";
 
@@ -84,58 +84,8 @@ export default function UserDashboard({
 
       {/* Main Content */}
       <div className="my-12">
-        <div className="flex flex-row gap-4 items-center justify-center my-4">
-          <a href="https://claude.ai/" target="_blank">
-            <Image
-              src={`ai-logos/claude.svg`}
-              alt={"claude"}
-              width={24}
-              height={24}
-            />
-          </a>
-          <a href="https://copilot.microsoft.com/" target="_blank">
-            <Image
-              src={`ai-logos/copilot.svg`}
-              alt={"copilot"}
-              width={24}
-              height={24}
-            />
-          </a>
-          <a href="https://gemini.google.com/" target="_blank">
-            <Image
-              src={`ai-logos/gemini.svg`}
-              alt={"gemini"}
-              width={24}
-              height={24}
-            />
-          </a>
-          <a href="https://grok.com/" target="_blank">
-            <Image
-              src={`ai-logos/grok.svg`}
-              alt={"grok"}
-              width={24}
-              height={24}
-            />
-          </a>
-          <a href="https://chat.openai.com/" target="_blank">
-            <Image
-              src={`ai-logos/openai.svg`}
-              alt={"openai"}
-              width={24}
-              height={24}
-            />
-          </a>
-          <a href="https://www.perplexity.ai/" target="_blank">
-            <Image
-              src={`ai-logos/perplexity.svg`}
-              alt={"perplexity"}
-              width={24}
-              height={24}
-            />
-          </a>
-        </div>
-
         <section className="mt-8">
+          <QuickLinks />
           {/* Saved prompts, buttons */}
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-medium font-mono">Saved prompts</h1>
