@@ -27,7 +27,7 @@ export default function Navbar() {
   return (
     <nav className="py-2 flex items-center justify-between mb-12">
       <Link href="/" key={"Home"}>
-        <Image src={`logo.svg`} alt={"logo"} width="125" height="32" />
+        <Image src={`logo.svg`} alt={"PromptKit"} width="125" height="32" />
       </Link>
       <div className="flex items-center gap-1">
         {profile?.subscription_level === "free" && (
@@ -35,7 +35,7 @@ export default function Navbar() {
             <Link href="/upgrade">Get unlimited prompts</Link>
           </Button>
         )}
-        <AccountMenu userName={profile?.username || ""} />
+        <AccountMenu />
       </div>
     </nav>
   );

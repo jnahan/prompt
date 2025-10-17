@@ -4,8 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,14 +18,10 @@ import {
   Mail,
   LogOut,
   ExternalLink,
+  UserIcon,
 } from "lucide-react";
 
-interface AccountMenuProps {
-  userName: string;
-  avatarUrl?: string;
-}
-
-export default function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
+export default function AccountMenu() {
   const router = useRouter();
   const supabase = createClient();
 
@@ -40,19 +34,12 @@ export default function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
     }
   };
 
-  const firstLetter = userName.charAt(0).toUpperCase();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={avatarUrl} alt={`${userName} avatar`} />
-            <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-sm">
-              {firstLetter}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
+        <div className="h-9 w-9 rounded-full border border-gray-200 flex items-center justify-center cursor-pointer">
+          <UserIcon className="h-4 w-4 text-gray-500" />
+        </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end" forceMount>

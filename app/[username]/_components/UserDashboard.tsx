@@ -135,7 +135,7 @@ export default function UserDashboard({
         <section className="mt-8">
           {/* Saved prompts, buttons */}
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold">Saved prompts</h1>
+            <h1 className="text-2xl font-medium font-mono">Saved prompts</h1>
             {isOwnProfile && (
               <div className="flex gap-2">
                 <Button
@@ -154,12 +154,12 @@ export default function UserDashboard({
                 {/* Folder creation - server action handles revalidation */}
                 <CreateFolderDialog />
 
-                {/* <Button
+                <Button
                   variant="outline"
                   onClick={() => setIsShareDialogOpen(true)}
                 >
                   <Share className="h-4 w-4" />
-                </Button> */}
+                </Button>
               </div>
             )}
           </div>
