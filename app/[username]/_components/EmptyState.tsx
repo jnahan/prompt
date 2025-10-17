@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 function EmptyState() {
   return (
     <div className="p-12 text-center">
       <div className="flex justify-center mb-2">
-        <Sparkles width={32} height={32} className="text-muted-foreground" />
+        <Image
+          src="/illustrations/sketch.png"
+          alt="Empty state"
+          width={80}
+          height={80}
+        />
       </div>
-      <h3 className="font-semibold mb-1">Add a new prompt</h3>
+      <h3 className="font-medium mb-1">Add a new prompt</h3>
       <p className="text-sm text-muted-foreground mb-4">
         Your prompts will show up here
       </p>

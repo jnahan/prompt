@@ -178,7 +178,7 @@ export default function UserDashboard({
               />
             </div>
 
-            {prompts.length === 0 && <EmptyState />}
+            {prompts.length === 0 && folders.length === 0 && <EmptyState />}
 
             {/* Prompts and Folders List */}
             <ul className="list-none pb-2">

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar";
 
@@ -10,16 +9,9 @@ const defaultUrl = process.env.VERCEL_URL
 // TODO: Update this to use actual title and description
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "My App",
-  description: "A clean Next.js app with Supabase authentication",
+  title: "PromptKit",
+  description: "Web app for creating and managing prompts",
 };
-
-// TODO: Update this to use actual font
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
 
 export default function RootLayout({
   children,
@@ -28,10 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.className} antialiased`}
-        suppressHydrationWarning
-      >
+      <body className={`antialiased`} suppressHydrationWarning>
         <div className="min-h-screen bg-white max-w-2xl mx-auto">
           <Navbar />
           {children}
