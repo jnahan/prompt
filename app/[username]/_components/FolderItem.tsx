@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 import UpdateFolderMenu from "./UpdateFolderMenu";
-
+import { cn } from "@/lib/utils";
 export interface FolderItemProps {
   id: string;
   name: string;
@@ -26,7 +26,10 @@ function FolderItem({
     <li className="flex flex-col">
       <div
         onClick={onToggle}
-        className="flex flex-row px-4 py-3 items-center justify-between cursor-pointer hover:bg-gray-50 rounded-md transition"
+        className={cn(
+          "flex flex-row px-4 py-3 items-center justify-between cursor-pointer hover:bg-gray-50",
+          isOpen && "bg-gray-100 hover:bg-gray-100"
+        )}
       >
         <div className="flex flex-row items-center gap-2">
           {isOpen ? (
@@ -49,7 +52,7 @@ function FolderItem({
         {isOwnProfile && <UpdateFolderMenu id={id} name={name} />}
       </div>
 
-      {isOpen && <ul className="pl-4">{children}</ul>}
+      {isOpen && <>{children}</>}
     </li>
   );
 }

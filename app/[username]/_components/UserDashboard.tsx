@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import UpgradeBanner from "./UpgradeBanner";
@@ -73,33 +73,6 @@ export default function UserDashboard({
       p.title.toLowerCase().includes(searchQuery) ||
       p.content.toLowerCase().includes(searchQuery)
   );
-
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      if (openFolderIds.length !== 0) setOpenFolderIds([]);
-      return;
-    }
-
-    const matchedFolderIds = groupedPrompts
-      .filter(
-        (f) =>
-          f.name.toLowerCase().includes(searchQuery) ||
-          f.prompts.some(
-            (p) =>
-              p.title.toLowerCase().includes(searchQuery) ||
-              p.content.toLowerCase().includes(searchQuery)
-          )
-      )
-      .map((f) => f.id);
-
-    // Only update state if it’s different
-    if (
-      matchedFolderIds.length !== openFolderIds.length ||
-      !matchedFolderIds.every((id, idx) => id === openFolderIds[idx])
-    ) {
-      setOpenFolderIds(matchedFolderIds);
-    }
-  }, [searchQuery, groupedPrompts, openFolderIds]);
 
   return (
     <div className="mt-12">
@@ -213,16 +186,18 @@ export default function UserDashboard({
                   count={folder.prompts.length}
                   isOpen={openFolderIds.includes(folder.id)}
                   isOwnProfile={isOwnProfile}
-                  onToggle={() =>
+                  onToggle={() => {
                     setOpenFolderIds(
                       (prev) =>
                         prev.includes(folder.id)
                           ? prev.filter((id) => id !== folder.id) // close
                           : [...prev, folder.id] // open
-                    )
-                  }
+                    );
+                    console.log("openFolderIds", openFolderIds);
+                    console.log("folder.id", folder.id);
+                  }}
                 >
-                  <ul className="list-none pl-4s">
+                  <ul className="list-none">
                     {folder.prompts.map((prompt) => (
                       <PromptItem
                         key={prompt.id}
@@ -230,6 +205,7 @@ export default function UserDashboard({
                         title={prompt.title}
                         content={prompt.content}
                         isOwnProfile={isOwnProfile}
+                        isNested={true}
                       />
                     ))}
                   </ul>
