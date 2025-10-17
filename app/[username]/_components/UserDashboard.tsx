@@ -38,11 +38,6 @@ export default function UserDashboard({
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
 
-  // Called after folder creation or update
-  const handleRefresh = async () => {
-    router.refresh(); // re-runs the server component to get latest data
-  };
-
   const rootPrompts = prompts.filter((p) => !p.folder_id);
 
   const groupedPrompts = useMemo(() => {
@@ -66,7 +61,17 @@ export default function UserDashboard({
 
       return { ...folder, prompts: filteredPrompts };
     })
-    .filter((folder) => folder.prompts.length > 0);
+    .filter((folder) => {
+      // Only hide empty folders when searching
+      // Otherwise show all folders (even empty ones)
+      if (searchQuery) {
+        return (
+          folder.prompts.length > 0 ||
+          folder.name.toLowerCase().includes(searchQuery)
+        );
+      }
+      return true; // Show all folders when not searching
+    });
 
   const filteredRootPrompts = rootPrompts.filter(
     (p) =>
@@ -146,8 +151,8 @@ export default function UserDashboard({
                   New prompt
                 </Button>
 
-                {/* Folder creation dialog now triggers refresh */}
-                <CreateFolderDialog onAfterSubmit={handleRefresh} />
+                {/* Folder creation - server action handles revalidation */}
+                <CreateFolderDialog />
 
                 <Button
                   variant="outline"

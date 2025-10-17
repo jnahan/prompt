@@ -36,7 +36,6 @@ interface CreateFolderDialogProps {
   onOpenChange?: (open: boolean) => void;
   initialName?: string;
   folderId?: string; // if provided -> edit mode
-  onAfterSubmit?: () => void;
 }
 
 export default function CreateFolderDialog({
@@ -44,7 +43,6 @@ export default function CreateFolderDialog({
   onOpenChange,
   initialName,
   folderId,
-  onAfterSubmit,
 }: CreateFolderDialogProps) {
   const [isOpen, setIsOpen] = useState(open ?? false);
 
@@ -66,13 +64,11 @@ export default function CreateFolderDialog({
     } else {
       await createFolder(values);
     }
+    // Close dialog - server action handles cache revalidation
     if (onOpenChange) {
       onOpenChange(false);
     } else {
       setIsOpen(false);
-    }
-    if (onAfterSubmit) {
-      onAfterSubmit();
     }
   };
 

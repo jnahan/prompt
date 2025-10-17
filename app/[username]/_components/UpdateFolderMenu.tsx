@@ -10,11 +10,9 @@ import { MoreHorizontal } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useState } from "react";
 import { deleteFolder } from "@/lib/actions/folder.actions";
-import { useRouter } from "next/navigation";
 import CreateFolderDialog from "./CreateFolderDialog";
 
 function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
-  const router = useRouter();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -28,7 +26,7 @@ function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
     try {
       setIsDeleting(true);
       await deleteFolder(id);
-      router.refresh();
+      // No need for router.refresh() - server action handles revalidation
     } finally {
       setIsDeleting(false);
       setIsConfirmOpen(false);
@@ -61,7 +59,6 @@ function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
         onOpenChange={setIsEditOpen}
         initialName={name}
         folderId={id}
-        onAfterSubmit={() => router.refresh()}
       />
 
       <ConfirmationDialog

@@ -24,7 +24,7 @@ export const createFolder = async (formData: CreateFolder) => {
   if (error) {
     throw error;
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };
 
@@ -82,6 +82,7 @@ export const updateFolder = async (id: string, formData: CreateFolder) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };
 
@@ -92,4 +93,5 @@ export const deleteFolder = async (id: string) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
 };

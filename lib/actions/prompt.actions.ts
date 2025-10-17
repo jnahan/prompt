@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "../supabase/server";
 import { Prompt, CreatePrompt } from "@/types";
 
@@ -25,6 +26,7 @@ export const createPrompt = async (formData: CreatePrompt) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };
 
@@ -92,6 +94,7 @@ export const updatePrompt = async (id: string, formData: CreatePrompt) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };
 
@@ -102,5 +105,6 @@ export const deletePrompt = async (id: string) => {
   if (error) {
     throw error;
   }
+  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };

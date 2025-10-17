@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 function UpdatePromptMenu({ id }: { id: string }) {
-  const router = useRouter();
+  const router = useRouter(); // Still needed for navigation to edit page
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -26,7 +26,7 @@ function UpdatePromptMenu({ id }: { id: string }) {
     try {
       setIsDeleting(true);
       await deletePrompt(id);
-      router.refresh();
+      // No need for router.refresh() - server action handles revalidation
     } finally {
       setIsDeleting(false);
       setIsConfirmOpen(false);
