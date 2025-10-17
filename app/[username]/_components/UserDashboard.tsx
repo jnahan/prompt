@@ -154,12 +154,12 @@ export default function UserDashboard({
                 {/* Folder creation - server action handles revalidation */}
                 <CreateFolderDialog />
 
-                <Button
+                {/* <Button
                   variant="outline"
                   onClick={() => setIsShareDialogOpen(true)}
                 >
                   <Share className="h-4 w-4" />
-                </Button>
+                </Button> */}
               </div>
             )}
           </div>
