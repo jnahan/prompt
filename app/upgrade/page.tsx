@@ -25,15 +25,23 @@ export default async function UpgradePage() {
           <ul className="list-none flex flex-col gap-4">
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">Save up to 5 prompts</p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">Organize prompts in folders</p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">
+                Create prompts with placeholder variables
+              </p>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-gray-500" />
+              <p className="text-sm font-medium">
+                One click to send prompts to AI
+              </p>
             </li>
           </ul>
         </li>
@@ -59,15 +67,21 @@ export default async function UpgradePage() {
           <ul className="list-none flex flex-col gap-4">
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">
+                Everything in the Starter plan
+              </p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">Saven unlimited prompts</p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Up to 5 prompts</p>
+              <p className="text-sm font-medium">No recurring payments</p>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-gray-500" />
+              <p className="text-sm font-medium">Pay once, own it for life</p>
             </li>
           </ul>
         </li>

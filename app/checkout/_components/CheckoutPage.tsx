@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-
+import { Spinner } from "@/components/ui/spinner";
 import convertToSubCurrency from "@/lib/convertToSubCurrency";
 import {
   useStripe,
@@ -67,16 +67,12 @@ function CheckoutPage({ amount }: { amount: number }) {
 
   if (!clientSecret || !stripe || !elements) {
     return (
-      <div className="flex items-center justify-center">
-        <div
-          className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-          role="status"
-        >
-          <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-            Loading...
-          </span>
-        </div>
-      </div>
+      <section className="flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-medium font-mono mb-8 text-center">
+          Get unlimited prompts
+        </h1>
+        <Spinner className="size-8 mt-8" />
+      </section>
     );
   }
 

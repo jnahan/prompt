@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { CreateProfile } from "@/types";
 import { createClient } from "../supabase/server";
 import { Profile } from "@/types";
@@ -100,7 +99,6 @@ export const updateSubscriptionLevel = async (level: "free" | "lifetime") => {
   if (error) {
     throw error;
   }
-  revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
 };
 
