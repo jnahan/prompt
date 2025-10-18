@@ -79,7 +79,6 @@ export default function UserDashboard({
         <UpgradeBanner />
       )}
 
-      <QuickLinks />
       {/* Saved prompts, buttons */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-medium font-mono">Saved prompts</h1>
@@ -101,6 +100,7 @@ export default function UserDashboard({
       </div>
 
       <div className="border">
+        <QuickLinks />
         {/* Search Bar */}
         <div className="h-14 flex items-center pl-5">
           <Search className="h-5 w-5 text-gray-500" />
