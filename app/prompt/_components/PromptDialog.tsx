@@ -27,14 +27,17 @@ interface PromptDialogProps {
 interface AIPlatform {
   name: string;
   logo: string;
+  logoWhite?: string;
   getUrl: (prompt: string) => string;
+  requiresCopy?: boolean; // new flag
 }
 
 const aiPlatforms: AIPlatform[] = [
   {
     name: "Claude",
     logo: "/ai-logos/claude.svg",
-    getUrl: (prompt) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}`,
+    getUrl: () => `https://claude.ai/`,
+    requiresCopy: true,
   },
   {
     name: "Copilot",
@@ -45,17 +48,19 @@ const aiPlatforms: AIPlatform[] = [
   {
     name: "Gemini",
     logo: "/ai-logos/gemini.svg",
-    getUrl: (prompt) =>
-      `https://gemini.google.com/?q=${encodeURIComponent(prompt)}`,
+    getUrl: () => `https://gemini.google.com/`,
+    requiresCopy: true,
   },
   {
     name: "Grok",
     logo: "/ai-logos/grok.svg",
+    logoWhite: "/ai-logos/grok-white.svg",
     getUrl: (prompt) => `https://grok.com/?q=${encodeURIComponent(prompt)}`,
   },
   {
     name: "ChatGPT",
-    logo: "/ai-logos/openai-white.svg",
+    logo: "/ai-logos/openai.svg",
+    logoWhite: "/ai-logos/openai-white.svg",
     getUrl: (prompt) =>
       `https://chat.openai.com/?q=${encodeURIComponent(prompt)}`,
   },
@@ -76,10 +81,21 @@ export default function PromptDialog({
   const [selectedAI, setSelectedAI] = useState<AIPlatform>(aiPlatforms[4]); // default: ChatGPT
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleSendToAI = () => {
+  const handleSendToAI = async () => {
     if (!filled.trim()) return;
+
+    if (selectedAI.requiresCopy) {
+      // Copy prompt automatically
+      await navigator.clipboard.writeText(filled);
+    }
+
     window.open(selectedAI.getUrl(filled), "_blank");
   };
+
+  // Button text based on whether AI requires copy
+  const mainButtonText = selectedAI.requiresCopy
+    ? `Copy and open ${selectedAI.name}`
+    : `Send to ${selectedAI.name}`;
 
   return (
     <Dialog>
@@ -119,12 +135,12 @@ export default function PromptDialog({
           <ButtonGroup className="flex-1 relative">
             <Button className="flex-1" onClick={handleSendToAI}>
               <Image
-                src={selectedAI.logo}
+                src={selectedAI.logoWhite || selectedAI.logo}
                 alt={selectedAI.name}
                 width={16}
                 height={16}
               />
-              {`Send to ${selectedAI.name}`}
+              {mainButtonText}
             </Button>
 
             <ButtonGroupSeparator />
