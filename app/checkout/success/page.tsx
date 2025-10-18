@@ -15,9 +15,7 @@ async function page() {
         width={100}
         height={92}
       />
-      <h1 className="text-lg font-semibold mb-2">
-        Thank you for your purchase!
-      </h1>
+      <h1 className="text-lg font-medium mb-2">Thank you for your purchase!</h1>
       <p className="mb-6 text-secondary-foreground">
         Your account has been upgraded. You can now save unlimited prompts for
         life!

@@ -25,7 +25,7 @@ function ManageSettings({ profile }: { profile: Profile }) {
       <section className="mb-6">
         <div className="border border-gray-200 p-4 rounded-lg flex justify-between items-center">
           <div>
-            <p className="font-semibold mb-1">Plan</p>
+            <p className="font-medium mb-1">Plan</p>
             <p className="text-sm text-muted-foreground">
               {profile.subscription_level === "free"
                 ? "Basic plan"
@@ -42,7 +42,7 @@ function ManageSettings({ profile }: { profile: Profile }) {
       <section>
         <div className="border border-gray-200 p-4 rounded-lg flex justify-between items-center">
           <div>
-            <p className="font-semibold mb-1">Delete account</p>
+            <p className="font-medium mb-1">Delete account</p>
             <p className="text-sm text-muted-foreground">
               This action cannot be undone
             </p>

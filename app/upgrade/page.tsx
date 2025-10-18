@@ -46,7 +46,7 @@ export default async function UpgradePage() {
               </p>
             </div>
           </div>
-          <h3 className="text-2xl font-semibold mb-6">$39.99</h3>
+          <h3 className="text-2xl font-medium mb-6">$39.99</h3>
           {profile.subscription_level === "free" ? (
             <Button className="mb-6" asChild>
               <Link href="/checkout">Upgrade</Link>
