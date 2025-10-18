@@ -10,7 +10,6 @@ export interface FolderItemProps {
   count: number;
   isOpen: boolean;
   onToggle: () => void;
-  isOwnProfile?: boolean;
 }
 
 function FolderItem({
@@ -20,23 +19,17 @@ function FolderItem({
   count,
   isOpen,
   onToggle,
-  isOwnProfile,
 }: FolderItemProps) {
   return (
     <li className="flex flex-col">
       <div
         onClick={onToggle}
         className={cn(
-          "flex flex-row px-4 py-3 items-center justify-between cursor-pointer",
-          isOpen && "bg-gray-100"
+          "group flex flex-row px-4 py-3 items-center justify-between cursor-pointer border-l-4 border-transparent",
+          isOpen && "bg-blue-50 border-blue-500"
         )}
       >
         <div className="flex flex-row items-center gap-2">
-          {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-600" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-gray-600" />
-          )}
           <div className="flex flex-row items-center gap-1">
             <Image
               src={`folder.svg`}
@@ -45,11 +38,18 @@ function FolderItem({
               height={24}
               className="mr-1"
             />
-            <p className="text-sm font-semibold">{name}</p>
+            <p className="text-sm font-medium">{name}</p>
             <p className="text-sm text-gray-500">{`(${count})`}</p>
           </div>
         </div>
-        {isOwnProfile && <UpdateFolderMenu id={id} name={name} />}
+        <div className="flex flex-row items-center gap-2">
+          <UpdateFolderMenu id={id} name={name} />
+          {isOpen ? (
+            <ChevronDown className="h-5 w-5 text-gray-500" />
+          ) : (
+            <ChevronRight className="h-5 w-5 text-gray-500" />
+          )}
+        </div>
       </div>
 
       {isOpen && <>{children}</>}

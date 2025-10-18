@@ -5,30 +5,23 @@ interface PromptItemProps {
   id: string;
   title: string;
   content: string;
-  isOwnProfile?: boolean;
   isNested?: boolean;
 }
 
-function PromptItem({
-  id,
-  title,
-  content,
-  isOwnProfile,
-  isNested,
-}: PromptItemProps) {
+function PromptItem({ id, title, content, isNested }: PromptItemProps) {
   return (
     <PromptDialog title={title} content={content}>
       <li
         className={cn(
-          "flex flex-row justify-between items-center px-4 py-3 w-full cursor-pointer",
-          isNested && "pl-10 bg-gray-50 box-border"
+          "flex flex-row justify-between items-center px-5 py-3 w-full cursor-pointer group",
+          isNested && "pl-10 bg-blue-50 box-border"
         )}
       >
         <div className="flex flex-col gap-1 cursor-pointer text-left">
-          <h3 className="text-sm font-semibold">{title}</h3>
+          <h3 className="text-sm font-medium">{title}</h3>
           <p className="text-xs text-gray-500">{content}</p>
         </div>
-        {isOwnProfile && <UpdatePromptMenu id={id} />}
+        <UpdatePromptMenu id={id} />
       </li>
     </PromptDialog>
   );

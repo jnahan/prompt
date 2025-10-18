@@ -37,7 +37,7 @@ function UpdatePromptMenu({ id }: { id: string }) {
     <div onClick={(e) => e.stopPropagation()} className="ml-auto">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4 opacity-0 group-hover:opacity-100 text-gray-500" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent

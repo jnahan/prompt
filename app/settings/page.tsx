@@ -4,9 +4,5 @@ import ManageSettings from "./_components/ManageSettings";
 export default async function SettingsPage() {
   const profile = await readProfile();
 
-  return (
-    <section className="mt-12">
-      <ManageSettings profile={profile} />
-    </section>
-  );
+  return <ManageSettings profile={profile} />;
 }

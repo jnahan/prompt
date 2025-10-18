@@ -1,12 +1,12 @@
 "use client";
 
-import PromptDialog from "./PromptDialog";
-import { promptVariables } from "@/constants";
-
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { redirect, RedirectType, useRouter } from "next/navigation";
+
+import PromptDialog from "./PromptDialog";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,14 +28,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { Folder } from "@/types";
+import { promptVariables } from "@/constants";
 import { createPrompt, updatePrompt } from "@/lib/actions/prompt.actions";
-
-import { redirect, RedirectType, useRouter } from "next/navigation";
+import CreateFolderDialog from "@/app/[username]/_components/CreateFolderDialog";
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Title is required." }),
+  title: z.string().min(1, { message: "Title is required" }),
   folder_id: z.string().optional(),
-  content: z.string().min(1, { message: "Content is required." }),
+  content: z.string().min(1, { message: "Prompt is required" }),
 });
 
 type PromptFormValues = z.infer<typeof formSchema>;
@@ -103,7 +103,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
   }
 
   return (
-    <div className="mt-12">
+    <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold font-mono">
           {promptId && initialValues ? "Edit prompt" : "Create prompt"}
@@ -144,6 +144,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
                       <SelectValue placeholder="Select folder" />
                     </SelectTrigger>
                     <SelectContent>
+                      <CreateFolderDialog />
                       {folders.map((folder) => (
                         <SelectItem value={folder.id} key={folder.id}>
                           {folder.name}
@@ -177,13 +178,13 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
                       <p className="text-sm text-muted-foreground mb-3">
                         Variables are like placeholders that can be assigned
                         values. Use variables to set fields you want to control
-                        like Name
+                        like name
                       </p>
                       <ul className="flex flex-wrap gap-2">
                         {promptVariables.map((variable) => (
                           <li
                             key={variable}
-                            className="text-sm font-medium p-1 bg-gray-100 text-gray-500 cursor-pointer"
+                            className="text-sm font-mono bg-blue-50 cursor-pointer"
                             onClick={() => insertVariable(variable)}
                           >
                             {`{{${variable}}}`}
@@ -198,7 +199,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
             )}
           />
           <div className="flex flex-row items-center gap-2">
-            <Button type="submit">Save</Button>
+            <Button type="submit">Save prompt</Button>
             <Button
               variant="ghost"
               onClick={(e) => {

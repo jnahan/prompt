@@ -2,15 +2,15 @@ import Image from "next/image";
 
 function page() {
   return (
-    <div className="mt-12 border border-gray-200 p-12">
+    <div className="border border-gray-200 p-10 mt-2">
       <h1 className="text-2xl font-medium font-mono mb-2">Terms of Service</h1>
       <Image
         src="/illustrations/underline.svg"
         alt="underline"
-        width={240}
+        width={232}
         height={8}
       />
-      <p className="text-sm text-gray-500 mt-8">
+      <p className="text-sm text-gray-500 mt-6">
         Lorem ipsum dolor sit amet consectetur. Libero consequat pellentesque
         blandit bibendum nulla viverra accumsan. Sit feugiat lorem lectus
         aliquet eu praesent magna euismod felis. Quam amet odio neque aenean

@@ -17,11 +17,6 @@ export default async function UsernamePage({
   ]);
 
   return (
-    <UserDashboard
-      profile={profile}
-      folders={folders}
-      prompts={prompts}
-      username={username}
-    />
+    <UserDashboard profile={profile} folders={folders} prompts={prompts} />
   );
 }

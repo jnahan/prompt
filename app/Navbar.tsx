@@ -25,7 +25,7 @@ export default function Navbar() {
   if (isAuthPage) return null;
 
   return (
-    <nav className="py-2 flex items-center justify-between mb-12">
+    <nav className="py-2 flex items-center justify-between mb-6">
       <Link href="/" key={"Home"}>
         <Image src={`logo.svg`} alt={"PromptKit"} width="125" height="32" />
       </Link>

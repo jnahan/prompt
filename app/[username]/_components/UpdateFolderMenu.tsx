@@ -12,7 +12,12 @@ import { useState } from "react";
 import { deleteFolder } from "@/lib/actions/folder.actions";
 import CreateFolderDialog from "./CreateFolderDialog";
 
-function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
+interface UpdateFolderMenuProps {
+  id: string;
+  name: string;
+}
+
+function UpdateFolderMenu({ id, name }: UpdateFolderMenuProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -34,10 +39,13 @@ function UpdateFolderMenu({ id, name }: { id: string; name: string }) {
   };
 
   return (
-    <div onClick={(e) => e.stopPropagation()} className="ml-auto">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="ml-auto opacity-0 group-hover:opacity-100"
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4 opacity-0 group-hover:opacity-100 text-gray-500 mr-2" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="start">
           <DropdownMenuItem

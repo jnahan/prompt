@@ -81,13 +81,18 @@ function CheckoutPage({ amount }: { amount: number }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {clientSecret && <PaymentElement />}
-      <Button type="submit" disabled={isLoading} className="w-full mt-4">
-        <span>{isLoading ? "Processing..." : `Pay ${amount}`}</span>
-      </Button>
-      {errorMessage && <div>{errorMessage}</div>}
-    </form>
+    <section className="mt-2">
+      <h1 className="text-3xl font-medium font-mono mb-8 text-center">
+        Get unlimited prompts
+      </h1>
+      <form onSubmit={handleSubmit}>
+        {clientSecret && <PaymentElement />}
+        <Button type="submit" disabled={isLoading} className="w-full mt-4">
+          <span>{isLoading ? "Processing..." : `Pay ${amount}`}</span>
+        </Button>
+        {errorMessage && <div>{errorMessage}</div>}
+      </form>
+    </section>
   );
 }
 
