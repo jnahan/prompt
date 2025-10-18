@@ -19,7 +19,9 @@ function PromptItem({ id, title, content, isNested }: PromptItemProps) {
       >
         <div className="flex flex-col gap-1 cursor-pointer text-left">
           <h3 className="text-sm font-medium">{title}</h3>
-          <p className="text-xs text-gray-500">{content}</p>
+          <p className="text-xs text-gray-500 text-ellipsis max-w-[640px] overflow-hidden line-clamp-2">
+            {content}
+          </p>
         </div>
         <UpdatePromptMenu id={id} />
       </li>

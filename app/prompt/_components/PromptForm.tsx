@@ -184,7 +184,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
                         {promptVariables.map((variable) => (
                           <li
                             key={variable}
-                            className="text-sm font-mono bg-blue-50 cursor-pointer"
+                            className="text-sm font-mono bg-blue-50 text-blue-500 cursor-pointer"
                             onClick={() => insertVariable(variable)}
                           >
                             {`{{${variable}}}`}
