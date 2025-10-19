@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         if (userId) {
           try {
             await updateSubscriptionLevel(plan as "free" | "lifetime", userId);
+            console.log(`✅ Successfully upgraded user ${userId} to ${plan}`);
             revalidatePath("/", "layout");
           } catch (supabaseError) {
             console.error("❌ Failed to update subscription:", supabaseError);

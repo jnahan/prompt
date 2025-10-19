@@ -81,9 +81,9 @@ export const updateSubscriptionLevel = async (
   level: "free" | "lifetime",
   userId: string
 ) => {
-  const supabase = await createClient();
+  const { adminClient } = await import("../supabase/admin");
 
-  const { error } = await supabase
+  const { error } = await adminClient
     .from("profiles")
     .update({ subscription_level: level })
     .eq("id", userId);
