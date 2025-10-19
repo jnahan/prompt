@@ -44,7 +44,7 @@ export default function AccountMenu() {
 
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link href="/" className="flex items-center">
+          <Link href="/prompts" className="flex items-center">
             <Sparkles className="h-4 w-4" />
             <span>Saved prompts</span>
           </Link>

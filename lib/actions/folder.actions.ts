@@ -28,42 +28,23 @@ export const createFolder = async (formData: CreateFolder) => {
   return data;
 };
 
-export const readFolders = async (username?: string): Promise<Folder[]> => {
+export const readFolders = async (): Promise<Folder[]> => {
   const supabase = await createClient();
-  let userId: string;
 
-  if (username) {
-    // Get user ID by username
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username", username)
-      .single();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-    if (profileError || !profile) {
-      throw new Error("User not found");
-    }
-
-    userId = profile.id;
-  } else {
-    // Fallback: get currently authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      throw new Error("User not authenticated");
-    }
-
-    userId = user.id;
+  if (userError || !user) {
+    throw new Error("User not authenticated");
   }
 
   // Fetch folders for the user
   const { data: folders, error } = await supabase
     .from("folders")
     .select("*")
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false }); // optional: latest first
 
   if (error) {

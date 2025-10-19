@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="py-2 flex items-center justify-between mb-6">
-      <Link href="/" key={"Home"}>
+      <Link href="/prompts" key={"Home"}>
         <Image src={`/logo.svg`} alt={"PromptKit"} width="125" height="32" />
       </Link>
       <div className="flex items-center gap-1">

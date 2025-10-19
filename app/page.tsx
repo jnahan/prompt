@@ -10,6 +10,6 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  const profile = await readProfile();
-  redirect(`/${profile.username}`);
+  await readProfile();
+  redirect("/prompts");
 }

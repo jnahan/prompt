@@ -3,17 +3,11 @@ import { readFolders } from "@/lib/actions/folder.actions";
 import { readPrompts } from "@/lib/actions/prompt.actions";
 import UserDashboard from "./_components/UserDashboard";
 
-export default async function UsernamePage({
-  params,
-}: {
-  params: Promise<{ username: string }>;
-}) {
-  const username = (await params).username;
-
+export default async function PromptsPage() {
   const [profile, folders, prompts] = await Promise.all([
     readProfile(),
-    readFolders(username),
-    readPrompts(username),
+    readFolders(),
+    readPrompts(),
   ]);
 
   return (

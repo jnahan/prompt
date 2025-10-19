@@ -23,7 +23,6 @@ import { createProfile } from "@/lib/actions/profile.actions";
 const formSchema = z.object({
   first_name: z.string().min(1, { message: "First name is required" }),
   last_name: z.string().min(1, { message: "Last name is required" }),
-  username: z.string().min(3, { message: "Please enter a valid username" }),
 });
 
 export default function OnboardingPage() {
@@ -35,7 +34,6 @@ export default function OnboardingPage() {
     defaultValues: {
       first_name: "",
       last_name: "",
-      username: "",
     },
   });
 
@@ -43,9 +41,9 @@ export default function OnboardingPage() {
     try {
       setIsLoading(true);
       await createProfile(values);
-      router.push(`/${values.username}`);
+      router.push("/prompts");
     } catch {
-      form.setError("username", {
+      form.setError("root", {
         type: "manual",
         message: "Something went wrong. Please try again",
       });
@@ -102,20 +100,6 @@ export default function OnboardingPage() {
                     </p>
                   )}
                 </div>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  placeholder="Username"
-                  {...form.register("username")}
-                />
-                {form.formState.errors.username && (
-                  <p className="text-sm text-red-500">
-                    {form.formState.errors.username.message}
-                  </p>
-                )}
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>

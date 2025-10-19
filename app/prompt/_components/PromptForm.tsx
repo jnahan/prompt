@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { redirect, RedirectType, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import PromptDialog from "./PromptDialog";
 
@@ -30,7 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Folder } from "@/types";
 import { promptVariables } from "@/constants";
 import { createPrompt, updatePrompt } from "@/lib/actions/prompt.actions";
-import CreateFolderDialog from "@/app/[username]/_components/CreateFolderDialog";
+import CreateFolderDialog from "@/app/prompts/_components/CreateFolderDialog";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -97,10 +97,11 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
     try {
       if (promptId && initialValues) {
         await updatePrompt(promptId, values);
-        redirect("/", RedirectType.replace);
+        router.push("/prompts");
+        return;
       }
       await createPrompt(values);
-      redirect("/", RedirectType.replace);
+      router.push("/prompts");
     } catch (error) {
       // If it's the prompt limit error, redirect to upgrade
       if (

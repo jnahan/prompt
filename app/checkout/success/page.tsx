@@ -20,7 +20,7 @@ async function CheckoutSuccessPage() {
         life!
       </p>
       <Button asChild>
-        <Link href="/">Return home</Link>
+        <Link href="/prompts">Return home</Link>
       </Button>
     </div>
   );
