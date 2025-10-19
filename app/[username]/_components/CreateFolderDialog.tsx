@@ -91,7 +91,7 @@ export default function CreateFolderDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{folderId ? "Edit folder" : "New folder"}</DialogTitle>
         </DialogHeader>

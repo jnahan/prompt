@@ -108,18 +108,18 @@ export default function PromptDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="flex flex-col max-w-[640px] min-w-[640px]">
+      <DialogContent className="flex flex-col md:max-w-[640px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-medium font-mono">
             {title}
           </DialogTitle>
         </DialogHeader>
 
-        <DialogDescription>
+        <DialogDescription asChild>
           <Prompt content={content} onChange={setFilled} />
         </DialogDescription>
 
-        <div className="flex flex-row gap-2 mt-4">
+        <div className="flex flex-col md:flex-row gap-2 mt-4">
           {/* Copy Button */}
           <Button
             className="flex-1"
@@ -132,7 +132,7 @@ export default function PromptDialog({
           </Button>
 
           {/* AI Send Button with Dropdown */}
-          <ButtonGroup className="flex-1 relative">
+          <ButtonGroup className="flex-1 w-full">
             <Button className="flex-1" onClick={handleSendToAI}>
               <Image
                 src={selectedAI.logoWhite || selectedAI.logo}

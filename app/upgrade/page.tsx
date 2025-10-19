@@ -7,12 +7,12 @@ export default async function UpgradePage() {
   const profile = await readProfile();
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 pb-8">
       <h1 className="text-3xl font-medium mb-8 text-center font-mono">
         Upgrade plan
       </h1>
-      <ul className="flex flex-row border border-gray-200">
-        <li className="flex flex-1 flex-col justify-between border-r border-gray-200 px-6 py-8">
+      <ul className="flex flex-col-reverse md:flex-row border border-gray-200">
+        <li className="flex flex-1 flex-col justify-between md:border-r border-gray-200 px-6 py-8">
           <h2 className="font-sm font-medium font-mono mb-3">Starter</h2>
           <h3 className="text-2xl font-medium mb-6">$0</h3>
 
@@ -45,7 +45,7 @@ export default async function UpgradePage() {
             </li>
           </ul>
         </li>
-        <li className="flex flex-1 flex-col justify-between border-r border-gray-200 px-6 py-8 relative">
+        <li className="flex flex-1 flex-col justify-between border-gray-200 px-6 py-8 relative border-b md:border-b-0">
           <div className="flex flex-row gap-2 items-center mb-3">
             <h2 className="font-sm font-medium font-mono">Unlimited prompts</h2>
             <div className="px-2 py-1 bg-blue-100 flex flex-row gap-1 items-center absolute top-0 right-0">

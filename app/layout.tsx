@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`} suppressHydrationWarning>
-        <div className="min-h-screen bg-white max-w-[640px] mx-auto">
+        <div className="min-h-screen bg-white max-w-[640px] mx-auto px-4 md:px-0">
           <Navbar />
           {children}
         </div>

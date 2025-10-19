@@ -80,7 +80,7 @@ export default function UserDashboard({
       )}
 
       {/* Saved prompts, buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-4 md:flex-row justify-between">
         <h1 className="text-2xl font-medium font-mono">Saved prompts</h1>
         <div className="flex gap-2">
           <Button
