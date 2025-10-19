@@ -94,12 +94,26 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
   };
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
-    if (promptId && initialValues) {
-      await updatePrompt(promptId, values);
+    try {
+      if (promptId && initialValues) {
+        await updatePrompt(promptId, values);
+        redirect("/", RedirectType.replace);
+      }
+      await createPrompt(values);
       redirect("/", RedirectType.replace);
+    } catch (error) {
+      // If it's the prompt limit error, redirect to upgrade
+      if (
+        error instanceof Error &&
+        error.message.includes("Free users can only create up to 5 prompts")
+      ) {
+        router.push("/upgrade");
+      } else {
+        // Handle other errors
+        console.error("Error saving prompt:", error);
+        alert("Failed to save prompt. Please try again.");
+      }
     }
-    await createPrompt(values);
-    redirect("/", RedirectType.replace);
   }
 
   return (

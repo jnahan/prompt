@@ -16,6 +16,30 @@ export const createPrompt = async (formData: CreatePrompt) => {
     throw new Error("User not authenticated");
   }
 
+  // Check if user is on free plan and has reached the limit
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("subscription_level")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) throw profileError;
+
+  if (profile.subscription_level === "free") {
+    const { count, error: countError } = await supabase
+      .from("prompts")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    if (countError) throw countError;
+
+    if (count !== null && count >= 5) {
+      throw new Error(
+        "Free users can only create up to 5 prompts. Please upgrade."
+      );
+    }
+  }
+
   const { data, error } = await supabase.from("prompts").insert({
     user_id: user.id,
     title: formData.title,
