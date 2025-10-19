@@ -32,7 +32,7 @@ function FolderItem({
         <div className="flex flex-row items-center gap-2">
           <div className="flex flex-row items-center gap-1">
             <Image
-              src={`folder.svg`}
+              src={`/folder.svg`}
               alt={"folder"}
               width={24}
               height={24}
