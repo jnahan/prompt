@@ -103,7 +103,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
   }
 
   return (
-    <div>
+    <div className="pb-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-medium font-mono">
           {promptId && initialValues ? "Edit prompt" : "Create prompt"}
@@ -164,7 +164,7 @@ function PromptForm({ promptId, initialValues, folders }: PromptFormProps) {
               <FormItem>
                 <FormLabel>Prompt</FormLabel>
                 <FormControl>
-                  <div className="border border-gray-200 rounded-lg">
+                  <div className="border border-gray-200">
                     <Textarea
                       id="prompt-content"
                       placeholder="Ex. Derivates & Integrals"

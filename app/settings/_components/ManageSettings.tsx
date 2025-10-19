@@ -23,7 +23,7 @@ function ManageSettings({ profile }: { profile: Profile }) {
       </h1>
       {/* Manage Plan */}
       <section className="mb-6">
-        <div className="border border-gray-200 p-4 rounded-lg flex justify-between items-center">
+        <div className="border border-gray-200 p-4 flex justify-between items-center">
           <div>
             <p className="font-medium mb-1">Plan</p>
             <p className="text-sm text-muted-foreground">
@@ -40,7 +40,7 @@ function ManageSettings({ profile }: { profile: Profile }) {
 
       {/* Manage Account */}
       <section>
-        <div className="border border-gray-200 p-4 rounded-lg flex justify-between items-center">
+        <div className="border border-gray-200 p-4 flex justify-between items-center">
           <div>
             <p className="font-medium mb-1">Delete account</p>
             <p className="text-sm text-muted-foreground">

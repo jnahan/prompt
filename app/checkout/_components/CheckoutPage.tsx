@@ -77,7 +77,7 @@ function CheckoutPage({ amount }: { amount: number }) {
   }
 
   return (
-    <section className="mt-2">
+    <section className="mt-2 pb-8">
       <h1 className="text-3xl font-medium font-mono mb-8 text-center">
         Get unlimited prompts
       </h1>

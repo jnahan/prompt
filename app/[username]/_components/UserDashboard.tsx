@@ -74,7 +74,7 @@ export default function UserDashboard({
   );
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-6 pb-8">
       {profile.subscription_level === "free" && prompts.length >= 5 && (
         <UpgradeBanner />
       )}
