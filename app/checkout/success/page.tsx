@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { updateSubscriptionLevel } from "@/lib/actions/profile.actions";
 import Link from "next/link";
 import Image from "next/image";
 
-async function page() {
-  await updateSubscriptionLevel("lifetime");
-
+async function CheckoutSuccessPage() {
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-xs mx-auto">
       <Image
@@ -29,4 +26,4 @@ async function page() {
   );
 }
 
-export default page;
+export default CheckoutSuccessPage;

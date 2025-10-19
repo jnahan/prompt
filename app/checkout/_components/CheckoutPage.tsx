@@ -9,6 +9,7 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import { createClient } from "@/lib/supabase/client";
 
 function CheckoutPage({ amount }: { amount: number }) {
   const stripe = useStripe();
@@ -52,17 +53,28 @@ function CheckoutPage({ amount }: { amount: number }) {
   };
 
   useEffect(() => {
-    fetch("/api/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: convertToSubCurrency(amount) }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setClientSecret(data.clientSecret);
+    async function fetchData() {
+      // get user id from supabase
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const userId = user?.id;
+
+      const paymentRes = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: convertToSubCurrency(amount),
+          userId, // attach it here
+        }),
       });
+      const data = await paymentRes.json();
+      setClientSecret(data.clientSecret);
+    }
+
+    fetchData();
   }, [amount]);
 
   if (!clientSecret || !stripe || !elements) {

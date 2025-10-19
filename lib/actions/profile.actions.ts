@@ -77,29 +77,18 @@ export const deleteProfile = async () => {
   return data;
 };
 
-export const updateSubscriptionLevel = async (level: "free" | "lifetime") => {
+export const updateSubscriptionLevel = async (
+  level: "free" | "lifetime",
+  userId: string
+) => {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    throw new Error("User not authenticated");
-  }
-
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("profiles")
-    .update({
-      subscription_level: level,
-    })
-    .eq("id", user.id);
+    .update({ subscription_level: level })
+    .eq("id", userId);
 
-  if (error) {
-    throw error;
-  }
-  return data;
+  if (error) throw error;
 };
 
 export const getUserIdByUsername = async (
