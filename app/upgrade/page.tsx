@@ -34,13 +34,13 @@ export default async function UpgradePage() {
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
               <p className="text-sm font-medium">
-                Create prompts with placeholder variables
+                Create prompts with variables
               </p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
               <p className="text-sm font-medium">
-                One click to send prompts to AI
+                Send prompts to AI in one click
               </p>
             </li>
           </ul>
@@ -73,7 +73,7 @@ export default async function UpgradePage() {
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium">Saven unlimited prompts</p>
+              <p className="text-sm font-medium">Save unlimited prompts</p>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-4 w-4 text-gray-500" />
