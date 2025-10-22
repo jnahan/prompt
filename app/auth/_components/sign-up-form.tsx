@@ -67,6 +67,7 @@ export function SignUpForm({
         options: { redirectTo: `${window.location.origin}/auth/onboarding` },
       });
       if (error) throw error;
+      router.push("/");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {

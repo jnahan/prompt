@@ -58,6 +58,7 @@ export function LoginForm({
         options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
+      router.push("/");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {
