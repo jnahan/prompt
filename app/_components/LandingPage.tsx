@@ -27,6 +27,7 @@ export default function LandingPage() {
         <p className="text-sm text-gray-600">
           Build your prompt library and keep everything organized with folders
         </p>
+        <div className="h-[280px] bg-gray-100 border"></div>
       </section>
 
       {/* Discover Section */}
@@ -35,6 +36,7 @@ export default function LandingPage() {
         <p className="text-sm text-gray-600">
           Browse prompts from the community and save your favorites
         </p>
+        <div className="h-[280px] bg-gray-100 border"></div>
       </section>
 
       {/* One-click AI Section */}
@@ -43,10 +45,11 @@ export default function LandingPage() {
         <p className="text-sm text-gray-600">
           Send prompts directly to ChatGPT, Claude, Gemini, and more with a single click
         </p>
+        <div className="h-[280px] bg-gray-100 border"></div>
       </section>
 
       {/* CTA Section */}
-      <section className="flex flex-col gap-4 pt-4 border-t">
+      <section className="flex flex-col gap-4 pt-4">
         <Button asChild size="lg">
           <Link href="/auth/sign-up">Sign up free</Link>
         </Button>

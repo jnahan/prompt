@@ -40,7 +40,7 @@ export default function Navbar() {
       <div className="flex items-center gap-1">
         {isAuthenticated === false ? (
           // Unauthenticated: Discover, Login, Sign up
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button variant="link" className="px-2">
               <Link href="/promptkit">Discover</Link>
             </Button>
@@ -63,7 +63,9 @@ export default function Navbar() {
               {profile?.subscription_level === "free" && (
                 <Button variant="link" className="px-2">
                   <Link href="/upgrade">
-                    <span className="hidden md:inline">Get unlimited prompts</span>
+                    <span className="hidden md:inline">
+                      Get unlimited prompts
+                    </span>
                     <span className="md:hidden">Upgrade</span>
                   </Link>
                 </Button>
@@ -71,10 +73,8 @@ export default function Navbar() {
             </div>
             <AccountMenu />
           </>
-        ) : (
-          // Loading state - show nothing or minimal
-          null
-        )}
+        ) : // Loading state - show nothing or minimal
+        null}
       </div>
     </nav>
   );
