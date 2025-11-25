@@ -10,19 +10,24 @@ export default async function Home() {
   }
 
   // Check if user has a profile with username
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("username")
       .eq("id", user.id)
       .maybeSingle();
-    
+
     // If no profile or no username, redirect to onboarding
     if (!profile || !profile.username) {
       redirect("/auth/onboarding");
     }
+
+    // Redirect to user's own username route
+    redirect(`/${profile.username}`);
   }
 
-  redirect("/prompts");
+  redirect("/auth/login");
 }

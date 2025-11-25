@@ -6,9 +6,10 @@ interface PromptItemProps {
   title: string;
   content: string;
   isNested?: boolean;
+  isOwnProfile?: boolean;
 }
 
-function PromptItem({ id, title, content, isNested }: PromptItemProps) {
+function PromptItem({ id, title, content, isNested, isOwnProfile = true }: PromptItemProps) {
   return (
     <PromptDialog title={title} content={content}>
       <li
@@ -23,7 +24,7 @@ function PromptItem({ id, title, content, isNested }: PromptItemProps) {
             {content}
           </p>
         </div>
-        <UpdatePromptMenu id={id} />
+        {isOwnProfile && <UpdatePromptMenu id={id} />}
       </li>
     </PromptDialog>
   );

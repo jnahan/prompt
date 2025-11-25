@@ -76,3 +76,35 @@ export const deleteFolder = async (id: string) => {
   }
   revalidatePath("/", "layout"); // Revalidate all routes under root layout
 };
+
+export const readFoldersByUsername = async (username: string): Promise<Folder[]> => {
+  const supabase = await createClient();
+
+  // First get the user's profile to get their user_id
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("username", username.toLowerCase().trim())
+    .maybeSingle();
+
+  if (profileError) {
+    throw profileError;
+  }
+
+  if (!profile) {
+    return [];
+  }
+
+  // Fetch folders by user ID
+  const { data: folders, error: foldersError } = await supabase
+    .from("folders")
+    .select("*")
+    .eq("user_id", profile.id)
+    .order("created_at", { ascending: false });
+
+  if (foldersError) {
+    throw foldersError;
+  }
+
+  return folders ?? [];
+};

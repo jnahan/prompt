@@ -54,32 +54,6 @@ export const createPrompt = async (formData: CreatePrompt) => {
   return data;
 };
 
-export const readPrompts = async (): Promise<Prompt[]> => {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    throw new Error("User not authenticated");
-  }
-
-  // Fetch prompts by user ID
-  const { data: prompts, error: promptsError } = await supabase
-    .from("prompts")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false }); // optional: latest first
-
-  if (promptsError) {
-    throw promptsError;
-  }
-
-  return prompts ?? [];
-};
-
 export const readPrompt = async (id: string): Promise<Prompt | null> => {
   const supabase = await createClient();
 
@@ -129,4 +103,36 @@ export const deletePrompt = async (id: string) => {
   }
   revalidatePath("/", "layout"); // Revalidate all routes under root layout
   return data;
+};
+
+export const readPromptsByUsername = async (username: string): Promise<Prompt[]> => {
+  const supabase = await createClient();
+
+  // First get the user's profile to get their user_id
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("username", username.toLowerCase().trim())
+    .maybeSingle();
+
+  if (profileError) {
+    throw profileError;
+  }
+
+  if (!profile) {
+    return [];
+  }
+
+  // Fetch prompts by user ID
+  const { data: prompts, error: promptsError } = await supabase
+    .from("prompts")
+    .select("*")
+    .eq("user_id", profile.id)
+    .order("created_at", { ascending: false });
+
+  if (promptsError) {
+    throw promptsError;
+  }
+
+  return prompts ?? [];
 };

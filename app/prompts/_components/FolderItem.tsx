@@ -10,6 +10,7 @@ export interface FolderItemProps {
   count: number;
   isOpen: boolean;
   onToggle: () => void;
+  isOwnProfile?: boolean;
 }
 
 function FolderItem({
@@ -19,6 +20,7 @@ function FolderItem({
   count,
   isOpen,
   onToggle,
+  isOwnProfile = true,
 }: FolderItemProps) {
   return (
     <li className="flex flex-col">
@@ -43,7 +45,7 @@ function FolderItem({
           </div>
         </div>
         <div className="flex flex-row items-center gap-2">
-          <UpdateFolderMenu id={id} name={name} />
+          {isOwnProfile && <UpdateFolderMenu id={id} name={name} />}
           {isOpen ? (
             <ChevronDown className="h-5 w-5 text-gray-500" />
           ) : (

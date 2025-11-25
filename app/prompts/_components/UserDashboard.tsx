@@ -20,12 +20,14 @@ interface UserDashboardProps {
   profile: Profile;
   folders: Folder[];
   prompts: Prompt[];
+  isOwnProfile?: boolean;
 }
 
 export default function UserDashboard({
   profile,
   folders,
   prompts,
+  isOwnProfile = true,
 }: UserDashboardProps) {
   const router = useRouter();
 
@@ -75,7 +77,7 @@ export default function UserDashboard({
 
   return (
     <section className="flex flex-col gap-6 pb-8">
-      {profile.subscription_level === "free" && prompts.length >= 5 && (
+      {isOwnProfile && profile.subscription_level === "free" && prompts.length >= 5 && (
         <UpgradeBanner />
       )}
 
@@ -84,25 +86,27 @@ export default function UserDashboard({
         <h1 className="text-2xl font-medium font-mono">
           {profile.username ? `${profile.username}'s prompts` : "Saved prompts"}
         </h1>
-        <div className="flex gap-2">
-          <Button
-            onClick={() =>
-              profile.subscription_level === "free" && prompts.length >= 5
-                ? router.push("/upgrade")
-                : router.push("/prompt/new")
-            }
-            size="default"
-            variant="outline"
-          >
-            <Plus className="h-4 w-4" />
-            New prompt
-          </Button>
-          <CreateFolderDialog />
-        </div>
+        {isOwnProfile && (
+          <div className="flex gap-2">
+            <Button
+              onClick={() =>
+                profile.subscription_level === "free" && prompts.length >= 5
+                  ? router.push("/upgrade")
+                  : router.push("/prompt/new")
+              }
+              size="default"
+              variant="outline"
+            >
+              <Plus className="h-4 w-4" />
+              New prompt
+            </Button>
+            <CreateFolderDialog />
+          </div>
+        )}
       </div>
 
       <div className="border">
-        <QuickLinks />
+        {isOwnProfile && <QuickLinks />}
         {/* Search Bar */}
         <div className="h-14 flex items-center pl-5">
           <Search className="h-5 w-5 text-gray-500" />
@@ -136,6 +140,7 @@ export default function UserDashboard({
                       : [...prev, folder.id] // open
                 );
               }}
+              isOwnProfile={isOwnProfile}
             >
               <ul className="list-none">
                 {folder.prompts.map((prompt) => (
@@ -145,6 +150,7 @@ export default function UserDashboard({
                     title={prompt.title}
                     content={prompt.content}
                     isNested={true}
+                    isOwnProfile={isOwnProfile}
                   />
                 ))}
               </ul>
@@ -158,6 +164,7 @@ export default function UserDashboard({
               id={prompt.id}
               title={prompt.title}
               content={prompt.content}
+              isOwnProfile={isOwnProfile}
             />
           ))}
         </ul>

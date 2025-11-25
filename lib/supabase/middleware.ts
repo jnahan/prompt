@@ -47,11 +47,35 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  // List of routes that require authentication
+  const protectedRoutes = [
+    "/prompts",
+    "/prompt",
+    "/settings",
+    "/upgrade",
+    "/checkout",
+  ];
+
+  // Check if current path is a protected route
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // Username routes (single segment like /username) are public
+  // Check if path is a username route (single segment, not starting with /)
+  const pathSegments = request.nextUrl.pathname.split("/").filter(Boolean);
+  const isUsernameRoute = pathSegments.length === 1 && 
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/api") &&
+    !isProtectedRoute;
+
   if (
     request.nextUrl.pathname !== "/" &&
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !isUsernameRoute &&
+    isProtectedRoute
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

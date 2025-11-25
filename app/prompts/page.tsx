@@ -1,16 +1,14 @@
+import { redirect } from "next/navigation";
 import { readProfile } from "@/lib/actions/profile.actions";
-import { readFolders } from "@/lib/actions/folder.actions";
-import { readPrompts } from "@/lib/actions/prompt.actions";
-import UserDashboard from "./_components/UserDashboard";
 
 export default async function PromptsPage() {
-  const [profile, folders, prompts] = await Promise.all([
-    readProfile(),
-    readFolders(),
-    readPrompts(),
-  ]);
+  // Redirect to user's own username route
+  const profile = await readProfile();
 
-  return (
-    <UserDashboard profile={profile} folders={folders} prompts={prompts} />
-  );
+  if (profile.username) {
+    redirect(`/${profile.username}`);
+  }
+
+  // Fallback if no username (shouldn't happen, but just in case)
+  redirect("/auth/onboarding");
 }

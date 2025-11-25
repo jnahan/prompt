@@ -129,3 +129,19 @@ export const updateSubscriptionLevel = async (
   if (error) throw error;
 };
 
+export const readProfileByUsername = async (username: string): Promise<Profile | null> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username.toLowerCase().trim())
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
