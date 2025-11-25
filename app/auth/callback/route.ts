@@ -26,8 +26,12 @@ export async function GET(request: Request) {
           .maybeSingle();
         
         // If no profile or no username, redirect to onboarding
+        // Preserve the redirect parameter if it exists
         if (!profile || !profile.username) {
-          next = "/auth/onboarding";
+          const redirectParam = searchParams.get("next");
+          next = redirectParam
+            ? `/auth/onboarding?redirect=${encodeURIComponent(redirectParam)}`
+            : "/auth/onboarding";
         }
       }
       

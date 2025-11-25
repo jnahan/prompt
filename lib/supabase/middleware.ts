@@ -51,6 +51,7 @@ export async function updateSession(request: NextRequest) {
   const protectedRoutes = [
     "/prompts",
     "/prompt",
+    "/saved",
     "/settings",
     "/upgrade",
     "/checkout",

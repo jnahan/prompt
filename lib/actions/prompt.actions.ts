@@ -123,6 +123,9 @@ export const readPromptsByUsername = async (username: string): Promise<Prompt[]>
     return [];
   }
 
+  // Get current user (if authenticated) to check saved status
+  const { data: { user } } = await supabase.auth.getUser();
+  
   // Fetch prompts by user ID
   const { data: prompts, error: promptsError } = await supabase
     .from("prompts")
@@ -134,5 +137,142 @@ export const readPromptsByUsername = async (username: string): Promise<Prompt[]>
     throw promptsError;
   }
 
-  return prompts ?? [];
+  if (!prompts || prompts.length === 0) {
+    return [];
+  }
+
+  // If user is authenticated, check which prompts they've saved
+  if (user) {
+    const promptIds = prompts.map((p) => p.id);
+    const { data: savedPrompts } = await supabase
+      .from("saved_prompts")
+      .select("prompt_id")
+      .eq("user_id", user.id)
+      .in("prompt_id", promptIds);
+
+    const savedPromptIds = new Set(savedPrompts?.map((sp) => sp.prompt_id) || []);
+
+    // Add is_saved flag to each prompt
+    return prompts.map((prompt) => ({
+      ...prompt,
+      is_saved: savedPromptIds.has(prompt.id),
+    }));
+  }
+
+  return prompts;
+};
+
+export const savePrompt = async (promptId: string) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabase.from("saved_prompts").insert({
+    user_id: user.id,
+    prompt_id: promptId,
+  });
+
+  if (error) {
+    // Handle unique constraint violation (user already saved this prompt)
+    if (error.code === "23505") {
+      throw new Error("Prompt already saved");
+    }
+    throw error;
+  }
+
+  revalidatePath("/", "layout");
+};
+
+export const unsavePrompt = async (promptId: string) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabase
+    .from("saved_prompts")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("prompt_id", promptId);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/", "layout");
+};
+
+export const readSavedPrompts = async (): Promise<Prompt[]> => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Get all saved prompt IDs for the user
+  const { data: savedPrompts, error: savedError } = await supabase
+    .from("saved_prompts")
+    .select("prompt_id, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (savedError) {
+    throw savedError;
+  }
+
+  if (!savedPrompts || savedPrompts.length === 0) {
+    return [];
+  }
+
+  const promptIds = savedPrompts.map((sp) => sp.prompt_id);
+
+  // Fetch the actual prompts
+  const { data: prompts, error: promptsError } = await supabase
+    .from("prompts")
+    .select("*")
+    .in("id", promptIds);
+
+  if (promptsError) {
+    throw promptsError;
+  }
+
+  if (!prompts) {
+    return [];
+  }
+
+  // Sort prompts by the order they were saved (most recent first)
+  const savedMap = new Map(
+    savedPrompts.map((sp) => [sp.prompt_id, sp.created_at])
+  );
+
+  const promptsWithSaved = prompts
+    .map((prompt) => ({
+      ...prompt,
+      is_saved: true, // All prompts here are saved by definition
+    }))
+    .sort((a, b) => {
+      const aSavedAt = savedMap.get(a.id) || "";
+      const bSavedAt = savedMap.get(b.id) || "";
+      return bSavedAt.localeCompare(aSavedAt);
+    });
+
+  return promptsWithSaved;
 };

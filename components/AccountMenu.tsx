@@ -61,6 +61,13 @@ export default function AccountMenu() {
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/prompts" className="flex items-center">
             <Sparkles className="h-4 w-4" />
+            <span>My prompts</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link href="/saved" className="flex items-center">
+            <Sparkles className="h-4 w-4" />
             <span>Saved prompts</span>
           </Link>
         </DropdownMenuItem>

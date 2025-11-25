@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,8 @@ const formSchema = z.object({
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,7 +51,9 @@ export default function OnboardingPage() {
     try {
       setIsLoading(true);
       await createProfile(values);
-      router.push("/prompts");
+      // Redirect to the saved path if it exists, otherwise to prompts
+      const redirectUrl = redirectPath || "/prompts";
+      router.push(redirectUrl);
     } catch (error) {
       // Log error for debugging
       console.error("Profile creation error:", error);

@@ -106,7 +106,7 @@ export default function UserDashboard({
       </div>
 
       <div className="border">
-        {isOwnProfile && <QuickLinks />}
+        <QuickLinks />
         {/* Search Bar */}
         <div className="h-14 flex items-center pl-5">
           <Search className="h-5 w-5 text-gray-500" />
@@ -151,6 +151,7 @@ export default function UserDashboard({
                     content={prompt.content}
                     isNested={true}
                     isOwnProfile={isOwnProfile}
+                    isSaved={prompt.is_saved}
                   />
                 ))}
               </ul>
@@ -165,6 +166,7 @@ export default function UserDashboard({
               title={prompt.title}
               content={prompt.content}
               isOwnProfile={isOwnProfile}
+              isSaved={prompt.is_saved}
             />
           ))}
         </ul>

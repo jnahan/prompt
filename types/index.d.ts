@@ -34,10 +34,18 @@ export interface Prompt {
   folder_id?: string;
   title: string;
   content: string;
+  is_saved?: boolean; // Whether the current user has saved this prompt
 }
 
 export interface CreatePrompt {
   title: string;
   folder_id?: string;
   content: string;
+}
+
+export interface SavedPrompt {
+  id: string;
+  user_id: string;
+  prompt_id: string;
+  created_at: string;
 }
