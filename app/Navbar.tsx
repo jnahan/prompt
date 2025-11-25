@@ -41,7 +41,7 @@ export default function Navbar() {
         {isAuthenticated === false ? (
           // Unauthenticated: Discover, Login, Sign up
           <div className="flex items-center gap-2">
-            <Button variant="link" className="px-2">
+            <Button variant="link" className="px-2" asChild>
               <Link href="/promptkit">Discover</Link>
             </Button>
             <div className="flex items-center gap-2">
@@ -57,11 +57,11 @@ export default function Navbar() {
           // Authenticated: Discover, Upgrade (if free), AccountMenu
           <>
             <div className="flex items-center gap-1">
-              <Button variant="link" className="px-2">
+              <Button variant="link" className="px-2" asChild>
                 <Link href="/promptkit">Discover</Link>
               </Button>
               {profile?.subscription_level === "free" && (
-                <Button variant="link" className="px-2">
+                <Button variant="link" className="px-2" asChild>
                   <Link href="/upgrade">
                     <span className="hidden md:inline">
                       Get unlimited prompts

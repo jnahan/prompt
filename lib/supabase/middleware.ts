@@ -47,10 +47,21 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  // Public routes that don't require authentication
+  const publicRoutes = ["/", "/terms"];
+  
+  // Username routes (single segment like /username) are public
+  // IMPORTANT: Check this FIRST before protected routes
+  // Example: /promptkit is a username route, not /prompt/kit
+  const pathSegments = request.nextUrl.pathname.split("/").filter(Boolean);
+  const isUsernameRoute = pathSegments.length === 1 && 
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/api");
+  
   // List of routes that require authentication
   const protectedRoutes = [
     "/prompts",
-    "/prompt",
+    "/prompt/",
     "/saved",
     "/settings",
     "/upgrade",
@@ -58,27 +69,21 @@ export async function updateSession(request: NextRequest) {
   ];
 
   // Check if current path is a protected route
-  const isProtectedRoute = protectedRoutes.some((route) =>
+  // IMPORTANT: Exclude username routes to prevent false positives
+  // Example: /promptkit would match /prompt, but it's a username route
+  const isProtectedRoute = !isUsernameRoute && protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
 
-  // Username routes (single segment like /username) are public
-  // Check if path is a username route (single segment, not starting with /)
-  const pathSegments = request.nextUrl.pathname.split("/").filter(Boolean);
-  const isUsernameRoute = pathSegments.length === 1 && 
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/api") &&
-    !isProtectedRoute;
+  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname) || isUsernameRoute;
 
-  if (
-    request.nextUrl.pathname !== "/" &&
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !isUsernameRoute &&
-    isProtectedRoute
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  // Allow public routes and auth pages to pass through
+  if (isPublicRoute || request.nextUrl.pathname.startsWith("/auth") || request.nextUrl.pathname.startsWith("/api")) {
+    return supabaseResponse;
+  }
+
+  // Redirect unauthenticated users trying to access protected routes
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     return NextResponse.redirect(url);
