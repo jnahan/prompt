@@ -13,13 +13,21 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const isAuthPage = pathname.includes("/auth");
 
   useEffect(() => {
-    if (!isAuthPage)
+    if (!isAuthPage) {
       readProfile()
-        .then((p) => setProfile(p))
-        .catch(() => setProfile(null));
+        .then((p) => {
+          setProfile(p);
+          setIsAuthenticated(true);
+        })
+        .catch(() => {
+          setProfile(null);
+          setIsAuthenticated(false);
+        });
+    }
   }, [isAuthPage]);
 
   if (isAuthPage) return null;
@@ -30,20 +38,43 @@ export default function Navbar() {
         <Image src={`/logo.svg`} alt={"PromptKit"} width="125" height="32" />
       </Link>
       <div className="flex items-center gap-1">
-        <div className="flex items-center gap-1">
-          <Button variant="link" className="px-2">
-            <Link href="/promptkit">Discover</Link>
-          </Button>
-          {profile?.subscription_level === "free" && (
+        {isAuthenticated === false ? (
+          // Unauthenticated: Discover, Login, Sign up
+          <div className="flex items-center gap-1">
             <Button variant="link" className="px-2">
-              <Link href="/upgrade">
-                <span className="hidden md:inline">Get unlimited prompts</span>
-                <span className="md:hidden">Upgrade</span>
-              </Link>
+              <Link href="/promptkit">Discover</Link>
             </Button>
-          )}
-        </div>
-        <AccountMenu />
+            <div className="flex items-center gap-2">
+              <Button variant="outline" asChild>
+                <Link href="/auth/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/auth/sign-up">Sign up</Link>
+              </Button>
+            </div>
+          </div>
+        ) : isAuthenticated === true ? (
+          // Authenticated: Discover, Upgrade (if free), AccountMenu
+          <>
+            <div className="flex items-center gap-1">
+              <Button variant="link" className="px-2">
+                <Link href="/promptkit">Discover</Link>
+              </Button>
+              {profile?.subscription_level === "free" && (
+                <Button variant="link" className="px-2">
+                  <Link href="/upgrade">
+                    <span className="hidden md:inline">Get unlimited prompts</span>
+                    <span className="md:hidden">Upgrade</span>
+                  </Link>
+                </Button>
+              )}
+            </div>
+            <AccountMenu />
+          </>
+        ) : (
+          // Loading state - show nothing or minimal
+          null
+        )}
       </div>
     </nav>
   );
