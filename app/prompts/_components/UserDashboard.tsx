@@ -13,13 +13,17 @@ import CreateFolderDialog from "./CreateFolderDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import type { Profile, Folder, Prompt } from "@/types";
+
+type TabType = "my" | "saved" | "all";
 
 interface UserDashboardProps {
   profile: Profile;
   folders: Folder[];
   prompts: Prompt[];
+  savedPrompts?: Prompt[];
   isOwnProfile?: boolean;
 }
 
@@ -27,21 +31,52 @@ export default function UserDashboard({
   profile,
   folders,
   prompts,
+  savedPrompts = [],
   isOwnProfile = true,
 }: UserDashboardProps) {
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState<TabType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
 
-  const rootPrompts = prompts.filter((p) => !p.folder_id);
+  // Determine which prompts to display based on active tab
+  const displayPrompts = useMemo(() => {
+    if (!isOwnProfile) {
+      return prompts; // Always show user's prompts when viewing someone else's profile
+    }
+
+    switch (activeTab) {
+      case "my":
+        return prompts;
+      case "saved":
+        // Remove folder_id from saved prompts so they display in a flat list
+        return savedPrompts.map((p) => ({ ...p, folder_id: undefined }));
+      case "all":
+        // Combine my prompts and saved prompts, removing duplicates
+        // Remove folder_id from saved prompts in the "all" view too
+        const allPromptsMap = new Map<string, Prompt>();
+        prompts.forEach((p) => allPromptsMap.set(p.id, p));
+        savedPrompts.forEach((p) => {
+          allPromptsMap.set(p.id, { ...p, folder_id: undefined });
+        });
+        return Array.from(allPromptsMap.values());
+      default:
+        return prompts;
+    }
+  }, [activeTab, prompts, savedPrompts, isOwnProfile]);
+
+  // For "my" and "all" tabs, we show folders. For "saved", we don't.
+  const displayFolders = activeTab === "saved" || !isOwnProfile ? [] : folders;
+
+  const rootPrompts = displayPrompts.filter((p) => !p.folder_id);
 
   const groupedPrompts = useMemo(() => {
-    return folders.map((folder) => ({
+    return displayFolders.map((folder) => ({
       ...folder,
-      prompts: prompts.filter((p) => p.folder_id === folder.id),
+      prompts: displayPrompts.filter((p) => p.folder_id === folder.id),
     }));
-  }, [folders, prompts]);
+  }, [displayFolders, displayPrompts]);
 
   const filteredGroupedPrompts = groupedPrompts
     .map((folder) => {
@@ -81,13 +116,54 @@ export default function UserDashboard({
         <UpgradeBanner />
       )}
 
-      {/* Saved prompts, buttons */}
-      <div className="flex flex-col items-start gap-4 md:flex-row justify-between">
-        <h1 className="text-2xl font-medium font-mono">
-          {profile.username ? `${profile.username}'s prompts` : "Saved prompts"}
-        </h1>
+      {/* Header with title/tabs and buttons */}
+      <div className="flex flex-col items-start gap-4 md:flex-row md:items-end md:justify-between">
+        {isOwnProfile ? (
+          /* Segmented Control - replaces title for own profile */
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={cn(
+                "text-sm font-mono font-medium transition-colors pb-1 border-b-2",
+                activeTab === "all"
+                  ? "text-gray-900 border-gray-900"
+                  : "text-gray-500 border-transparent hover:text-gray-700"
+              )}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveTab("my")}
+              className={cn(
+                "text-sm font-mono font-medium transition-colors pb-1 border-b-2",
+                activeTab === "my"
+                  ? "text-gray-900 border-gray-900"
+                  : "text-gray-500 border-transparent hover:text-gray-700"
+              )}
+            >
+              Created
+            </button>
+            <button
+              onClick={() => setActiveTab("saved")}
+              className={cn(
+                "text-sm font-mono font-medium transition-colors pb-1 border-b-2",
+                activeTab === "saved"
+                  ? "text-gray-900 border-gray-900"
+                  : "text-gray-500 border-transparent hover:text-gray-700"
+              )}
+            >
+              Saved
+            </button>
+          </div>
+        ) : (
+          /* Title for other users' profiles */
+          <h1 className="text-2xl font-medium font-mono">
+            {profile.username ? `${profile.username}'s prompts` : "Prompts"}
+          </h1>
+        )}
+        
         {isOwnProfile && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button
               onClick={() =>
                 profile.subscription_level === "free" && prompts.length >= 5
@@ -100,7 +176,7 @@ export default function UserDashboard({
               <Plus className="h-4 w-4" />
               New prompt
             </Button>
-            <CreateFolderDialog />
+            {activeTab !== "saved" && <CreateFolderDialog />}
           </div>
         )}
       </div>
@@ -120,7 +196,7 @@ export default function UserDashboard({
           />
         </div>
 
-        {prompts.length === 0 && folders.length === 0 && <EmptyState />}
+        {displayPrompts.length === 0 && displayFolders.length === 0 && <EmptyState />}
 
         {/* Prompts and Folders List */}
         <ul className="list-none pb-2">
@@ -166,7 +242,7 @@ export default function UserDashboard({
               title={prompt.title}
               content={prompt.content}
               isOwnProfile={isOwnProfile}
-              isSaved={prompt.is_saved}
+              isSaved={prompt.is_saved ?? true}
             />
           ))}
         </ul>
