@@ -30,11 +30,19 @@ export default function Navbar() {
         <Image src={`/logo.svg`} alt={"PromptKit"} width="125" height="32" />
       </Link>
       <div className="flex items-center gap-1">
-        {profile?.subscription_level === "free" && (
-          <Button variant="link">
-            <Link href="/upgrade">Get unlimited prompts</Link>
+        <div className="flex items-center gap-1">
+          <Button variant="link" className="px-2">
+            <Link href="/promptkit">Discover</Link>
           </Button>
-        )}
+          {profile?.subscription_level === "free" && (
+            <Button variant="link" className="px-2">
+              <Link href="/upgrade">
+                <span className="hidden md:inline">Get unlimited prompts</span>
+                <span className="md:hidden">Upgrade</span>
+              </Link>
+            </Button>
+          )}
+        </div>
         <AccountMenu />
       </div>
     </nav>

@@ -27,13 +27,17 @@ export default async function UsernamePage({ params }: UsernamePageProps) {
   // Check if the current user is viewing their own profile
   let isOwnProfile = false;
   let savedPrompts = [];
+  let currentUserId: string | undefined;
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user && user.id === profile.id) {
-      isOwnProfile = true;
-      // Fetch saved prompts if it's their own profile
-      savedPrompts = await readSavedPrompts();
+    if (user) {
+      currentUserId = user.id;
+      if (user.id === profile.id) {
+        isOwnProfile = true;
+        // Fetch saved prompts if it's their own profile
+        savedPrompts = await readSavedPrompts();
+      }
     }
   } catch {
     // User not authenticated, isOwnProfile stays false
@@ -46,6 +50,7 @@ export default async function UsernamePage({ params }: UsernamePageProps) {
       prompts={prompts}
       savedPrompts={savedPrompts}
       isOwnProfile={isOwnProfile}
+      currentUserId={currentUserId}
     />
   );
 }

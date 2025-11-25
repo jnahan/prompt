@@ -9,6 +9,7 @@ import EmptyState from "./EmptyState";
 import PromptItem from "./PromptItem";
 import FolderItem from "./FolderItem";
 import CreateFolderDialog from "./CreateFolderDialog";
+import ShareDialog from "./ShareDialog";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ interface UserDashboardProps {
   prompts: Prompt[];
   savedPrompts?: Prompt[];
   isOwnProfile?: boolean;
+  currentUserId?: string;
 }
 
 export default function UserDashboard({
@@ -33,6 +35,7 @@ export default function UserDashboard({
   prompts,
   savedPrompts = [],
   isOwnProfile = true,
+  currentUserId,
 }: UserDashboardProps) {
   const router = useRouter();
 
@@ -177,6 +180,7 @@ export default function UserDashboard({
               New prompt
             </Button>
             {activeTab !== "saved" && <CreateFolderDialog />}
+            <ShareDialog username={profile.username} />
           </div>
         )}
       </div>
@@ -228,6 +232,8 @@ export default function UserDashboard({
                     isNested={true}
                     isOwnProfile={isOwnProfile}
                     isSaved={prompt.is_saved}
+                    userId={prompt.user_id}
+                    currentUserId={currentUserId}
                   />
                 ))}
               </ul>
@@ -243,6 +249,8 @@ export default function UserDashboard({
               content={prompt.content}
               isOwnProfile={isOwnProfile}
               isSaved={prompt.is_saved ?? true}
+              userId={prompt.user_id}
+              currentUserId={currentUserId}
             />
           ))}
         </ul>

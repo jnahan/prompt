@@ -17,6 +17,8 @@ interface PromptItemProps {
   isNested?: boolean;
   isOwnProfile?: boolean;
   isSaved?: boolean;
+  userId?: string; // The user_id of the prompt owner
+  currentUserId?: string; // The current user's ID
 }
 
 function PromptItem({ 
@@ -25,8 +27,12 @@ function PromptItem({
   content, 
   isNested, 
   isOwnProfile = true,
-  isSaved = false 
+  isSaved = false,
+  userId,
+  currentUserId
 }: PromptItemProps) {
+  // Check if this prompt belongs to the current user
+  const isOwnPrompt = userId && currentUserId && userId === currentUserId;
   const router = useRouter();
   const supabase = createClient();
   const [saved, setSaved] = useState(isSaved);
@@ -84,7 +90,8 @@ function PromptItem({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {!isOwnProfile && (
+          {/* Show save button if: not own profile OR (saved and not own prompt) */}
+          {(!isOwnProfile || (saved && !isOwnPrompt)) && (
             <Button
               variant="ghost"
               size="sm"
@@ -99,7 +106,8 @@ function PromptItem({
               )}
             </Button>
           )}
-          {isOwnProfile && <UpdatePromptMenu id={id} />}
+          {/* Show update menu if it's their own prompt */}
+          {isOwnProfile && isOwnPrompt && <UpdatePromptMenu id={id} />}
         </div>
       </li>
     </PromptDialog>
