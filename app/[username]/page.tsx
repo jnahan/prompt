@@ -4,6 +4,7 @@ import { readProfileByUsername } from "@/lib/actions/profile.actions";
 import { readPromptsByUsername, readSavedPrompts } from "@/lib/actions/prompt.actions";
 import { readFoldersByUsername } from "@/lib/actions/folder.actions";
 import UserDashboard from "../prompts/_components/UserDashboard";
+import type { Prompt } from "@/types";
 
 interface UsernamePageProps {
   params: Promise<{ username: string }>;
@@ -26,7 +27,7 @@ export default async function UsernamePage({ params }: UsernamePageProps) {
 
   // Check if the current user is viewing their own profile
   let isOwnProfile = false;
-  let savedPrompts = [];
+  let savedPrompts: Prompt[] = [];
   let currentUserId: string | undefined;
   try {
     const supabase = await createClient();

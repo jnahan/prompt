@@ -70,7 +70,9 @@ export default function UserDashboard({
   }, [activeTab, prompts, savedPrompts, isOwnProfile]);
 
   // For "my" and "all" tabs, we show folders. For "saved", we don't.
-  const displayFolders = activeTab === "saved" || !isOwnProfile ? [] : folders;
+  const displayFolders = useMemo(() => {
+    return activeTab === "saved" || !isOwnProfile ? [] : folders;
+  }, [activeTab, isOwnProfile, folders]);
 
   const rootPrompts = displayPrompts.filter((p) => !p.folder_id);
 

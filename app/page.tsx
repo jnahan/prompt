@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import LandingPage from "./_components/LandingPage";
 
 export default async function Home() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims) {
-    redirect("/auth/login");
+    // Show landing page for unauthenticated users
+    return <LandingPage />;
   }
 
   // Check if user has a profile with username
@@ -29,5 +31,6 @@ export default async function Home() {
     redirect(`/${profile.username}`);
   }
 
-  redirect("/auth/login");
+  // Show landing page for unauthenticated users
+  return <LandingPage />;
 }
