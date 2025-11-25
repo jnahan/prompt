@@ -6,12 +6,14 @@ export interface Profile {
   id: string;
   first_name: string;
   last_name: string;
+  username: string | null;
   subscription_level: SubscriptionLevel;
 }
 
 export interface CreateProfile {
   first_name: string;
   last_name: string;
+  username: string;
 }
 
 export interface Folder {

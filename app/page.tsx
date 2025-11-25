@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { readProfile } from "@/lib/actions/profile.actions";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -10,6 +9,20 @@ export default async function Home() {
     redirect("/auth/login");
   }
 
-  await readProfile();
+  // Check if user has a profile with username
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle();
+    
+    // If no profile or no username, redirect to onboarding
+    if (!profile || !profile.username) {
+      redirect("/auth/onboarding");
+    }
+  }
+
   redirect("/prompts");
 }

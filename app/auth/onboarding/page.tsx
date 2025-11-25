@@ -23,6 +23,13 @@ import { createProfile } from "@/lib/actions/profile.actions";
 const formSchema = z.object({
   first_name: z.string().min(1, { message: "First name is required" }),
   last_name: z.string().min(1, { message: "Last name is required" }),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters" })
+    .max(20, { message: "Username must be at most 20 characters" })
+    .regex(/^[a-z0-9_]+$/, {
+      message: "Username can only contain lowercase letters, numbers, and underscores",
+    }),
 });
 
 export default function OnboardingPage() {
@@ -34,6 +41,7 @@ export default function OnboardingPage() {
     defaultValues: {
       first_name: "",
       last_name: "",
+      username: "",
     },
   });
 
@@ -42,11 +50,29 @@ export default function OnboardingPage() {
       setIsLoading(true);
       await createProfile(values);
       router.push("/prompts");
-    } catch {
-      form.setError("root", {
-        type: "manual",
-        message: "Something went wrong. Please try again",
-      });
+    } catch (error) {
+      // Log error for debugging
+      console.error("Profile creation error:", error);
+      
+      if (error instanceof Error) {
+        if (error.message === "Username is already taken") {
+          form.setError("username", {
+            type: "manual",
+            message: "Username is already taken",
+          });
+        } else {
+          // Show the actual error message for debugging
+          form.setError("root", {
+            type: "manual",
+            message: error.message || "Something went wrong. Please try again",
+          });
+        }
+      } else {
+        form.setError("root", {
+          type: "manual",
+          message: "Something went wrong. Please try again",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -100,6 +126,23 @@ export default function OnboardingPage() {
                     </p>
                   )}
                 </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  placeholder="username"
+                  {...form.register("username")}
+                />
+                {form.formState.errors.username && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.username.message}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Only lowercase letters, numbers, and underscores allowed
+                </p>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>

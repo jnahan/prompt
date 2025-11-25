@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { readProfile } from "@/lib/actions/profile.actions";
+import type { Profile } from "@/types";
 
 import {
   DropdownMenu,
@@ -24,6 +27,13 @@ import {
 export default function AccountMenu() {
   const router = useRouter();
   const supabase = createClient();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    readProfile()
+      .then((p) => setProfile(p))
+      .catch(() => setProfile(null));
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -43,6 +53,11 @@ export default function AccountMenu() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end" forceMount>
+        {profile?.username && (
+          <div className="px-2 py-1.5 border-b">
+            <p className="text-sm font-semibold font-mono">{profile.username}</p>
+          </div>
+        )}
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/prompts" className="flex items-center">
             <Sparkles className="h-4 w-4" />

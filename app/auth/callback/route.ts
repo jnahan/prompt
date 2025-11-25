@@ -16,6 +16,21 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Check if user has a profile, if not redirect to onboarding
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id, username")
+          .eq("id", user.id)
+          .maybeSingle();
+        
+        // If no profile or no username, redirect to onboarding
+        if (!profile || !profile.username) {
+          next = "/auth/onboarding";
+        }
+      }
+      
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";
       if (isLocalEnv) {
@@ -26,6 +41,9 @@ export async function GET(request: Request) {
       } else {
         return NextResponse.redirect(`${origin}${next}`);
       }
+    } else {
+      // Log the error for debugging
+      console.error("Auth callback error:", error);
     }
   }
 
