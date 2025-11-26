@@ -40,7 +40,7 @@ export default function Navbar() {
       <div className="flex items-center gap-1">
         {isAuthenticated === false ? (
           // Unauthenticated: Discover, Login, Sign up
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Button variant="link" className="px-2" asChild>
               <Link href="/promptkit">Discover</Link>
             </Button>
@@ -55,7 +55,7 @@ export default function Navbar() {
           </div>
         ) : isAuthenticated === true ? (
           // Authenticated: Discover, Upgrade (if free), AccountMenu
-          <>
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <Button variant="link" className="px-2" asChild>
                 <Link href="/promptkit">Discover</Link>
@@ -72,7 +72,7 @@ export default function Navbar() {
               )}
             </div>
             <AccountMenu />
-          </>
+          </div>
         ) : // Loading state - show nothing or minimal
         null}
       </div>
