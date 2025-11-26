@@ -30,12 +30,9 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse = NextResponse.next({
             request,
           });
-          cookiesToSet.forEach(({ name, value, options }) => {
-            // Make cookies accessible to Chrome extensions by setting httpOnly: false
-            // This is required for the PromptKit extension to read auth state
-            const modifiedOptions = { ...options, httpOnly: false };
-            supabaseResponse.cookies.set(name, value, modifiedOptions);
-          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
     },
