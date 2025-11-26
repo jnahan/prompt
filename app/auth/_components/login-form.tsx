@@ -140,6 +140,15 @@ export function LoginForm({
                 Sign up
               </Link>
             </div>
+            <div className="mt-4 text-center text-xs text-gray-500">
+              <Link href="/terms" className="underline underline-offset-4 hover:text-gray-700">
+                Terms of Service
+              </Link>
+              {" • "}
+              <Link href="/privacy" className="underline underline-offset-4 hover:text-gray-700">
+                Privacy Policy
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>
