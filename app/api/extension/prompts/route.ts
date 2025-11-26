@@ -40,32 +40,50 @@ export async function GET() {
       console.error("Error fetching prompts:", promptsError);
     }
 
-    // Fetch saved prompts
-    const { data: savedPrompts, error: savedPromptsError } = await supabase
+    // Fetch saved prompts - using the same approach as readSavedPrompts
+    const { data: savedPromptIds, error: savedPromptsError } = await supabase
       .from("saved_prompts")
-      .select(`
-        prompt_id,
-        prompts (
-          id,
-          title,
-          content,
-          user_id,
-          folder_id,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq("user_id", user.id);
+      .select("prompt_id, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
     if (savedPromptsError) {
       console.error("Error fetching saved prompts:", savedPromptsError);
     }
 
-    // Format saved prompts
-    const formattedSavedPrompts = savedPrompts?.map(sp => ({
-      ...sp.prompts,
-      is_saved: true
-    })) || [];
+    let formattedSavedPrompts = [];
+    
+    if (savedPromptIds && savedPromptIds.length > 0) {
+      const promptIds = savedPromptIds.map((sp) => sp.prompt_id);
+      
+      // Fetch the actual prompts
+      const { data: savedPromptsData, error: promptsError } = await supabase
+        .from("prompts")
+        .select("*")
+        .in("id", promptIds);
+
+      if (promptsError) {
+        console.error("Error fetching saved prompt details:", promptsError);
+      }
+
+      if (savedPromptsData) {
+        // Sort prompts by the order they were saved (most recent first)
+        const savedMap = new Map(
+          savedPromptIds.map((sp) => [sp.prompt_id, sp.created_at])
+        );
+
+        formattedSavedPrompts = savedPromptsData
+          .map((prompt) => ({
+            ...prompt,
+            is_saved: true,
+          }))
+          .sort((a, b) => {
+            const aSavedAt = savedMap.get(a.id) || "";
+            const bSavedAt = savedMap.get(b.id) || "";
+            return bSavedAt.localeCompare(aSavedAt);
+          });
+      }
+    }
 
     return NextResponse.json({
       authenticated: true,
@@ -81,4 +99,5 @@ export async function GET() {
     );
   }
 }
+
 
